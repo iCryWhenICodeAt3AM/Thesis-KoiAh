@@ -1,0 +1,16 @@
+#root-image-container{
+    overflow-y: auto;
+    max-height: 275px;
+    height: 275px;
+    scrollbar-width: none;
+}
+
+#processed-image-container{
+    max-height: 260px;
+    height: 260px;
+}
+
+#processing-image{
+    max-width: 400px; 
+    max-height: 300px;
+}

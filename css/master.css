@@ -1,0 +1,75 @@
+body {
+    background-color: #88BDBC;
+    font-family: Arial, sans-serif;
+}
+/* !! Scanner !! */
+/* Nav Bar Styles */
+nav.navbar{
+    background-color: #254E58 !important;
+}
+
+#underline{
+    text-underline-offset: 10px;
+    text-decoration-color: #F3D4A5;
+}
+
+a#brandName, a.nav-link{
+    color: #88BDBC !important;
+}
+/* Nav Bar Styles */
+
+/* Button Style */
+.btn{
+    border-radius: 10px;
+    border: 0px;
+    background-color: #254E58;
+    color: #88BDBC !important;
+}
+/* Button Style */
+
+/* Container*/
+.cont-outer{
+    border-radius: 10px;
+    background-color: #254E58 !important;
+    max-height: 600px;
+    color: #88BDBC !important;
+}
+.cont-inner{
+    border-radius: 10px;
+    background-color: #88BDBC !important;
+    overflow-y: auto;
+    color: #254E58 !important;
+}
+/* Container 1*/
+
+/* Pills */
+.outer-pill{
+    background-color:   #88BDBC;
+    color: #254E58;
+    border-radius: 10px;
+    max-width: 160px;
+    margin: 5px 10px;
+    font-size: 13px;
+}
+
+.inner-pill{
+    background-color:   #254E58;
+    color: #88BDBC;
+    border-radius: 5px;
+    max-width: 160px;
+    margin: 1px 5px;
+    padding-top: 3px;
+}
+/* Pills */
+/* !! Scanner !! */
+
+h6{
+    font-size: 13.5px;
+}
+button{
+    max-height: 50px;
+}
+input{
+    border-radius: 10px;
+    font-size: 13.5px;
+}

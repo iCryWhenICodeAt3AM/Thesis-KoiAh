@@ -1,0 +1,20 @@
+#output-container-1{
+    height:370px; 
+    color: #88BDBC;
+}
+
+#output-container-2{
+    height:220px;
+}
+
+#classlist-container{
+    overflow-y: auto; 
+    max-height: 120px; 
+    scrollbar-width: none;
+}
+
+#itemlist-container{
+    overflow-y: auto; 
+    max-height: 75px; 
+    scrollbar-width: none;
+}

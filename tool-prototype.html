@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roboflow Image Annotation</title>
+    <style>
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .image-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        .image-box img {
+            max-width: 100%;
+            height: auto;
+        }
+        .annotation {
+            margin-top: 10px;
+        }
+        #exportButton {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <h1>Roboflow Image Annotation</h1>
+    <form id="annotationForm">
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model" required><br><br>
+        <label for="version">Version:</label>
+        <input type="text" id="version" name="version" required><br><br>
+        <label for="apiKey">API Key:</label>
+        <input type="text" id="apiKey" name="apiKey" required><br><br>
+        <label for="images">Upload Images:</label>
+        <input type="file" id="images" name="images" accept="image/*" multiple style="display: none;"><br><br>
+        <label for="folder">Upload Folder:</label>
+        <input type="file" id="folder" name="folder" accept="image/*" webkitdirectory style="display: none;"><br><br>
+        <button type="button" onclick="document.getElementById('images').click();">Select Files</button>
+        <button type="button" onclick="document.getElementById('folder').click();">Select Folder</button>
+        <button type="button" onclick="startAnnotation()">Start</button>
+    </form>
+
+    <div class="image-container" id="imageContainer"></div>
+
+    <button id="exportButton" onclick="exportResults()" disabled>Export Results</button>
+
+    <script>
+        let results = []; // Store results globally
+        let uploadedImages = []; // Store uploaded images
+
+        async function startAnnotation() {
+            const model = document.getElementById('model').value;
+            const version = document.getElementById('version').value;
+            const apiKey = document.getElementById('apiKey').value;
+            const images = document.getElementById('images').files;
+            const folder = document.getElementById('folder').files;
+
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.innerHTML = '';
+
+            results = []; // Reset results
+            uploadedImages = []; // Reset uploaded images
+
+            const processImage = async (imageFile) => {
+                const reader = new FileReader();
+                return new Promise((resolve, reject) => {
+                    reader.onload = async (event) => {
+                        const base64Image = event.target.result.split(',')[1];
+                        const imageName = imageFile.name;
+
+                        try {
+                            const response = await axios({
+                                method: 'POST',
+                                url: `https://detect.roboflow.com/${model}/${version}`,
+                                params: {
+                                    api_key: apiKey
+                                },
+                                data: base64Image,
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                }
+                            });
+
+                            const formattedAnnotations = response.data.predictions.map(prediction => ({
+                                label: prediction.class,
+                                coordinates: {
+                                    x: prediction.x,
+                                    y: prediction.y,
+                                    width: prediction.width,
+                                    height: prediction.height
+                                }
+                            }));
+                            
+                            results.push({
+                                image: imageName,
+                                annotations: formattedAnnotations
+                            });
+
+                            uploadedImages.push({
+                                name: imageName,
+                                data: event.target.result.split(',')[1] // Keep base64 data
+                            });
+
+                            const annotationBox = document.createElement('div');
+                            annotationBox.className = 'image-box';
+
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            annotationBox.appendChild(img);
+
+                            const annotation = document.createElement('div');
+                            annotation.className = 'annotation';
+                            annotation.innerText = JSON.stringify(formattedAnnotations, null, 2);
+                            annotationBox.appendChild(annotation);
+
+                            imageContainer.appendChild(annotationBox);
+
+                            resolve();
+                        } catch (error) {
+                            console.error(error.message);
+                            reject(error);
+                        }
+                    };
+                    reader.readAsDataURL(imageFile);
+                });
+            };
+
+            const files = [...images, ...folder];
+            for (const imageFile of files) {
+                await processImage(imageFile);
+            }
+
+            console.log(JSON.stringify(results, null, 2));
+
+            const jsonResult = document.createElement('pre');
+            jsonResult.innerText = JSON.stringify(results, null, 2);
+            document.body.appendChild(jsonResult);
+
+            // Enable export button if there are results
+            document.getElementById('exportButton').disabled = results.length === 0;
+        }
+
+        async function exportResults() {
+            const zip = new JSZip();
+            const jsonBlob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+            zip.file('createml.json', jsonBlob);
+
+            for (const img of uploadedImages) {
+                const imageData = atob(img.data);
+                const arrayBuffer = new Uint8Array(imageData.length);
+                for (let i = 0; i < imageData.length; i++) {
+                    arrayBuffer[i] = imageData.charCodeAt(i);
+                }
+                zip.file(img.name, arrayBuffer);
+            }
+
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            const zipUrl = URL.createObjectURL(zipBlob);
+
+            const a = document.createElement('a');
+            a.href = zipUrl;
+            a.download = 'annotations.zip';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
