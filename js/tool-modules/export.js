@@ -1,6 +1,7 @@
 async function exportResults() {
     const zip = new JSZip();
-    const jsonBlob = new Blob([JSON.stringify(currentJsonData, null, 2)], { type: 'application/json' });
+    resultJsonData = [...resultJsonData, ...currentJsonData];
+    const jsonBlob = new Blob([JSON.stringify(resultJsonData, null, 2)], { type: 'application/json' });
     zip.file('createml.json', jsonBlob);
 
     for (const img of uploadedImages) {

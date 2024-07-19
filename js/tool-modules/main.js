@@ -1,12 +1,13 @@
 // Global variable to store label counts / classes counts
 let globalLabelCounts = {};
-
-// ====Start with the annotation implementation====
+let resultJsonData = [];
 
 async function startAnnotation() {
     // Input Fields Collection
     const images = document.getElementById('images').files;
     const folder = document.getElementById('folder').files;
+    const model = document.getElementById('model').value;
+    const apiKey = document.getElementById('apiKey').value;
 
     // Interface actions
     const processStatus = document.getElementById('process-status');
@@ -16,9 +17,9 @@ async function startAnnotation() {
     const currentImage = document.getElementById('current-image');
     const processingContainer = document.getElementById('processed-image-container');
     const classContainer = document.getElementById('classlist-container');
-    const startButton = document.getElementById("start-button");
+    const startButton = document.getElementById('start-button');
     const itemListContainer = document.getElementById('itemlist-container');
-
+    const exportButton = document.getElementById('export-button');
     // Combine images and folder files into a single array and filter out exempted files
     const files = [...images, ...folder].filter(file => !exemptedFiles.has(file.name));
 
@@ -27,7 +28,7 @@ async function startAnnotation() {
 
     // Dynamic Elements
     let pendingImagesCount = parseInt(imageFiles.length);
-
+    let predictionCount = 0;
     // Status Actions
     processStatus.innerText = "Running...";
     pendingImages.innerText = pendingImagesCount;
@@ -40,29 +41,67 @@ async function startAnnotation() {
     jsonExemption(currentJsonData, annotatedImages);
     checkClassList(currentJsonData, classContainer);
     let annotatedImagesCount = parseInt(annotatedImages.innerText);
-
-    // Processing Images
+    startButton.disabled = true; // Disable start buton
+    
     const processImage = async (imageFile) => {
-        console.log(imageFile);
-        startButton.disabled = true;
-        // Set image name
-        currentImage.innerText = imageFile.name;
+
+        currentImage.innerText = imageFile.name; // Set image name
+        
         const reader = new FileReader();
-        reader.onload = (function(theImage) {
-            return function(event) {
-                // Image Change
+        return new Promise((resolve, reject) => {
+            reader.onload = async (event) => {
+                const base64Image = event.target.result.split(',')[1];
+                const imageName = imageFile.name;
+                // display Image
                 const img = `
                     <div class="col-12">
                         <img src="${event.target.result}" alt="Current Image" id="processing-image">
                     </div>
                 `;
                 processingContainer.innerHTML = img;
-                startButton.disabled = false;
+
+                try {
+                    const response = await axios({
+                        method: 'POST',
+                        url: `https://detect.roboflow.com/${model}`,
+                        params: {
+                            api_key: apiKey
+                        },
+                        data: base64Image,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    });
+
+                    const formattedAnnotations = response.data.predictions.map(prediction => ({
+                        label: prediction.class,
+                        coordinates: {
+                            x: prediction.x,
+                            y: prediction.y,
+                            width: prediction.width,
+                            height: prediction.height
+                        }
+                    }));
+
+                    console.log("Prediction Count: ", ++predictionCount);
+                    processPrediction(response.data.predictions, classContainer, annotatedImagesCount+1, imageFile.name, itemListContainer);
+
+                    resultJsonData.push({
+                        image: imageName,
+                        annotations: formattedAnnotations
+                    });
+                    
+                    resolve();
+                } catch (error) {
+                    console.error(error.message);
+                    reject(error);
+                    startButton.disabled = false; // Enable start button
+                    alert("Please input the model & version, or the API Key.");
+                }
             };
-        })(imageFile);
-        
-        reader.readAsDataURL(imageFile);
-    }
+            reader.readAsDataURL(imageFile);
+        });
+    };
 
     // Start of the annotation process
     for (const imageFile of imageFiles) {
@@ -75,14 +114,15 @@ async function startAnnotation() {
         currentImage.innerText = "-";
         processingContainer.innerHTML = "";
         previousImage.innerText = imageFile.name;
-        // Display to list Action
-        appendItem(annotatedImagesCount, imageFile.name, itemListContainer);
     }
     processStatus.innerText = "Completed";
+    startButton.disabled = false; // Enable start button
+    // Enable export button if there are results
+    exportButton.enabled = resultJsonData.length != 0;
 }
 
 // Append item to item list container
-function appendItem(itemNumber, filename, container){
+function appendItem(itemNumber, filename, container, objects, classes){
     // Add the processed image information to the item list
     const itemHTML = `
     <div class="cont-outer row p-1 mt-2">
@@ -93,10 +133,10 @@ function appendItem(itemNumber, filename, container){
             <h6 class="m-0">${filename}</h6>
         </div>
         <div class="col-2">
-            <h6 class="m-0">1</h6>
+            <h6 class="m-0">${objects}</h6>
         </div>
         <div class="col-2">
-            <h6 class="m-0">1</h6>
+            <h6 class="m-0">${classes}</h6>
         </div>
     </div>
     `;
@@ -245,16 +285,12 @@ function jsonExemption(currentJsonData, annotatedImages) {
 
 // ---
 // Function to process a single prediction instance
-function processPrediction(prediction, container) {
-    if (!prediction || !prediction.predictions) {
-        console.log('Invalid prediction data.');
-        return;
-    }
+function processPrediction(prediction, container, count, filename, itemListContainer) {
 
     // Count occurrences of each label
     const labelOccurrences = {};
 
-    prediction.predictions.forEach(pred => {
+    prediction.forEach(pred => {
         const label = pred.class;
 
         if (!labelOccurrences[label]) {
@@ -267,6 +303,7 @@ function processPrediction(prediction, container) {
     // Determine the classification of the prediction
     const uniqueLabels = Object.keys(labelOccurrences);
     const numLabels = uniqueLabels.length;
+    let objectCount = 0;
 
     uniqueLabels.forEach(label => {
         if (!globalLabelCounts[label]) {
@@ -275,7 +312,8 @@ function processPrediction(prediction, container) {
 
         const labelCounts = globalLabelCounts[label];
         const count = labelOccurrences[label];
-
+        
+        objectCount += count;
         if (numLabels === 1) {
             // Single label
             if (count === 1) {
@@ -294,6 +332,7 @@ function processPrediction(prediction, container) {
         labelCounts[3] += 1;
     });
 
+    appendItem(count, filename, itemListContainer, objectCount, numLabels);
     updateClassInterface(container);
     console.log('Updated globalLabelCounts:', globalLabelCounts);
 }
@@ -331,40 +370,6 @@ function updateClassInterface(container) {
     });
 }
 
-// Function to update the class interface
-function updateClassInterface(container) {
-    if (!container) {
-        console.log('Invalid container.');
-        return;
-    }
-
-    container.innerHTML = ''; // Clear existing content
-
-    Object.entries(globalLabelCounts).forEach(([label, counts]) => {
-        const item = `
-            <div class="cont-outer p-1 mt-2 row img-1.jpg" id="img-1.jpg">
-                <div class="col-3" id="filename-class"><h6 class="m-0">${label}</h6></div>
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-4">
-                            <h6 class="m-0">${counts[0]}</h6>
-                        </div>
-                        <div class="col-4">
-                            <h6 class="m-0">${counts[1]}</h6>
-                        </div>
-                        <div class="col-4">
-                            <h6 class="m-0">${counts[2]}</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3"><h6 class="m-0">${counts[3]}</h6></div>
-            </div>
-        `;
-        container.innerHTML += item;
-    });
-
-    console.log('Class interface updated.');
-}
 
 // processPrediction(predictionData, document.getElementById("classlist-container"));
 
@@ -502,95 +507,3 @@ function updateClassInterface(container) {
 // // Call the function
 // checkClassList(currentJsonData1, document.getElementById('classlist-container'));
 // jsonExemption(currentJsonData1, document.getElementById('annotated-images'));
-// async function startAnnotation() {
-//     const model = document.getElementById('model').value;
-//     const apiKey = document.getElementById('apiKey').value;
-//     const images = document.getElementById('images').files;
-//     const folder = document.getElementById('folder').files;
-//     const imageLimit = document.getElementById('classLimit').value.replace(/[eE]/g,'');
-//     console.log(imageLimit);
-
-//     const imageContainer = document.getElementById('imageContainer');
-//     imageContainer.innerHTML = '';
-
-//     results = []; // Reset results
-//     uploadedImages = []; // Reset uploaded images
-
-//     const processImage = async (imageFile) => {
-//         const reader = new FileReader();
-//         return new Promise((resolve, reject) => {
-//             reader.onload = async (event) => {
-//                 const base64Image = event.target.result.split(',')[1];
-//                 const imageName = imageFile.name;
-
-//                 try {
-//                     const response = await axios({
-//                         method: 'POST',
-//                         url: `https://detect.roboflow.com/${model}`,
-//                         params: {
-//                             api_key: apiKey
-//                         },
-//                         data: base64Image,
-//                         headers: {
-//                             'Content-Type': 'application/x-www-form-urlencoded'
-//                         }
-//                     });
-
-//                     const formattedAnnotations = response.data.predictions.map(prediction => ({
-//                         label: prediction.class,
-//                         coordinates: {
-//                             x: prediction.x,
-//                             y: prediction.y,
-//                             width: prediction.width,
-//                             height: prediction.height
-//                         }
-//                     }));
-                    
-//                     results.push({
-//                         image: imageName,
-//                         annotations: formattedAnnotations
-//                     });
-
-//                     uploadedImages.push({
-//                         name: imageName,
-//                         data: event.target.result.split(',')[1] // Keep base64 data
-//                     });
-
-//                     const annotationBox = document.createElement('div');
-//                     annotationBox.className = 'image-box';
-
-//                     const img = document.createElement('img');
-//                     img.src = event.target.result;
-//                     annotationBox.appendChild(img);
-
-//                     const annotation = document.createElement('div');
-//                     annotation.className = 'annotation';
-//                     annotation.innerText = JSON.stringify(formattedAnnotations, null, 2);
-//                     annotationBox.appendChild(annotation);
-
-//                     imageContainer.appendChild(annotationBox);
-
-//                     resolve();
-//                 } catch (error) {
-//                     console.error(error.message);
-//                     reject(error);
-//                 }
-//             };
-//             reader.readAsDataURL(imageFile);
-//         });
-//     };
-
-//     const files = [...images, ...folder];
-//     for (const imageFile of files) {
-//         await processImage(imageFile);
-//     }
-
-//     console.log(JSON.stringify(results, null, 2));
-
-//     const jsonResult = document.createElement('pre');
-//     jsonResult.innerText = JSON.stringify(results, null, 2);
-//     document.body.appendChild(jsonResult);
-
-//     // Enable export button if there are results
-//     document.getElementById('exportButton').disabled = results.length === 0;
-// }
