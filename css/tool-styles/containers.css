@@ -8,13 +8,15 @@
 }
 
 #classlist-container{
-    overflow-y: auto; 
+    overflow-y: auto;
     max-height: 120px; 
+    height: 120px;
     scrollbar-width: none;
 }
 
 #itemlist-container{
     overflow-y: auto; 
     max-height: 75px; 
+    height: 75px;
     scrollbar-width: none;
 }

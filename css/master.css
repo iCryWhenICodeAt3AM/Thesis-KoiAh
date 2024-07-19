@@ -61,15 +61,3 @@ a#brandName, a.nav-link{
     padding-top: 3px;
 }
 /* Pills */
-/* !! Scanner !! */
-
-h6{
-    font-size: 13.5px;
-}
-button{
-    max-height: 50px;
-}
-input{
-    border-radius: 10px;
-    font-size: 13.5px;
-}
