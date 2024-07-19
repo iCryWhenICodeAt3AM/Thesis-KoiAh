@@ -1,6 +1,9 @@
-let existingFiles = new Set();
-let exemptedFiles = new Set();
+// Global variables
+let uploadedImages = []; // Array to store uploaded images
+const existingFiles = new Set();
+const exemptedFiles = new Set();
 
+// Function to display images and store them in the global variable
 function displayImage() {
     const images = document.getElementById('images').files;
     const folder = document.getElementById('folder').files;
@@ -11,8 +14,8 @@ function displayImage() {
 
     for (const image of uploads) {
         // Get file extension and check if it's an image format
-        var idxDot = image.name.lastIndexOf(".") + 1;
-        var extFile = image.name.substr(idxDot, image.name.length).toLowerCase();
+        const idxDot = image.name.lastIndexOf(".") + 1;
+        const extFile = image.name.substr(idxDot, image.name.length).toLowerCase();
         
         // Check if the file extension is valid for images and if it's not already processed
         if ((extFile === "jpg" || extFile === "jpeg" || extFile === "png") && !existingFiles.has(image.name) && !exemptedFiles.has(image.name)) {
@@ -34,10 +37,16 @@ function displayImage() {
                     img.id = safeId;
                     img.src = event.target.result;
                     imageContainer.appendChild(img);
+
+                    // Store image data in the global variable
+                    uploadedImages.push({
+                        name: theImage.name,
+                        data: event.target.result.split(',')[1] // Keep base64 data
+                    });
                 };
             })(image);
             reader.readAsDataURL(image);
         }
     }
-    imageCount.innerText = existingFiles.size+exemptedFiles.size;
+    imageCount.innerText = existingFiles.size + exemptedFiles.size;
 }

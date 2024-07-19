@@ -1,0 +1,18 @@
+#filename-item, #filename-class {
+    white-space: nowrap; 
+    overflow-y: auto; 
+    scrollbar-width: none;
+}
+
+h6{
+    font-size: 13.5px;
+}
+
+button{
+    max-height: 50px;
+}
+
+input{
+    border-radius: 10px;
+    font-size: 13.5px;
+}

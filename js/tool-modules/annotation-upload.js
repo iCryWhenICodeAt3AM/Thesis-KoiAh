@@ -7,7 +7,6 @@ function loadJson() {
 
     reader.onload = function(event) {
         const jsonFileData = JSON.parse(event.target.result);
-        const jsonImageNames = new Set(jsonFileData.map(item => item.image));
 
         // Only add new items from the JSON file that are not exempted or already existing
         jsonFileData.forEach(jsonItem => {
