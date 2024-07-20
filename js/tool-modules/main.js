@@ -2,12 +2,44 @@
 let globalLabelCounts = {};
 let resultJsonData = [];
 
+// Function to check and filter annotations based on class limits
+function checkMaxClasses(annotations, classLimit) {
+    // Create a map to keep track of label totals across all annotations
+    const labelTotals = {};
+
+    // First pass: Count occurrences of each label across all annotations
+    annotations.forEach(annotation => {
+        const label = annotation.label;
+        if (!labelTotals[label]) {
+            labelTotals[label] = 0;
+        }
+        labelTotals[label] += 1;
+    });
+
+    // Remove annotations where label has reached the class limit
+    return annotations.filter(annotation => {
+        const label = annotation.label;
+        if (globalLabelCounts[label] && globalLabelCounts[label][3] >= classLimit) {
+            // Exclude annotations for labels that have reached the limit
+            return false;
+        }
+        return true;
+    });
+}
+
 async function startAnnotation() {
+    if(resultJsonData.length!=0){
+        globalLabelCounts = {};
+        resultJsonData = [];
+    }
+    
     // Input Fields Collection
     const images = document.getElementById('images').files;
     const folder = document.getElementById('folder').files;
     const model = document.getElementById('model').value;
     const apiKey = document.getElementById('apiKey').value;
+    const classLimit = parseInt(document.getElementById('classLimit').value);
+    console.log("Class Limit: ", classLimit);
 
     // Interface actions
     const processStatus = document.getElementById('process-status');
@@ -20,6 +52,7 @@ async function startAnnotation() {
     const startButton = document.getElementById('start-button');
     const itemListContainer = document.getElementById('itemlist-container');
     const exportButton = document.getElementById('export-button');
+
     // Combine images and folder files into a single array and filter out exempted files
     const files = [...images, ...folder].filter(file => !exemptedFiles.has(file.name));
 
@@ -29,30 +62,28 @@ async function startAnnotation() {
     // Dynamic Elements
     let pendingImagesCount = parseInt(imageFiles.length);
     let predictionCount = 0;
+
     // Status Actions
     processStatus.innerText = "Running...";
     pendingImages.innerText = pendingImagesCount;
-
-    // Just for the delay
-    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
     // Initial Processing
     reset(processStatus.innerText, pendingImages.innerText, annotatedImages.innerText, previousImage.innerText, classContainer); // Reset all status in the output
     jsonExemption(currentJsonData, annotatedImages);
     checkClassList(currentJsonData, classContainer);
     let annotatedImagesCount = parseInt(annotatedImages.innerText);
-    startButton.disabled = true; // Disable start buton
-    
-    const processImage = async (imageFile) => {
+    startButton.disabled = true; // Disable start button
 
+    const processImage = async (imageFile) => {
         currentImage.innerText = imageFile.name; // Set image name
-        
+
         const reader = new FileReader();
         return new Promise((resolve, reject) => {
             reader.onload = async (event) => {
                 const base64Image = event.target.result.split(',')[1];
                 const imageName = imageFile.name;
-                // display Image
+
+                // Display Image
                 const img = `
                     <div class="col-12">
                         <img src="${event.target.result}" alt="Current Image" id="processing-image">
@@ -73,7 +104,7 @@ async function startAnnotation() {
                         }
                     });
 
-                    const formattedAnnotations = response.data.predictions.map(prediction => ({
+                    let formattedAnnotations = response.data.predictions.map(prediction => ({
                         label: prediction.class,
                         coordinates: {
                             x: prediction.x,
@@ -84,13 +115,21 @@ async function startAnnotation() {
                     }));
 
                     console.log("Prediction Count: ", ++predictionCount);
-                    processPrediction(response.data.predictions, classContainer, annotatedImagesCount+1, imageFile.name, itemListContainer);
+                    console.log("Before: ", formattedAnnotations);
 
-                    resultJsonData.push({
-                        image: imageName,
-                        annotations: formattedAnnotations
-                    });
-                    
+                    // Check and filter formattedAnnotations based on class limits
+                    formattedAnnotations = checkMaxClasses(formattedAnnotations, classLimit);
+                    console.log("After: ", formattedAnnotations);
+
+                    processPrediction(formattedAnnotations, classContainer, annotatedImagesCount + 1, imageFile.name, itemListContainer, classLimit);
+
+                    if (formattedAnnotations.length > 0) {
+                        resultJsonData.push({
+                            image: imageName,
+                            annotations: formattedAnnotations
+                        });
+                    }
+
                     resolve();
                 } catch (error) {
                     console.error(error.message);
@@ -106,7 +145,7 @@ async function startAnnotation() {
     // Start of the annotation process
     for (const imageFile of imageFiles) {
         await processImage(imageFile);
-        await delay(1000); // 1 second delay
+        // await delay(1000); // 1 second delay
         pendingImagesCount -= 1;
         annotatedImagesCount++;
         pendingImages.innerText = pendingImagesCount;
@@ -118,7 +157,7 @@ async function startAnnotation() {
     processStatus.innerText = "Completed";
     startButton.disabled = false; // Enable start button
     // Enable export button if there are results
-    exportButton.enabled = resultJsonData.length != 0;
+    exportButton.disabled = resultJsonData.length === 0;
 }
 
 // Append item to item list container
@@ -285,13 +324,12 @@ function jsonExemption(currentJsonData, annotatedImages) {
 
 // ---
 // Function to process a single prediction instance
-function processPrediction(prediction, container, count, filename, itemListContainer) {
-
+function processPrediction(prediction, container, count, filename, itemListContainer, classLimit) {
     // Count occurrences of each label
     const labelOccurrences = {};
 
     prediction.forEach(pred => {
-        const label = pred.class;
+        const label = pred.label;
 
         if (!labelOccurrences[label]) {
             labelOccurrences[label] = 0;
@@ -312,7 +350,7 @@ function processPrediction(prediction, container, count, filename, itemListConta
 
         const labelCounts = globalLabelCounts[label];
         const count = labelOccurrences[label];
-        
+
         objectCount += count;
         if (numLabels === 1) {
             // Single label
@@ -333,12 +371,12 @@ function processPrediction(prediction, container, count, filename, itemListConta
     });
 
     appendItem(count, filename, itemListContainer, objectCount, numLabels);
-    updateClassInterface(container);
+    updateClassInterface(container, classLimit);
     console.log('Updated globalLabelCounts:', globalLabelCounts);
 }
 
 // Function to update the class interface
-function updateClassInterface(container) {
+function updateClassInterface(container, classLimit) {
     if (!container) {
         console.log('Container is not provided.');
         return;
@@ -347,8 +385,11 @@ function updateClassInterface(container) {
     container.innerHTML = '';
 
     Object.entries(globalLabelCounts).forEach(([label, counts]) => {
+        // Check if the total count of this label has reached the class limit
+        const isMaxedClass = globalLabelCounts[label][3] === classLimit;
+    
         const item = `
-            <div class="cont-outer p-1 mt-2 row">
+            <div class="cont-outer p-1 mt-2 row" ${isMaxedClass ? 'id="maxed-class"' : ''}>
                 <div class="col-3" id="filename-class"><h6 class="m-0">${label}</h6></div>
                 <div class="col-6">
                     <div class="row">
@@ -366,6 +407,7 @@ function updateClassInterface(container) {
                 <div class="col-3"><h6 class="m-0">${counts[3]}</h6></div>
             </div>
         `;
+    
         container.innerHTML += item;
     });
 }
