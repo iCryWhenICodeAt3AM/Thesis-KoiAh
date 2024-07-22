@@ -1,6 +1,7 @@
 // Global variable to store label counts / classes counts
 let globalLabelCounts = {};
 let resultJsonData = [];
+let filteredData = [];
 
 // Function to check and filter annotations based on class limits
 function checkMaxClasses(annotations, classLimit) {
@@ -28,11 +29,12 @@ function checkMaxClasses(annotations, classLimit) {
 }
 
 async function startAnnotation() {
-    if(resultJsonData.length!=0){
+    if(resultJsonData.length!=0 || globalLabelCounts.length!=0 || filteredData.length!=0){
         globalLabelCounts = {};
         resultJsonData = [];
+        filteredData = [];
     }
-    
+    console.log(uploadedImages);
     // Input Fields Collection
     const images = document.getElementById('images').files;
     const folder = document.getElementById('folder').files;
@@ -68,9 +70,8 @@ async function startAnnotation() {
     pendingImages.innerText = pendingImagesCount;
 
     // Initial Processing
-    reset(processStatus.innerText, pendingImages.innerText, annotatedImages.innerText, previousImage.innerText, classContainer); // Reset all status in the output
-    jsonExemption(currentJsonData, annotatedImages);
-    checkClassList(currentJsonData, classContainer);
+    reset(processStatus.innerText, pendingImages.innerText, annotatedImages.innerText, previousImage.innerText, classContainer, itemListContainer); // Reset all status in the output
+    processInitialData(currentJsonData, annotatedImages, classContainer, classLimit);
     let annotatedImagesCount = parseInt(annotatedImages.innerText);
     startButton.disabled = true; // Disable start button
 
@@ -121,14 +122,14 @@ async function startAnnotation() {
                     formattedAnnotations = checkMaxClasses(formattedAnnotations, classLimit);
                     console.log("After: ", formattedAnnotations);
 
-                    processPrediction(formattedAnnotations, classContainer, annotatedImagesCount + 1, imageFile.name, itemListContainer, classLimit);
-
                     if (formattedAnnotations.length > 0) {
                         resultJsonData.push({
                             image: imageName,
                             annotations: formattedAnnotations
                         });
                     }
+
+                    processPrediction(formattedAnnotations, classContainer, annotatedImagesCount + 1, imageFile.name, itemListContainer, classLimit);
 
                     resolve();
                 } catch (error) {
@@ -156,15 +157,15 @@ async function startAnnotation() {
     }
     processStatus.innerText = "Completed";
     startButton.disabled = false; // Enable start button
-    // Enable export button if there are results
-    exportButton.disabled = resultJsonData.length === 0;
+
 }
 
 // Append item to item list container
 function appendItem(itemNumber, filename, container, objects, classes){
     // Add the processed image information to the item list
+    const id = formatLabel(filename);
     const itemHTML = `
-    <div class="cont-outer row p-1 mt-2">
+    <div class="cont-outer row p-1 mt-2 ${id}" id="${id}" onclick="showImageModal('${filename}')">
         <div class="col-1">
             <h6 class="m-0">${itemNumber}</h6>
         </div>
@@ -183,143 +184,161 @@ function appendItem(itemNumber, filename, container, objects, classes){
 }
 
 // Set all output group to default
-function reset(status, pending, annotated, previousImage, classes){
+function reset(status, pending, annotated, previousImage, classes, items){
     status, previousImage = "-";
     pending, annotated = "0";
     classes.innerHTML = "";
+    items.innerHTML = "";
 }
 
-// Display the Initial Classes
-function checkClassList(currentJsonData, container) {
-    if (!currentJsonData || currentJsonData.length === 0) {
-        console.log('No data found in currentJsonData.');
-        return;
-    }
+// Process initial Data
+function processInitialData(currentJsonData, annotatedImages, classContainer, classLimit) {
+    console.log("")
 
-    // Initialize an object to store label counts
-    const labelCounts = {};
-
-    // Iterate through each item in currentJsonData
     currentJsonData.forEach(item => {
-        const labels = item.annotations.map(annotation => annotation.label);
+        const filteredAnnotations = [];
+        const labelOccurrences = {};
 
-        // Unique labels in the current item
-        const uniqueLabels = new Set(labels);
+        // Count occurrences of each label in the item
+        item.annotations.forEach(annotation => {
+            const label = annotation.label;
 
-        uniqueLabels.forEach(label => {
-            if (!labelCounts[label]) {
-                // Initialize counts for this label
-                labelCounts[label] = [0, 0, 0, 0];
+            if (!globalLabelCounts[label]) {
+                globalLabelCounts[label] = [0, 0, 0, 0]; // Solo, Group, Mixed, Total
             }
 
-            if (labels.length === 1 && uniqueLabels.size === 1) {
-                // Single item with one label (Solo)
-                labelCounts[label][0] += 1;
-                labelCounts[label][3] += 1;
-            } else if (labels.length > 1 && uniqueLabels.size === 1) {
-                // Multiple items with one label (Group)
-                labelCounts[label][1] += 1;
-                labelCounts[label][3] += 1;
-            } else if (uniqueLabels.size > 1) {
-                // More than one label (Mixed)
-                labelCounts[label][2] += 1;
-                labelCounts[label][3] += 1;
+            // Check if the total count of the label in globalLabelCounts is less than classLimit
+            if (globalLabelCounts[label][3] < classLimit) {
+                filteredAnnotations.push(annotation);
+
+                if (!labelOccurrences[label]) {
+                    labelOccurrences[label] = 0;
+                }
+                labelOccurrences[label]++;
             }
         });
-    });
+        console.log("Before: Current Global Labels: ", globalLabelCounts);
+        if (filteredAnnotations.length > 0) {
+            // Determine the classification of the filtered annotations
+            const uniqueLabels = Object.keys(labelOccurrences);
+            const numLabels = uniqueLabels.length;
+            console.log("Unique Labels: ", uniqueLabels, ". Number: ", numLabels);
+            uniqueLabels.forEach(label => {
+                const labelCounts = globalLabelCounts[label];
+                const count = labelOccurrences[label];
+                console.log("Unique Label: ", [label]);
+                console.log("Label Count: ", count);
+                if (numLabels === 1) {
+                    // Single label
+                    if (count === 1) {
+                        // Solo
+                        labelCounts[0] += 1;
+                    } else {
+                        // Group
+                        labelCounts[1] += 1;
+                    }
+                } else {
+                    // More than one label (Mixed)
+                    labelCounts[2] += 1;
+                }
 
-    // Update globalLabelCounts with the results
-    Object.entries(labelCounts).forEach(([label, counts]) => {
-        if (!globalLabelCounts[label]) {
-            globalLabelCounts[label] = [0, 0, 0, 0];
+                // Always increment total count
+                labelCounts[3] += 1;
+                console.log("Added 1 to: ", label);
+                console.log("After: Current Global Labels: ", globalLabelCounts);
+                console.log("");
+            });
+
+            filteredData.push({ image: item.image, annotations: filteredAnnotations });
         }
-
-        const globalCounts = globalLabelCounts[label];
-        globalCounts[0] += counts[0];
-        globalCounts[1] += counts[1];
-        globalCounts[2] += counts[2];
-        globalCounts[3] += counts[3];
     });
 
-    // Convert the object to an array if needed or display the results
-    const resultArray = Object.entries(globalLabelCounts).map(([label, counts]) => ({ label, counts }));
-
-    container.innerHTML = '';
-    console.log('Updated globalLabelCounts:', resultArray);
-    resultArray.forEach(element => {
+    // Step 2: Update the class interface with the current labels and their counts
+    classContainer.innerHTML = '';
+    Object.entries(globalLabelCounts).forEach(([label, counts]) => {
+        const isMaxedClass = counts[3] >= classLimit;
         const item = `
-            <div class="cont-outer p-1 mt-2 row img-1.jpg" id="img-1.jpg">
-                <div class="col-3" id="filename-class"><h6 class="m-0">${element.label}</h6></div>
+            <div class="cont-outer p-1 mt-2 row" ${isMaxedClass ? 'id="maxed-class"' : ''}>
+                <div class="col-3" id="filename-class"><h6 class="m-0">${label}</h6></div>
                 <div class="col-6">
                     <div class="row">
                         <div class="col-4">
-                            <h6 class="m-0">${element.counts[0]}</h6>
+                            <h6 class="m-0">${counts[0]}</h6>
                         </div>
                         <div class="col-4">
-                            <h6 class="m-0">${element.counts[1]}</h6>
+                            <h6 class="m-0">${counts[1]}</h6>
                         </div>
                         <div class="col-4">
-                            <h6 class="m-0">${element.counts[2]}</h6>
+                            <h6 class="m-0">${counts[2]}</h6>
                         </div>
                     </div>
                 </div>
-                <div class="col-3"><h6 class="m-0">${element.counts[3]}</h6></div>
+                <div class="col-3"><h6 class="m-0">${counts[3]}</h6></div>
             </div>
         `;
-        container.innerHTML += item;
+        classContainer.innerHTML += item;
     });
-}
 
-// Displays the Initial Annotated Images
-function jsonExemption(currentJsonData, annotatedImages) {
+    // Step 3: Post the processed items in the itemListContainer
     const itemListContainer = document.getElementById('itemlist-container');
-
-    // Clear the container before appending new items
     itemListContainer.innerHTML = '';
 
-    // Iterate through each item in currentJsonData
-    currentJsonData.forEach((item, index) => {
+    filteredData.forEach((item, index) => {
         const imageName = item.image;
         const annotations = item.annotations;
-        
-        // Create a div element to hold item information
+
         const itemDiv = document.createElement('div');
         itemDiv.className = 'cont-outer row p-1 mt-2';
+        itemDiv.addEventListener('click', () => showImageModal(imageName));
 
-        // Add the image number
         const numberDiv = document.createElement('div');
         numberDiv.className = 'col-1';
         numberDiv.innerHTML = `<h6 class="m-0">${index + 1}</h6>`;
         itemDiv.appendChild(numberDiv);
 
-        // Add the image name
         const nameDiv = document.createElement('div');
         nameDiv.className = 'col-6';
+        nameDiv.id = formatLabel(imageName);
         nameDiv.style.whiteSpace = 'nowrap';
         nameDiv.style.overflowY = 'auto';
         nameDiv.style.scrollbarWidth = 'none';
         nameDiv.innerHTML = `<h6 class="m-0">${imageName}</h6>`;
         itemDiv.appendChild(nameDiv);
 
-        // Get unique labels for this image
         const uniqueLabels = [...new Set(annotations.map(annotation => annotation.label))];
-        
-        // Add the count of labels
+
         const labelCountDiv = document.createElement('div');
         labelCountDiv.className = 'col-2';
         labelCountDiv.innerHTML = `<h6 class="m-0">${annotations.length}</h6>`;
         itemDiv.appendChild(labelCountDiv);
 
-        // Add the total number of annotations
         const annotationCountDiv = document.createElement('div');
         annotationCountDiv.className = 'col-2';
         annotationCountDiv.innerHTML = `<h6 class="m-0">${uniqueLabels.length}</h6>`;
         itemDiv.appendChild(annotationCountDiv);
 
-        // Append the itemDiv to the itemListContainer
         itemListContainer.appendChild(itemDiv);
         annotatedImages.innerText = (index + 1);
     });
+
+    console.log('Filtered Data:', filteredData);
+    console.log('Updated globalLabelCounts:', globalLabelCounts);
+}
+
+// formattng of label
+function formatLabel(label) {
+    // Replace periods with dashes
+    let formatted = label.replace(/\./g, '-');
+
+    // Replace whitespace with underscores
+    formatted = formatted.replace(/\s+/g, '_');
+
+    // Add "=" at the start if the label starts with a number
+    if (/^\d/.test(formatted)) {
+        formatted = '=' + formatted;
+    }
+
+    return formatted;
 }
 
 // ---
@@ -411,141 +430,3 @@ function updateClassInterface(container, classLimit) {
         container.innerHTML += item;
     });
 }
-
-
-// processPrediction(predictionData, document.getElementById("classlist-container"));
-
-// Example usage
-// const predictionData = {
-//     "predictions": [
-//         {
-//             "x": 395,
-//             "y": 315.5,
-//             "width": 338,
-//             "height": 197,
-//             "confidence": 0.9266392588615417,
-//             "class": "Kohaku",
-//             "class_id": 3,
-//             "detection_id": "e37ba14f-3392-4522-9f65-c85a3e3b2276"
-//         },
-//         {
-//             "x": 117.5,
-//             "y": 418.5,
-//             "width": 235,
-//             "height": 135,
-//             "confidence": 0.8708662986755371,
-//             "class": "Kohaku",
-//             "class_id": 1,
-//             "detection_id": "dc9c6b4a-915e-43f9-ab32-9a7316d840b2"
-//         },
-//         {
-//             "x": 395,
-//             "y": 315.5,
-//             "width": 338,
-//             "height": 197,
-//             "confidence": 0.9266392588615417,
-//             "class": "Kohaku",
-//             "class_id": 3,
-//             "detection_id": "e37ba14f-3392-4522-9f65-c85a3e3b2276"
-//         },
-//     ]
-// };
-
-// // Example currentJsonData
-// const currentJsonData1 = [
-//     {
-//         "image": "koi-1.jpg",
-//         "annotations": [
-//             {
-//                 "label": "Hikarimono",
-//                 "coordinates": {
-//                     "x": 353.5,
-//                     "y": 305.5,
-//                     "width": 323,
-//                     "height": 139
-//                 }
-//             }
-//         ]
-//     },
-//     {
-//         "image": "koi-2.jpg",
-//         "annotations": [
-//             {
-//                 "label": "Hikarimono",
-//                 "coordinates": {
-//                     "x": 265.5,
-//                     "y": 360.5,
-//                     "width": 337,
-//                     "height": 219
-//                 }
-//             },
-//             {
-//                 "label": "Kohaku",
-//                 "coordinates": {
-//                     "x": 151,
-//                     "y": 48,
-//                     "width": 298,
-//                     "height": 96
-//                 }
-//             },
-//             {
-//                 "label": "Kohaku",
-//                 "coordinates": {
-//                     "x": 702.5,
-//                     "y": 318.5,
-//                     "width": 193,
-//                     "height": 129
-//                 }
-//             },
-//             {
-//                 "label": "Showa",
-//                 "coordinates": {
-//                     "x": 576.5,
-//                     "y": 99,
-//                     "width": 181,
-//                     "height": 96
-//                 }
-//             },
-//             {
-//                 "label": "Kohaku",
-//                 "coordinates": {
-//                     "x": 54,
-//                     "y": 223,
-//                     "width": 108,
-//                     "height": 100
-//                 }
-//             },
-//             {
-//                 "label": "Kohaku",
-//                 "coordinates": {
-//                     "x": 605,
-//                     "y": 398,
-//                     "width": 368,
-//                     "height": 114
-//                 }
-//             },
-//             {
-//                 "label": "Hikarimono",
-//                 "coordinates": {
-//                     "x": 324.5,
-//                     "y": 525.5,
-//                     "width": 305,
-//                     "height": 145
-//                 }
-//             },
-//             {
-//                 "label": "Showa",
-//                 "coordinates": {
-//                     "x": 588.5,
-//                     "y": 260,
-//                     "width": 177,
-//                     "height": 62
-//                 }
-//             }
-//         ]
-//     }
-// ];
-
-// // Call the function
-// checkClassList(currentJsonData1, document.getElementById('classlist-container'));
-// jsonExemption(currentJsonData1, document.getElementById('annotated-images'));

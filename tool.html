@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/tool-styles/images.css">
     <link rel="stylesheet" href="css/tool-styles/containers.css">
     <link rel="stylesheet" href="css/tool-styles/texts.css">
+    <link rel="stylesheet" href="css/tool-styles/modal.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
@@ -51,7 +52,7 @@
                     <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 gap-1 d-flex justify-content-center border border-3 border-dark inputs" id="inputs" name="inputs">
                         <!-- Input File -->
                         <input type="file" id="images" name="images" accept="image/*" multiple style="display: none;" onchange="displayImage();"><br><br>
-                        <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('images').click();displayImage();"><img src="img/file icon.svg" class="me-2">Select a file</button>
+                        <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('images').click();displayImage();"><img src="img/file icon.svg" class="me-2">Select file/s</button>
                         <!-- Input Folder -->
                         <input type="file" id="folder" name="folder" accept="image/*" webkitdirectory style="display: none;" onchange="displayImage();"><br><br>
                         <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('folder').click();"><img src="img/folder icon.svg" class="me-2">Select a folder</button>
@@ -246,7 +247,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="cont-inner col-12 mt-2 p-2 mx-auto border border-3 border-dark">
-                                        <button type="button" class="btn btn-sm btn-success border border-3 border-dark export-button" id="export-button" onclick="exportResults()">Export Dataset</button>
+                                        <button type="button" class="btn btn-sm btn-success border border-3 border-dark export-button" id="export-button" onclick="openExportModal()">Export Dataset</button>
                                     </div>
                                 </div>
                             </div>
@@ -258,11 +259,34 @@
         </div>
      </div>
     <!-- Content # End -->
-
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <canvas id="c" style="z-index: 1;"></canvas>
+            <canvas id="cover" style="z-index: 1000; position: absolute;"></canvas>
+            <div id="modalAnnotations"></div>
+        </div>
+    </div>
+    <!-- Export Modal HTML -->
+    <div id="export-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2>Select Classes to Export</h2>
+            <br>
+            <button id="select-all" onclick="selectAllClasses()">Select All</button>
+            <div id="class-table-container">
+                <!-- Table will be populated here -->
+            </div>
+            <button id="confirm-export" onclick="confirmExport()">Confirm</button>
+        </div>
+    </div>
+    <!-- Modal -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="js/tool-modules/upload.js"></script>
     <script src="js/tool-modules/annotation-upload.js"></script>
     <script src="js/tool-modules/main.js"></script>
     <script src="js/tool-modules/export.js"></script>
+    <script src="js/tool-modules/show-image.js"></script>
 </body>
 </html>
