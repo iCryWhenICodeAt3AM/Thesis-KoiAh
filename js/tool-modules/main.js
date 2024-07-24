@@ -56,11 +56,12 @@ async function startAnnotation() {
     const exportButton = document.getElementById('export-button');
 
     // Combine images and folder files into a single array and filter out exempted files
-    const files = [...images, ...folder].filter(file => !exemptedFiles.has(file.name));
+    const files = uploadedImagesData.filter(file => !exemptedFiles.has(file.name));
 
+    console.log("Files To Process: ", files);
     // Filter out non-image files
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
-
+    console.log("Image Files To Process: ", imageFiles);
     // Dynamic Elements
     let pendingImagesCount = parseInt(imageFiles.length);
     let predictionCount = 0;
@@ -164,6 +165,8 @@ async function startAnnotation() {
 function appendItem(itemNumber, filename, container, objects, classes){
     // Add the processed image information to the item list
     const id = formatLabel(filename);
+    document.getElementById("number-of-objects").innerText = objects;
+    document.getElementById("number-of-classes").innerText = classes;
     const itemHTML = `
     <div class="cont-outer row p-1 mt-2 ${id}" id="${id}" onclick="showImageModal('${filename}')">
         <div class="col-1">

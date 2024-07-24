@@ -1,5 +1,6 @@
 // Global variables
 let uploadedImages = []; // Array to store uploaded images
+let uploadedImagesData = [];
 const existingFiles = new Set();
 const exemptedFiles = new Set();
 
@@ -7,6 +8,7 @@ const exemptedFiles = new Set();
 function displayImage() {
     const images = document.getElementById('images').files;
     const folder = document.getElementById('folder').files;
+
     const uploads = [...images, ...folder];
 
     const imageContainer = document.getElementById('image-container');
@@ -43,6 +45,7 @@ function displayImage() {
                         name: theImage.name,
                         data: event.target.result.split(',')[1] // Keep base64 data
                     });
+                    uploadedImagesData.push(theImage);
                 };
             })(image);
             reader.readAsDataURL(image);
