@@ -42,53 +42,71 @@ function selectAllClasses() {
 function confirmExport() {
     const selectedClasses = Array.from(document.querySelectorAll('.class-checkbox:checked'))
         .map(checkbox => checkbox.value);
-    
-    const filtered = filterDataBySelectedClasses(selectedClasses);
-    exportData(filtered);
-    
+
+    const exportType = document.querySelector('input[name="export-type"]:checked').value;
+    const includeUnannotated = document.getElementById('include-unannotated').checked;
+
+    const filteredData = filterDataBySelectedClasses(selectedClasses, includeUnannotated);
+    exportData(filteredData, exportType);
+
     closeModal(); // Close the modal after export
 }
 
 // Function to filter data by selected classes
-function filterDataBySelectedClasses(selectedClasses) {
+function filterDataBySelectedClasses(selectedClasses, includeUnannotated) {
     let combinedData = [...filteredData, ...resultJsonData];
-
-    return combinedData.filter(item => {
-        const annotations = item.annotations;
-        // Filters the annotations for selected only
-        const filteredAnnotations = annotations.filter(annotation => {
-            return selectedClasses.includes(annotation.label);
-        });        
-        const hasAnnotations = filteredAnnotations.length > 0;
-
-        if (hasAnnotations) {
-            item.annotations = filteredAnnotations; // Keep only selected class annotations
-            return true;
-        }
-
-        return false;
-    });
+    return combinedData.map(item => {
+        const filteredAnnotations = item.annotations.filter(annotation => selectedClasses.includes(annotation.label));
+        return { image: item.image, annotations: filteredAnnotations };
+    }).filter(item => includeUnannotated || item.annotations.length > 0);
 }
 
 // Function to export the filtered data
-async function exportData(filteredData) {
+async function exportData(data, exportType = 'default') {
     const zip = new JSZip();
+    const createmlData = data.map(item => ({
+        image: item.image,
+        annotations: item.annotations
+    }));
 
-    // Add JSON file to ZIP
-    const jsonBlob = new Blob([JSON.stringify(filteredData, null, 2)], { type: 'application/json' });
+    const jsonBlob = new Blob([JSON.stringify(createmlData, null, 2)], { type: 'application/json' });
     zip.file('createml.json', jsonBlob);
 
-    // Add images to ZIP
+    const includeUnannotated = document.getElementById('include-unannotated').checked;
+
     for (const img of uploadedImages) {
         const imageData = atob(img.data);
         const arrayBuffer = new Uint8Array(imageData.length);
         for (let i = 0; i < imageData.length; i++) {
             arrayBuffer[i] = imageData.charCodeAt(i);
         }
-        zip.file(img.name, arrayBuffer);
+
+        const item = data.find(d => d.image === img.name);
+        
+        // Export if unannotated images are included or if the image has annotations
+        if (includeUnannotated || item) {
+            if (exportType === 'default') {
+                zip.file(img.name, arrayBuffer);
+            } else if (exportType === 'group' && item) {
+                const uniqueLabels = [...new Set(item.annotations.map(annotation => annotation.label))];
+                const numLabels = uniqueLabels.length;
+
+                let folderName = '';
+                if (numLabels === 1) {
+                    const label = uniqueLabels[0];
+                    const count = item.annotations.filter(ann => ann.label === label).length;
+                    folderName = (count === 1) ? 'Solo' : 'Repeated';
+                } else {
+                    folderName = 'Varied';
+                }
+
+                uniqueLabels.forEach(label => {
+                    zip.folder(`${folderName}/${label}`).file(img.name, arrayBuffer);
+                });
+            }
+        }
     }
 
-    // Generate the ZIP file and trigger download
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     const zipUrl = URL.createObjectURL(zipBlob);
 
@@ -98,7 +116,4 @@ async function exportData(filteredData) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-
-    // Clean up the URL object
-    URL.revokeObjectURL(zipUrl);
 }

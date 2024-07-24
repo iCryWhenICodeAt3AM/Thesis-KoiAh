@@ -208,10 +208,10 @@
                                                 <h6>Solo</h6>
                                             </div>
                                             <div class="col-4">
-                                                <h6>Multi</h6>
+                                                <h6>Rep.</h6>
                                             </div>
                                             <div class="col-4">
-                                                <h6>Mixed</h6>
+                                                <h6>Var.</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -278,10 +278,27 @@
             <div id="class-table-container">
                 <!-- Table will be populated here -->
             </div>
+            <br>
+            <h3>Select Export Type</h3>
+            <div>
+                <input type="radio" id="export-default" name="export-type" value="default" checked>
+                <label for="export-default">Default</label>
+            </div>
+            <div>
+                <input type="radio" id="export-group" name="export-type" value="group">
+                <label for="export-group">By Group</label>
+            </div>
+            <br>
+            <h3>Include Unannotated Data</h3>
+            <div>
+                <input type="checkbox" id="include-unannotated" name="include-unannotated">
+                <label for="include-unannotated">Include Unannotated Data</label>
+            </div>
+            <br>
             <button id="confirm-export" onclick="confirmExport()">Confirm</button>
         </div>
     </div>
-    <!-- Modal -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="js/tool-modules/upload.js"></script>
     <script src="js/tool-modules/annotation-upload.js"></script>

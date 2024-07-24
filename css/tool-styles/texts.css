@@ -1,4 +1,4 @@
-#filename-item, #filename-class {
+#filename-item, #filename-class, #current-image, #previous-image {
     white-space: nowrap; 
     overflow-y: auto; 
     scrollbar-width: none;
