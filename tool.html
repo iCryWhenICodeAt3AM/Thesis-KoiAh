@@ -32,7 +32,7 @@
                         <a class="nav-link active" aria-current="page" href="user%20testing.html">User Testing</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Experimentation</a>
+                        <a class="nav-link active" aria-current="page" href="experiment.html">Experimentation</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#"><u id="underline">Tool</u></a>
@@ -91,14 +91,14 @@
                         <div class="row">
                             <div class="col-4 p-2">
                                 <div class="col-10 offset-1">
-                                    <h6>Model & Version*</h6>
+                                    <h6>Model & Version *</h6>
                                 </div>
                                 <input type="text" class="offset-1 col-10" id="model" placeholder="koi-thesis/1" required>
                             </input>
                             </div>
                             <div class="cont-inner col-4 p-2">
                                 <div class="col-10 offset-1">
-                                    <h6>Roboflow API Key*</h6>
+                                    <h6>Roboflow API Key *</h6>
                                 </div>
                                 <input type="text" class="offset-1 col-10" id="apiKey" placeholder="Enter API Key" required>
                             </div>
@@ -106,8 +106,24 @@
                                 <div class="col-10 offset-1">
                                     <h6>Per Class Image Limit</h6>
                                 </div>
-                                <input type="number" class="offset-1 col-10" id="classLimit" placeholder="0">
+                                <input type="number" class="offset-1 col-10" id="classLimit" placeholder="Enter Image Limit">
                             </div>
+                            <!-- Next row -->
+                            <!-- <div class="col-4 offset-2 p-2">
+                                <div class="col-10 offset-1">
+                                    <h6>Image Selection Mode</h6>
+                                </div>
+                                <select id="selectionType">
+                                    <option value="linear">Linear</option>
+                                    <option value="random">Random</option>
+                                </select>
+                            </div>
+                            <div class="cont-inner col-4 p-2">
+                                <div class="col-12">
+                                    <h6>Balance Annotations <input type="checkbox" id="balanceAnnotations" onclick="toggleBalanceInput()"></h6>
+                                </div>
+                                <input type="number" class="offset-1 col-10" id="balanceLimit" placeholder="Enter Limit" disabled>
+                            </div> -->
                         </div>
                         <div class="row">
                             <div class="col-6 offset-1 mx-auto pt-2 pb-1 d-grid">
@@ -196,43 +212,46 @@
                 <div class="row">
                     <div class="cont-outer col-12 p-2 bg-dark output-container-2" id="output-container-2">
                         <div class="row ms-2">
-                            <div class="cont-inner col-5 p-3 border border-3 border-dark">
+                            <div class="cont-inner col-6 p-3 border border-3 border-dark">
                                 <div class="row headers" id="classlist-headers">
                                     <div class="col-3"><h6>Classlist</h6></div>
-                                    <div class="col-6">
+                                    <div class="col-7">
                                         <div class="row">
                                             <h6>Images</h6>
                                         </div>
                                         <div class="row">
-                                            <div class="col-4">
+                                            <div class="col-3">
                                                 <h6>Solo</h6>
                                             </div>
-                                            <div class="col-4">
+                                            <div class="col-3">
                                                 <h6>Rep.</h6>
                                             </div>
-                                            <div class="col-4">
+                                            <div class="col-3">
                                                 <h6>Var.</h6>
+                                            </div>
+                                            <div class="col-3">
+                                                <h6>Total</h6>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-3"><h6>Total</h6></div>
+                                    <div class="col-2"><h6>Ann.</h6></div>
                                 </div>
                                 <!-- Sample Container -->
                                 <div class="container-fluid m-0 p-0" id="classlist-container">
                                     <!-- Container for Classes Images -->
                                 </div>
                             </div>
-                            <div class="col-6 ms-4">
+                            <div class="col-5 ms-4">
                                 <div class="row">
                                     <div class="cont-inner col-12 p-3 border border-3 border-dark">
                                         <div class="row headers mt-2 p-0" id="annotated-headers">
                                             <div class="col-1">
                                                 <h6>No.</h6>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-5">
                                                 <h6>Filename</h6>
                                             </div>
-                                            <div class="col-2">
+                                            <div class="col-3">
                                                 <h6>Objects</h6>
                                             </div>
                                             <div class="col-2">

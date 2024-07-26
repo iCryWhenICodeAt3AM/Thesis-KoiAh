@@ -1,3 +1,10 @@
+#root-image-container{
+    overflow-y: auto;
+    max-height: 275px;
+    height: 275px;
+    scrollbar-width: none;
+}
+
 #output-container-1{
     height:370px; 
     color: #88BDBC;

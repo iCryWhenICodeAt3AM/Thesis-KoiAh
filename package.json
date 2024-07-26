@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@stdlib/stats-anova1": "^0.2.1",
+    "ml-anova": "^1.1.5"
+  }
+}
