@@ -34,8 +34,7 @@ async function startAnnotation() {
         resultJsonData = [];
         filteredData = [];
     }
-    console.log("Uploaded Images: ", uploadedImages);
-    console.log("Uploaded Images: ", uploadedImagesData);
+    console.log(uploadedImages);
     // Input Fields Collection
     const images = document.getElementById('images').files;
     const folder = document.getElementById('folder').files;
@@ -208,7 +207,7 @@ function processInitialData(currentJsonData, annotatedImages, classContainer, cl
             const label = annotation.label;
 
             if (!globalLabelCounts[label]) {
-                globalLabelCounts[label] = [0, 0, 0, 0, 0]; // Solo, Group, Mixed, Total, Annotations
+                globalLabelCounts[label] = [0, 0, 0, 0]; // Solo, Group, Mixed, Total
             }
 
             // Check if the total count of the label in globalLabelCounts is less than classLimit
@@ -248,7 +247,9 @@ function processInitialData(currentJsonData, annotatedImages, classContainer, cl
 
                 // Always increment total count
                 labelCounts[3] += 1;
-                labelCounts[4] += count;
+                console.log("Added 1 to: ", label);
+                console.log("After: Current Global Labels: ", globalLabelCounts);
+                console.log("");
             });
 
             filteredData.push({ image: item.image, annotations: filteredAnnotations });
@@ -278,7 +279,7 @@ function processInitialData(currentJsonData, annotatedImages, classContainer, cl
                         </div>
                     </div>
                 </div>
-                <div class="col-2"><h6 class="m-0">${counts[4]}</h6></div>
+                <div class="col-2"><h6 class="m-0">0</h6></div>
             </div>
         `;
         classContainer.innerHTML += item;
@@ -369,7 +370,7 @@ function processPrediction(prediction, container, count, filename, itemListConta
 
     uniqueLabels.forEach(label => {
         if (!globalLabelCounts[label]) {
-            globalLabelCounts[label] = [0, 0, 0, 0, 0]; // Solo, Group, Mixed, Total, Annotations
+            globalLabelCounts[label] = [0, 0, 0, 0]; // Solo, Group, Mixed, Total
         }
 
         const labelCounts = globalLabelCounts[label];
@@ -392,7 +393,6 @@ function processPrediction(prediction, container, count, filename, itemListConta
 
         // Always increment total count
         labelCounts[3] += 1;
-        labelCounts[4] += count;
     });
 
     appendItem(count, filename, itemListContainer, objectCount, numLabels);
@@ -416,23 +416,20 @@ function updateClassInterface(container, classLimit) {
         const item = `
             <div class="cont-outer p-1 mt-2 row" ${isMaxedClass ? 'id="maxed-class"' : ''}>
                 <div class="col-3" id="filename-class"><h6 class="m-0">${label}</h6></div>
-                <div class="col-7">
+                <div class="col-6">
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-4">
                             <h6 class="m-0">${counts[0]}</h6>
                         </div>
-                        <div class="col-3">
+                        <div class="col-4">
                             <h6 class="m-0">${counts[1]}</h6>
                         </div>
-                        <div class="col-3">
+                        <div class="col-4">
                             <h6 class="m-0">${counts[2]}</h6>
-                        </div>
-                        <div class="col-3">
-                            <h6 class="m-0">${counts[3]}</h6>
                         </div>
                     </div>
                 </div>
-                <div class="col-2"><h6 class="m-0">${counts[4]}</h6></div>
+                <div class="col-3"><h6 class="m-0">${counts[3]}</h6></div>
             </div>
         `;
     

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/stdlib-js/stats-anova1@umd/browser.js"></script>
+<script type="text/javascript">
+(function () {
+
+var x = [ 3, 4, 5, 6, 2, 5, 10, 12, 8, 10 ];
+var f = [ 'control', 'treatA', 'treatB', 'control', 'treatA', 'treatB', 'control', 'treatA', 'treatB', 'control' ];
+
+var out = anova1( x, f, {
+    'decision': true
+});
+
+console.log( out.print() );
+
+out = anova1( x, f, {
+    'alpha': 0.9
+});
+
+console.log( out.print() );
+
+})();
+</script>
+</body>
+</html>

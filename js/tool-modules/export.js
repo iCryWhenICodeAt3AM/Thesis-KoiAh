@@ -73,18 +73,22 @@ async function exportData(data, exportType = 'default') {
     zip.file('createml.json', jsonBlob);
 
     const includeUnannotated = document.getElementById('include-unannotated').checked;
+    let includedImages = new Set();
+
+    console.log(`Total images to process: ${uploadedImages.length}`);
+    console.log(`Include unannotated: ${includeUnannotated}`);
+
+    // Log all filtered data images
+    console.log('Filtered Data Images:', data.map(item => item.image));
 
     for (const img of uploadedImages) {
-        const imageData = atob(img.data);
-        const arrayBuffer = new Uint8Array(imageData.length);
-        for (let i = 0; i < imageData.length; i++) {
-            arrayBuffer[i] = imageData.charCodeAt(i);
-        }
+        const arrayBuffer = new Uint8Array(atob(img.data).split("").map(char => char.charCodeAt(0)));
 
         const item = data.find(d => d.image === img.name);
-        
-        // Export if unannotated images are included or if the image has annotations
+
         if (includeUnannotated || item) {
+            includedImages.add(img.name);
+
             if (exportType === 'default') {
                 zip.file(img.name, arrayBuffer);
             } else if (exportType === 'group' && item) {
@@ -106,6 +110,15 @@ async function exportData(data, exportType = 'default') {
             }
         }
     }
+
+    console.log(`Included images: ${includedImages.size}`);
+    console.log(`Expected number of images: ${data.length}`);
+
+    // Log images that were not included
+    const filteredImageNames = new Set(data.map(item => item.image));
+    const includedImageNames = Array.from(includedImages);
+    const missingImages = Array.from(filteredImageNames).filter(image => !includedImages.has(image));
+    console.log('Missing Images:', missingImages);
 
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     const zipUrl = URL.createObjectURL(zipBlob);

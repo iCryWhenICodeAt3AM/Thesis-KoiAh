@@ -4,8 +4,24 @@ let uploadedImagesData = [];
 const existingFiles = new Set();
 const exemptedFiles = new Set();
 
+// Function to sanitize and shorten file names
+function sanitizeFileName(name) {
+    // Replace invalid characters with "-"
+    let sanitized = name.replace(/[^\w\s.-]/g, '-');
+    // Truncate if the name is too long
+    if (sanitized.length > 100) {
+        sanitized = sanitized.substring(0, 100);
+    }
+    // Ensure name does not start with a number
+    if (/^\d/.test(sanitized)) {
+        sanitized = "_" + sanitized;
+    }
+    return sanitized;
+}
+
 // Function to display images and store them in the global variable
 function displayImage() {
+    let excludedImages = [];
     const images = document.getElementById('images').files;
     const folder = document.getElementById('folder').files;
 
@@ -23,13 +39,8 @@ function displayImage() {
         if ((extFile === "jpg" || extFile === "jpeg" || extFile === "png") && !existingFiles.has(image.name) && !exemptedFiles.has(image.name)) {
             existingFiles.add(image.name);
 
-            // Preprocess the image name to make it safe for ID attribute
-            let safeId = image.name.replace(/\s+/g, "-"); // Replace whitespaces with "-"
-            
-            // Check if the name starts with a number, prepend "_" if true
-            if (/^\d/.test(safeId)) {
-                safeId = "_" + safeId;
-            }
+            // Sanitize and shorten the file name
+            let safeId = sanitizeFileName(image.name);
 
             const reader = new FileReader();
             reader.onload = (function(theImage) {
@@ -46,10 +57,22 @@ function displayImage() {
                         data: event.target.result.split(',')[1] // Keep base64 data
                     });
                     uploadedImagesData.push(theImage);
+                    imageCount.innerText = uploadedImages.length;
                 };
             })(image);
+            reader.onerror = function(error) {
+                console.error('Error reading file:', image.name, error);
+                excludedImages.push(image.name);
+                existingFiles.remove(image.name);
+                uploadedImagesData.remove(image.name);
+            };
             reader.readAsDataURL(image);
+        } else {
+            excludedImages.push(image.name);
         }
     }
-    imageCount.innerText = existingFiles.size + exemptedFiles.size;
+    console.log("Uploaded Images Data: ", uploadedImagesData);
+    console.log("Uploaded Images: ", uploadedImages);
+    console.log("Excluded Images: ", excludedImages.length);
+    // alert(excludedImages.length," had errors, check console logs for the names.")
 }
