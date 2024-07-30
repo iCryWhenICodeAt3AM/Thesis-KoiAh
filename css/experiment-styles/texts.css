@@ -1,0 +1,18 @@
+button, .title {
+    font-size: 10px ;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+
+#image-name {
+    width: 75px;
+    max-width: 75px;
+    white-space: nowrap; 
+    overflow-y: auto; 
+    scrollbar-width: none;
+}
+
+#showTable {
+    font-size: 13px !important;
+}

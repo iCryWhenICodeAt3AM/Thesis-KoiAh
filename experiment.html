@@ -6,6 +6,7 @@
     <title>KoiAh</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="css/master.css">
+    <link rel="stylesheet" href="css/experiment-styles/texts.css">
     <link rel="stylesheet" href="css/experiment-styles/containers.css">
 </head>
 <body>
@@ -42,92 +43,746 @@
         <div class="row">
             <!-- Division 1 - Left -->
             <div class="cont-outer col-5 ms-5 me-5 text-center" style="height:600px;">
-                <div class="container mx-auto text-white text-center">
-                    <div class="row">
-                        <div class="cont-inner col-6 offset-3 d-flex mt-1 justify-content-center border border-3 border-dark">
-                            <label for="" class="m-1 p-1"><b>Hypothesis</b></label>
-                            <select name="cars" id="cars" class="cont-outer m-1 p-1 border border-3 border-dark">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                            </select>
-                        </div>
+                <div class="row">
+                    <div class="cont-inner col-6 offset-3 d-flex mt-1 justify-content-center border border-3 border-dark">
+                        <label for="" class="m-1 p-1"><b>Hypothesis</b></label>
+                        <select name="hypothesis" id="hypothesis" class="cont-outer m-1 p-1 border border-3 border-dark" onchange="changeInputs()">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
                     </div>
-                    
+                </div>
+                <!-- Hypothesis #1 -->
+                <div class="container mx-auto text-white text-center" id="hypothesis-one">
                     <!-- Koi Inputs Section -->
                     <div class="row">
-                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 gap-1 d-flex justify-content-center border border-3 border-dark koiInputs" id="koiInputs" name="koiInputs">
-                            <label for="" class="m-2 p-1 mt-3"><h6>Koi</h6></label>
-                            <!-- Input File -->
-                            <input type="file" id="koiImages" name="koiImages" accept="image/*" multiple style="display: none;" onchange="displayImage();"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiImages').click();"><img src="img/file icon.svg" class="m-2"></button>
-                            <!-- Input Folder -->
-                            <input type="file" id="koiFolder" name="koiFolder" accept="image/*" webkitdirectory style="display: none;" onchange="displayImage();"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiFolder').click();"><img src="img/folder icon.svg" class="m-2"></button>
-                            <!-- Ground Truth JSON File -->
-                            <input type="file" id="koiGroundTruthJson" name="koiGroundTruthJson" accept="application/json" style="display: none;" onchange="loadJson()"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiGroundTruthJson').click();"><img src="img/json file.svg" class="m-2">GT</button>
-                            <!-- Predictions JSON File -->
-                            <input type="file" id="koiPredictionsJson" name="koiPredictionsJson" accept="application/json" style="display: none;" onchange="loadJson()"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiPredictionsJson').click();"><img src="img/json file.svg" class="m-2">PB</button>
+                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark koiInputs" id="koiInputs" name="koiInputs">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h6><b>Koi Fish</b></h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-3">
+                                    <!-- Input File -->
+                                    <input type="file" id="koiImages" name="koiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiImages').click();"><img src="img/file icon.svg" class="me-1">Select A File</button>
+                                </div>
+                                <div class="col-4 d-grid p-0 m-1">
+                                    <!-- Ground Truth JSON File -->
+                                    <input type="file" id="koiGroundTruthJson" name="koiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'koi')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth JSON</button>
+                                </div>
+                                <div class="col-4 d-grid gap-2 p-0 m-1">
+                                    <!-- Predictions JSON File -->
+                                    <input type="file" id="koiPredictionsJson" name="koiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'koi')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions JSON</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Data Information Section -->
+                    <div class="row">
+                        <div class="col-11 p-3 pt-0 pb-2 ms-4" id="koi-data-container">
+                            <div class="row">
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Images
+                                        </div>
+                                        <div class="cont-outer col-7" id="k-images-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Gr. Tr.
+                                        </div>
+                                        <div class="cont-outer col-7" id="k-ground-truth-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Pred.
+                                        </div>
+                                        <div class="cont-outer col-7" id="k-predictions-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!-- Image Display Section -->
                     <div class="row">
-                        <div class="cont-inner col-11 p-3 ms-4 border border-3 border-dark" id="root-image-container">
-                            <div class="row image-container" id="image-container">
+                        <div class="cont-inner col-11 p-3 ms-4 border border-3 border-dark img-container" id="koi-image-container">
+                            <div class="row image-container" id="k-image-container">
                                 <!-- Image Uploads Container -->
                             </div>
                         </div>
                     </div>
                     <!-- Non-Koi Inputs Section -->
                     <div class="row">
-                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 gap-1 d-flex justify-content-center border border-3 border-dark nonKoiInputs" id="nonKoiInputs" name="nonKoiInputs">
-                            <label for="" class="m-2 p-1 mt-3"><h6>Non-Koi</h6></label>
-                            <!-- Input File -->
-                            <input type="file" id="nonKoiImages" name="nonKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage();"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiImages').click();"><img src="img/file icon.svg" class="m-2"></button>
-                            <!-- Input Folder -->
-                            <input type="file" id="nonKoiFolder" name="nonKoiFolder" accept="image/*" webkitdirectory style="display: none;" onchange="displayImage();"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiFolder').click();"><img src="img/folder icon.svg" class="m-2"></button>
-                            <!-- Ground Truth JSON File -->
-                            <input type="file" id="nonKoiGroundTruthJson" name="nonKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="loadJson()"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiGroundTruthJson').click();"><img src="img/json file.svg" class="m-2">GT</button>
-                            <!-- Predictions JSON File -->
-                            <input type="file" id="nonKoiPredictionsJson" name="nonKoiPredictionsJson" accept="application/json" style="display: none;" onchange="loadJson()"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiPredictionsJson').click();"><img src="img/json file.svg" class="m-2">PB</button>
+                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark nonKoiInputs" id="nonKoiInputs" name="nonKoiInputs">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h6><b>Non-Koi Objects</b></h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-3">
+                                    <!-- Input File -->
+                                    <input type="file" id="nonKoiImages" name="nonKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiImages').click();"><img src="img/file icon.svg" class="me-1">Select A File</button>
+                                </div>
+                                <div class="col-4 d-grid p-0 m-1">
+                                    <!-- Ground Truth JSON File -->
+                                    <input type="file" id="nonKoiGroundTruthJson" name="nonKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'nonKoi')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth JSON</button>
+                                </div>
+                                <div class="col-4 d-grid gap-2 p-0 m-1">
+                                    <!-- Predictions JSON File -->
+                                    <input type="file" id="nonKoiPredictionsJson" name="nonKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'nonKoi')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions JSON</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
+                    <!-- Data Information Section -->
+                    <div class="row">
+                        <div class="col-11 p-3 pt-0 pb-2 ms-4" id="koi-data-container">
+                            <div class="row">
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Images
+                                        </div>
+                                        <div class="cont-outer col-7" id="nk-images-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Gr. Tr.
+                                        </div>
+                                        <div class="cont-outer col-7" id="nk-ground-truth-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Pred.
+                                        </div>
+                                        <div class="cont-outer col-7" id="nk-predictions-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Image Display Section -->
                     <div class="row">
-                        <div class="cont-inner col-11 p-3 ms-4 border border-3 border-dark" id="root-image-container">
-                            <div class="row image-container" id="image-container">
+                        <div class="cont-inner col-11 p-3 ms-4 border border-3 border-dark img-container" id="non-koi-image-container">
+                            <div class="row image-container" id="nk-image-container">
                                 <!-- Image Uploads Container -->
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- Hypothesis #1 -->
+                <!-- Hypothesis #2 -->
+                <div class="container mx-auto text-white text-center" id="hypothesis-two">
+                    <!-- Koi Inputs Section -->
+                    <div class="row">
+                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark koiInputs" id="koiInputs" name="koiInputs">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h6><b>Small Koi Fish</b></h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-3">
+                                    <!-- Input File -->
+                                    <input type="file" id="smallKoiImages" name="smallKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('smallKoiImages').click();"><img src="img/file icon.svg" class="me-1">Select A File</button>
+                                </div>
+                                <div class="col-4 d-grid p-0 m-1">
+                                    <!-- Ground Truth JSON File -->
+                                    <input type="file" id="smallKoiGroundTruthJson" name="smallKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'small')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('smallKoiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth JSON</button>
+                                </div>
+                                <div class="col-4 d-grid gap-2 p-0 m-1">
+                                    <!-- Predictions JSON File -->
+                                    <input type="file" id="smallKoiPredictionsJson" name="smallKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'small')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('smallKoiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions JSON</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Data Information Section -->
+                    <div class="row">
+                        <div class="col-11 p-3 pt-0 pb-2 ms-4" id="koi-data-container">
+                            <div class="row">
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Images
+                                        </div>
+                                        <div class="cont-outer col-7" id="small-images-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Gr. Tr.
+                                        </div>
+                                        <div class="cont-outer col-7" id="small-ground-truth-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Pred.
+                                        </div>
+                                        <div class="cont-outer col-7" id="small-predictions-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Non-Koi Inputs Section -->
+                    <div class="row">
+                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark nonKoiInputs" id="nonKoiInputs" name="nonKoiInputs">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h6><b>Medium Koi Fish</b></h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-3">
+                                    <!-- Input File -->
+                                    <input type="file" id="mediumKoiImages" name="mediumKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('mediumKoiImages').click();"><img src="img/file icon.svg" class="me-1">Select A File</button>
+                                </div>
+                                <div class="col-4 d-grid p-0 m-1">
+                                    <!-- Ground Truth JSON File -->
+                                    <input type="file" id="mediumKoiGroundTruthJson" name="mediumKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'medium')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('mediumKoiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth JSON</button>
+                                </div>
+                                <div class="col-4 d-grid gap-2 p-0 m-1">
+                                    <!-- Predictions JSON File -->
+                                    <input type="file" id="mediumKoiPredictionsJson" name="mediumKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'medium')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('mediumKoiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions JSON</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Data Information Section -->
+                    <div class="row">
+                        <div class="col-11 p-3 pt-0 pb-2 ms-4" id="koi-data-container">
+                            <div class="row">
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Images
+                                        </div>
+                                        <div class="cont-outer col-7" id="medium-images-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Gr. Tr.
+                                        </div>
+                                        <div class="cont-outer col-7" id="medium-ground-truth-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Pred.
+                                        </div>
+                                        <div class="cont-outer col-7" id="medium-predictions-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Non-Koi Inputs Section -->
+                    <div class="row">
+                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark nonKoiInputs" id="nonKoiInputs" name="nonKoiInputs">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h6><b>Large Koi Fish</b></h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-3">
+                                    <!-- Input File -->
+                                    <input type="file" id="largeKoiImages" name="largeKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('largeKoiImages').click();"><img src="img/file icon.svg" class="me-1">Select A File</button>
+                                </div>
+                                <div class="col-4 d-grid p-0 m-1">
+                                    <!-- Ground Truth JSON File -->
+                                    <input type="file" id="largeKoiGroundTruthJson" name="largeKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'large')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('largeKoiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth JSON</button>
+                                </div>
+                                <div class="col-4 d-grid gap-2 p-0 m-1">
+                                    <!-- Predictions JSON File -->
+                                    <input type="file" id="largeKoiPredictionsJson" name="largeKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'large')">
+                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('largeKoiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions JSON</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Data Information Section -->
+                    <div class="row">
+                        <div class="col-11 p-3 pt-0 pb-2 ms-4" id="koi-data-container">
+                            <div class="row">
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Images
+                                        </div>
+                                        <div class="cont-outer col-7" id="large-images-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Gr. Tr.
+                                        </div>
+                                        <div class="cont-outer col-7" id="large-ground-truth-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            Pred.
+                                        </div>
+                                        <div class="cont-outer col-7" id="large-predictions-count">
+                                            0
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Hypothesis #2 -->
+                <!-- Start -->
+                <div class="row">
+                    <div class="cont-inner col-6 offset-3 p-2 mt-3 mx-auto d-grid">
+                        <button type="button" class="btn btn-success btn-lg border border-3 border-dark start-button" id="start-button" onclick="evaluateImages()" style="font-size: 13px !important;"><b>Start</b></button>
+                    </div>
+                </div>
+                <!-- Start -->
             </div>
             <!-- Division 1 - Left -->
              <!-- ------ -->
             <!-- Division 2 - Right -->
-            <div class="col-5 ms-5">
-                <div class="row">
-                    <div class="col-12 cont-outer d-flex align-items-center justify-content-center text-center" style="height:600px;">
+            <div class="col-5 cont-outer text-center ms-5" style="height:600px;">
+                <!-- Hypothesis #1 -->
+                <div class="row" id="hypothesis-one-output" >
+                    <div class="col-11 ms-4 pt-2 pb-2 m-2">
+                        <h4>Accuracy: Testing by Group</h4>
+                    </div>
+                    <div class="cont-inner col-11 ms-4 pt-2 pb-2 border border-3 border-dark">
                         <div class="row">
-                            
+                            <div class="col-5 offset-1">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showKoi" type="button" data-bs-toggle="modal" data-bs-target="#koiModal">Show Koi Table</button>
+                            </div>
+                            <div class="col-5 ms-2">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showNonKoi" type="button" data-bs-toggle="modal" data-bs-target="#nonKoiModal">Show Non-Koi Table</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cont-inner col-11 ms-4 pt-2 pb-2 mt-2 border border-3 border-dark">
+                        <canvas id="hypothesis-one-graph"></canvas>
+                        <div class="row">
+                            <div class="col-6 offset-3 mb-2">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="oneShowModal" type="button" data-bs-toggle="modal" data-bs-target="#oneGraphModal">Expand Graph</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark">
+                        <div class="row">
+                            <div class="col-5 offset-1">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showDataOne" type="button" data-bs-toggle="modal" data-bs-target="#dataOne">Show Data Summary</button>
+                            </div>
+                            <div class="col-5 ms-2">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showAnovaOne" type="button" data-bs-toggle="modal" data-bs-target="#anovaModalOne">Show ANOVA Result</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cont-inner col-11 ms-4 pt-2 pb-2 border border-3 border-dark">
+                        <div class="row">
+                            <div class="col-12">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="export-button-one" type="button" onclick="generateExcelForHypothesis()">Export Results Data</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
+                <!-- Hypothesis #1 -->
+                <!-- Hypothesis #2 -->
+                <div class="row" id="hypothesis-two-output">
+                    <div class="col-11 ms-4 pt-2 pb-2 m-2">
+                        <h4>Accuracy: Testing by Size of Koi Fish</h4>
+                    </div>
+                    <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark">
+                        <div class="row">
+                            <div class="col-3 ms-4">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showSmall" type="button" data-bs-toggle="modal" data-bs-target="#smallModal">Show Small Table</button>
+                            </div>
+                            <div class="col-3 ms-3 me-2">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showMedium" type="button" data-bs-toggle="modal" data-bs-target="#mediumModal">Show Medium Table</button>
+                            </div>
+                            <div class="col-3 ms-4">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showLarge" type="button" data-bs-toggle="modal" data-bs-target="#largeModal">Show Large Table</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark">
+                        <canvas id="hypothesis-two-graph"></canvas>
+                        <div class="row">
+                            <div class="col-6 offset-3 mb-2">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="twoShowModal" type="button" data-bs-toggle="modal" data-bs-target="#twoGraphModal">Expand Graph</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark">
+                        <div class="row">
+                            <div class="col-5 offset-1">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showDataTwo" type="button" data-bs-toggle="modal" data-bs-target="#dataTwo">Show Data Summary</button>
+                            </div>
+                            <div class="col-5 ms-2">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showAnovaTwo" type="button" data-bs-toggle="modal" data-bs-target="#anovaModalTwo">Show ANOVA Result</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark">
+                        <div class="row">
+                            <div class="col-12">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="export-button-two" type="button" onclick="generateExcelForHypothesis()">Export Results Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Hypothesis #2 -->
             </div>
             <!-- Division 2 - Right -->
         </div>
      </div>
     <!-- Content # End -->
-
+    <!-- Modal #1 -->
+    <div class="modal fade" id="koiModal" tabindex="-1" aria-labelledby="koiModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Koi Table</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-8">
+                        <div class="results" id="koi-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Image</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1 Score</th>
+                                        <th>Accuracy</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="koi-metric">
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #1 -->
+    <!-- Modal #2 -->
+    <div class="modal fade" id="nonKoiModal" tabindex="-1" aria-labelledby="nonKoiModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Non-Koi Table</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-8">
+                        <div class="results" id="non-koi-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Image</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1 Score</th>
+                                        <th>Accuracy</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="non-koi-metric">
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #2 -->
+    <!-- Modal #3 -->
+    <div class="modal fade" id="smallModal" tabindex="-1" aria-labelledby="smallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Small Koi Table</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-8">
+                        <div class="results" id="small-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Image</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1 Score</th>
+                                        <th>Accuracy</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="small-metric">
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #3 -->
+    <!-- Modal #4 -->
+    <div class="modal fade" id="mediumModal" tabindex="-1" aria-labelledby="mediumModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Medium Koi Table</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-8">
+                        <div class="results" id="medium-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Image</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1 Score</th>
+                                        <th>Accuracy</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="medium-metric">
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #4 -->
+    <!-- Modal #5 -->
+    <div class="modal fade" id="largeModal" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Large Koi Table</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-8">
+                        <div class="results" id="large-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Image</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1 Score</th>
+                                        <th>Accuracy</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="large-metric">
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #5 -->
+    <!-- Modal #6 -->
+    <div class="modal fade" id="oneGraphModal" tabindex="-1" aria-labelledby="oneGraphModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hypothesis One: Accuracy Graph</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12" id="hypothesis-one-graph-expand-container">
+                        <canvas id="hypothesis-one-graph-expand"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #6 -->
+    <!-- Modal #7 -->
+    <div class="modal fade" id="twoGraphModal" tabindex="-1" aria-labelledby="twoGraphModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hypothesis Two: Accuracy Graph</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12" id="hypothesis-two-graph-expand-container">
+                        <canvas id="hypothesis-two-graph-expand"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #7 -->
+    <!-- Modal #8 -->
+    <div class="modal fade" id="anovaModalOne" tabindex="-1" aria-labelledby="anovaModalOneLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hypothesis One: ANOVA Result</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center text-center">
+                    <div class="results" id="anova-one">
+                        <!--  -->
+                        
+                        <!--  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #8 -->
+    <!-- Modal #9 -->
+    <div class="modal fade" id="anovaModalTwo" tabindex="-1" aria-labelledby="anovaModalTwoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hypothesis Two: ANOVA Result</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center text-center">
+                    <div class="results" id="anova-two">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #9 -->
+    <!-- Modal #10 -->
+    <div class="modal fade" id="dataOne" tabindex="-1" aria-labelledby="dataOneLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hypothesis One: Data</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center text-center">
+                    <div class="results" id="data-one">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #10 -->
+    <!-- Modal #10 -->
+    <div class="modal fade" id="dataTwo" tabindex="-1" aria-labelledby="dataTwoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hypothesis Two: Data</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center text-center">
+                    <div class="results" id="data-two">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #10 -->
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-     <!-- Components -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/stdlib-js/stats-anova1@umd/browser.js"></script>
+    <!-- Components -->
+    <script src="js/experiment-modules/changeInputs.js"></script>
+    <script src="js/experiment-modules/uploadFiles.js"></script>
+    <script src="js/experiment-modules/uploadGT.js"></script>
+    <script src="js/experiment-modules/uploadPB.js"></script>
+    <script src="js/experiment-modules/main.js"></script>
+    <script src="js/experiment-modules/export.js"></script>
 </body>
 </html>

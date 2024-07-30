@@ -188,6 +188,7 @@
                     </div>
                 </div>
             </div>
+            <canvas id="accuracyChart" width="400" height="200"></canvas>
             <div class="cont-outer col-5 mt-2 p-2 border border-3 border-dark">
                 <div class="cont-inner p-2 border border-3 border-dark">
                     <button class="btn btn-success" id="exportKoi">Export Koi to Excel Format</button>
@@ -205,6 +206,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/stdlib-js/stats-anova1@umd/browser.js"></script>
     <script type="text/javascript">
         let groundTruth = {
@@ -377,6 +379,65 @@
             };
         }
 
+        // Function to draw line chart
+        function drawLineChart(koiAccuracy, nonKoiAccuracy) {
+            // Equalize the number of items in both groups
+            const minLength = Math.min(koiAccuracy.length, nonKoiAccuracy.length);
+            const truncatedKoiAccuracy = koiAccuracy.slice(0, minLength);
+            const truncatedNonKoiAccuracy = nonKoiAccuracy.slice(0, minLength);
+            const labels = Array.from({ length: minLength }, (_, i) => i + 1);
+
+            // Chart
+            const ctx = document.getElementById('accuracyChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Koi Accuracy',
+                            data: truncatedKoiAccuracy,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                        {
+                            label: 'Non-Koi Accuracy',
+                            data: truncatedNonKoiAccuracy,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 2,
+                            fill: false,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Koi and Non-koi Accuracies'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Image Index',
+                            },
+                        },
+                        y: {
+                            min: -0.5,
+                            max: 1.5,
+                            title: {
+                                display: true,
+                                text: 'Accuracy',
+                            },
+                        },
+                    },
+                },
+            });
+        }
+        
         async function evaluateImages() {
             const resultsKoiDiv = document.getElementById('results-koi');
             const resultsNonKoiDiv = document.getElementById('results-non-koi');
@@ -404,6 +465,7 @@
             if (Object.keys(koiPredictions).length === 0) {
                 koiPredictions = {};
                 for (let image of koiImages) {
+                    console.log("Format: ",image);
                     const imageData = await readFileAsDataURL(image);
                     const preds = await getRoboflowPrediction(imageData, koiModel, KOI_MODEL_VERSION, ROBOFLOW_API_KEY);
                     koiPredictions[image.name] = preds;
@@ -444,8 +506,11 @@
             displayMetrics(resultsNonKoiDiv, 'Non-Koi', nonKoiMetrics);
 
             performAnova(koiAccuracy, nonKoiAccuracy, 'Accuracy', anovaResultsDiv);
-        }
 
+            // Draw the line chart with the accuracy data
+            drawLineChart(koiAccuracy, nonKoiAccuracy);
+        }
+        
         function displayMetrics(container, type, metricsArray) {
             const table = document.createElement('table');
             table.innerHTML = `
