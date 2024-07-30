@@ -85,7 +85,7 @@ async function startAnnotation() {
             reader.onload = async (event) => {
                 const base64Image = event.target.result.split(',')[1];
                 const imageName = imageFile.name;
-
+                console.log("Base 64: ", event.target.result.split(',')[1]);
                 // Display Image
                 const img = `
                     <div class="col-12">
