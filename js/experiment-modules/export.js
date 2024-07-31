@@ -20,15 +20,16 @@ function collectElementsForHypothesis(hypothesis) {
             document.getElementById('medium-table'),
             document.getElementById('large-table'),
             document.getElementById('data-two'),
-            document.getElementById('anova-two')
-
+            document.getElementById('anova-two'),
+            document.getElementById('pairwise-anova')
         ];
         sheetTitles = [
             "Small Table",
             "Medium Table",
             "Large Table",
             "Data Summary",
-            "ANOVA Result"
+            "ANOVA Result",
+            "Pairwise ANOVA"
         ]
     }
     return { elements, sheetTitles };

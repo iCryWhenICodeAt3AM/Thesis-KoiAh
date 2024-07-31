@@ -482,6 +482,7 @@ async function performAnova(hypothesis, overallMetrics) {
     let pairwiseGroups = {};
     let container;
     let dataContainer;
+    let pairwiseContainer = document.getElementById('pairwise-anova');
     const x = [];
     const f = [];
 
@@ -531,6 +532,7 @@ async function performAnova(hypothesis, overallMetrics) {
         // Perform ANOVA for each pair
         const pairwiseResults = {};
         for (const [pair, { x, f }] of Object.entries(pairwiseGroups)) {
+            console.log(pair, x, f);
             pairwiseResults[pair] = anova1(x, f, { 'alpha': 0.05 });
         }
 
@@ -538,6 +540,10 @@ async function performAnova(hypothesis, overallMetrics) {
         for (const [pair, result] of Object.entries(pairwiseResults)) {
             console.log(`${pair} ANOVA Result:`, result.print());
         }
+
+        // Table for Pairwise
+        console.log('Pairwise: ', Object.entries(pairwiseResults));
+        pairwiseContainer.innerHTML = await generatePairwiseTable(pairwiseResults);
 
         // ------- Pairwise Alternative ------
 
@@ -735,27 +741,27 @@ async function generateDataTable(hypothesis, anova) {
         const smallCount = smallData.sampleSize;
         const mediumCount = mediumData.sampleSize;
         const largeCount = largeData.sampleSize;
-        const totalCount = parseFloat(smallCount+mediumCount+largeCount).toFixed(4);
+        const totalCount = (smallCount+mediumCount+largeCount);
         // Mean
         const smallMean = smallData.mean.toFixed(4);
         const mediumMean = mediumData.mean.toFixed(4);
         const largeMean = largeData.mean.toFixed(4);
-        const totalMean = parseFloat(smallMean+mediumMean+largeMean).toFixed(4);
+        const totalMean = parseFloat((smallMean+mediumMean+largeMean)).toFixed(4);
         // SD
         const smallSD = smallData.SD.toFixed(4);
         const mediumSD = mediumData.SD.toFixed(4);
         const largeSD = largeData.SD.toFixed(4);
-        const totalSD = parseFloat(smallSD+mediumSD+largeSD).toFixed(4);
+        const totalSD = parseFloat((smallSD+mediumSD+largeSD)).toFixed(4);
         // Summation of X
         const smallSumma = smallCount*smallMean;
         const mediumSumma = mediumCount*mediumMean;
         const largeSumma = largeCount*largeMean;
-        const totalSumma = parseFloat(smallSumma+mediumSumma+largeSumma).toFixed(4);
+        const totalSumma = parseFloat((smallSumma+mediumSumma+largeSumma)).toFixed(4);
         // Summation of X ^ 2
         const smallSumma2 = parseFloat(Math.pow(smallSumma,2)).toFixed(4);
         const mediumSumma2 = parseFloat(Math.pow(mediumSumma,2)).toFixed(4);
         const largeSumma2 = parseFloat(Math.pow(largeSumma,2)).toFixed(4);
-        const totalSumma2 = parseFloat(smallSumma2+mediumSumma2+largeSumma2).toFixed(4);
+        const totalSumma2 = parseFloat((smallSumma2+mediumSumma2+largeSumma2)).toFixed(4);
         // Format the HTML table
         return `
             <div class="row p-3">
@@ -824,4 +830,84 @@ async function generateDataTable(hypothesis, anova) {
         `;
     }
     
+}
+
+async function generatePairwiseTable(pairwiseData){
+    const pairwiseArray = Object.entries(pairwiseData);
+    const svm = pairwiseArray[0][1];
+    const svl = pairwiseArray[1][1];
+    const mvl = pairwiseArray[2][1];
+
+    // Small vs Medium Data
+    const svmSize = svm.means['Small'].sampleSize * 2;
+    const svmF = svm.statistic;
+    const svmPValue = svm.pValue;
+    const svmAlpha = svm.alpha;
+    const svmRejected = svm.rejected;
+
+    // Small vs Large Data
+    const svlSize = svl.means['Small'].sampleSize * 2;
+    const svlF = svl.statistic;
+    const svlPValue = svl.pValue;
+    const svlAlpha = svl.alpha;
+    const svlRejected = svl.rejected;
+
+    // Medium vs Large Data
+    const mvlSize = mvl.means['Medium'].sampleSize * 2;
+    const mvlF = mvl.statistic;
+    const mvlPValue = mvl.pValue;
+    const mvlAlpha = mvl.alpha;
+    const mvlRejected = mvl.rejected;
+
+    console.log("SvM Rejected? ", svmRejected, (svmPValue<=svmAlpha));
+    console.log("SvL Rejected? ", svlRejected, (svlPValue<=svlAlpha));
+    console.log("MvL Rejected? ", mvlRejected, (mvlPValue<=mvlAlpha));
+    // Format the HTML table
+    return `
+            <div class="row p-3" id="anova-table">
+                <div class="col-12 d-flex justify-content-center">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Pairwise ANOVA</th>
+                            <tr>
+                            <tr>
+                                <th>Pairs</th>
+                                <th>Total Size</th>
+                                <th>F Score</th>
+                                <th>P Value (p)</th>
+                                <th>Alpha (a)</th>
+                                <th>Significant Diff.?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Small vs Medium</td>
+                                <td>${svmSize}</td>
+                                <td>${svmF.toFixed(4)}</td>
+                                <td>${svmPValue.toFixed(4)}</td>
+                                <td>${svmAlpha}</td>
+                                <td>${(svmRejected) ? 'Yes' : 'No'}</td>
+                            </tr>
+                            <tr>
+                                <td>Small vs Large</td>
+                                <td>${svlSize}</td>
+                                <td>${svlF.toFixed(4)}</td>
+                                <td>${svlPValue.toFixed(4)}</td>
+                                <td>${svlAlpha}</td>
+                                <td>${(svlRejected) ? 'Yes' : 'No'}</td>
+                            </tr>
+                            <tr>
+                                <td>Medium vs Large</td>
+                                <td>${mvlSize}</td>
+                                <td>${mvlF.toFixed(4)}</td>
+                                <td>${mvlPValue.toFixed(4)}</td>
+                                <td>${mvlAlpha}</td>
+                                <td>${(mvlRejected) ? 'Yes' : 'No'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    `;
 }
