@@ -482,6 +482,7 @@ async function performAnova(hypothesis, overallMetrics) {
     let pairwiseGroups = {};
     let container;
     let dataContainer;
+    let pairwiseContainer = document.getElementById('pairwise-anova');
     const x = [];
     const f = [];
 
@@ -531,6 +532,7 @@ async function performAnova(hypothesis, overallMetrics) {
         // Perform ANOVA for each pair
         const pairwiseResults = {};
         for (const [pair, { x, f }] of Object.entries(pairwiseGroups)) {
+            console.log(pair, x, f);
             pairwiseResults[pair] = anova1(x, f, { 'alpha': 0.05 });
         }
 
@@ -538,6 +540,10 @@ async function performAnova(hypothesis, overallMetrics) {
         for (const [pair, result] of Object.entries(pairwiseResults)) {
             console.log(`${pair} ANOVA Result:`, result.print());
         }
+
+        // Table for Pairwise
+        console.log('Pairwise: ', Object.entries(pairwiseResults));
+        pairwiseContainer.innerHTML = await generatePairwiseTable(pairwiseResults);
 
         // ------- Pairwise Alternative ------
 
@@ -596,12 +602,16 @@ async function generateAnovaTable(anova) {
                     <table class="table">
                         <thead>
                             <tr>
+                                <th>One-way ANOVA</th>
+                            </tr>
+                            <tr>
                                 <th>Source</th>
                                 <th>df</th>
                                 <th>SS</th>
                                 <th>MS</th>
                                 <th>F Score</th>
                                 <th>P Value</th>
+                                <th>Sig. Diff.?</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -612,12 +622,15 @@ async function generateAnovaTable(anova) {
                                 <td>${treatment.ms.toFixed(4)}</td>
                                 <td>${statistic.toFixed(4)}</td>
                                 <td>${pValue.toFixed(4)}</td>
+                                <td>${(rejectNull) ? 'Yes' : 'No'}</td>
+
                             </tr>
                             <tr>
                                 <td>Errors</td>
                                 <td>${error.df}</td>
                                 <td>${error.ss.toFixed(4)}</td>
                                 <td>${error.ms.toFixed(4)}</td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                             </tr>
@@ -627,7 +640,7 @@ async function generateAnovaTable(anova) {
             </div>
             <div class="row p-3">
                 <div class="cont-inner col-12 border border-3 mt-2 border-dark">
-                    <b>Pvalue:</b> ${pValue} <=  <b>Alpha:</b> ${alpha}                              
+                    <b>Pvalue:</b> ${pValue.toFixed(4)} <=  <b>Alpha:</b> ${alpha}                              
                 </div>
                 <div class="cont-inner col-12 border border-3 mt-2 border-dark">
                     <b>Accept Hypothesis:</b> <br>${(rejectNull==false) ? 'No' : 'Yes'}                                
@@ -649,23 +662,23 @@ async function generateDataTable(hypothesis, anova) {
         // Sample Size
         const koiCount = koiData.sampleSize;
         const nonKoiCount = nonKoiData.sampleSize;
-        const totalCount = parseFloat(koiCount+nonKoiCount).toFixed(4);
+        const totalCount = parseFloat(koiCount+nonKoiCount);
         // Mean
-        const koiMean = koiData.mean.toFixed(4);
-        const nonKoiMean = nonKoiData.mean.toFixed(4);
-        const totalMean = parseFloat(koiMean+nonKoiMean).toFixed(4);
+        const koiMean = koiData.mean;
+        const nonKoiMean = nonKoiData.mean;
+        const totalMean = parseFloat(koiMean+nonKoiMean);
         // SD
-        const koiSD = koiData.SD.toFixed(4);
-        const nonKoiSD = nonKoiData.SD.toFixed(4);
-        const totalSD = parseFloat(koiSD+nonKoiSD).toFixed(4);
+        const koiSD = koiData.SD;
+        const nonKoiSD = nonKoiData.SD;
+        const totalSD = parseFloat(koiSD+nonKoiSD);
         // Summation of X
         const koiSumma = koiCount*koiMean;
         const nonKoiSumma = nonKoiCount*nonKoiMean;
-        const totalSumma = parseFloat(koiSumma+nonKoiSumma).toFixed(4);
+        const totalSumma = parseFloat(koiSumma+nonKoiSumma);
         // Summation of X ^ 2
-        const koiSumma2 = parseFloat(Math.pow(koiSumma,2)).toFixed(4);
-        const nonKoiSumma2 = parseFloat(Math.pow(nonKoiSumma,2)).toFixed(4);
-        const totalSumma2 = parseFloat(koiSumma2+nonKoiSumma2).toFixed(4);
+        const koiSumma2 = parseFloat(Math.pow(koiSumma,2));
+        const nonKoiSumma2 = parseFloat(Math.pow(nonKoiSumma,2));
+        const totalSumma2 = parseFloat(koiSumma2+nonKoiSumma2);
         // Format the HTML table
         return `
             <div class="row p-3">
@@ -677,6 +690,9 @@ async function generateDataTable(hypothesis, anova) {
                 <div class="col-12 d-flex justify-content-center">
                     <table class="table">
                         <thead>
+                            <tr>
+                                <th>Summary of Data</th>
+                            </tr>
                             <tr>
                                 <th>-</th>
                                 <th>Koi</th>
@@ -695,31 +711,31 @@ async function generateDataTable(hypothesis, anova) {
                             </tr>
                             <tr>
                                 <td>∑X</td>
-                                <td>${koiSumma}</td>
-                                <td>${nonKoiSumma}</td>
+                                <td>${koiSumma.toFixed(4)}</td>
+                                <td>${nonKoiSumma.toFixed(4)}</td>
                                 <td>-</td>
-                                <td>${totalSumma}</td>
+                                <td>${totalSumma.toFixed(4)}</td>
                             </tr>
                             <tr>
                                 <td>Mean</td>
-                                <td>${koiMean}</td>
-                                <td>${nonKoiMean}</td>
+                                <td>${koiMean.toFixed(4)}</td>
+                                <td>${nonKoiMean.toFixed(4)}</td>
                                 <td>-</td>
-                                <td>${totalMean}</td>
+                                <td>${totalMean.toFixed(4)}</td>
                             </tr>
                             <tr>
                                 <td>∑X<sup>2</sup></td>
-                                <td>${koiSumma2}</td>
-                                <td>${nonKoiSumma2}</td>
+                                <td>${koiSumma2.toFixed(4)}</td>
+                                <td>${nonKoiSumma2.toFixed(4)}</td>
                                 <td>-</td>
-                                <td>${totalSumma2}</td>
+                                <td>${totalSumma2.toFixed(4)}</td>
                             </tr>
                             <tr>
                                 <td>Std. Dev.</td>
-                                <td>${koiSD}</td>
-                                <td>${nonKoiSD}</td>
+                                <td>${koiSD.toFixed(4)}</td>
+                                <td>${nonKoiSD.toFixed(4)}</td>
                                 <td>-</td>
-                                <td>${totalSD}</td>
+                                <td>${totalSD.toFixed(4)}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -735,27 +751,27 @@ async function generateDataTable(hypothesis, anova) {
         const smallCount = smallData.sampleSize;
         const mediumCount = mediumData.sampleSize;
         const largeCount = largeData.sampleSize;
-        const totalCount = parseFloat(smallCount+mediumCount+largeCount).toFixed(4);
+        const totalCount = (smallCount+mediumCount+largeCount);
         // Mean
-        const smallMean = smallData.mean.toFixed(4);
-        const mediumMean = mediumData.mean.toFixed(4);
-        const largeMean = largeData.mean.toFixed(4);
-        const totalMean = parseFloat(smallMean+mediumMean+largeMean).toFixed(4);
+        const smallMean = smallData.mean;
+        const mediumMean = mediumData.mean;
+        const largeMean = largeData.mean;
+        const totalMean = parseFloat(smallMean+mediumMean+largeMean);
         // SD
-        const smallSD = smallData.SD.toFixed(4);
-        const mediumSD = mediumData.SD.toFixed(4);
-        const largeSD = largeData.SD.toFixed(4);
-        const totalSD = parseFloat(smallSD+mediumSD+largeSD).toFixed(4);
+        const smallSD = smallData.SD;
+        const mediumSD = mediumData.SD;
+        const largeSD = largeData.SD;
+        const totalSD = parseFloat((smallSD+mediumSD+largeSD));
         // Summation of X
         const smallSumma = smallCount*smallMean;
         const mediumSumma = mediumCount*mediumMean;
         const largeSumma = largeCount*largeMean;
-        const totalSumma = parseFloat(smallSumma+mediumSumma+largeSumma).toFixed(4);
+        const totalSumma = parseFloat(smallSumma+mediumSumma+largeSumma);
         // Summation of X ^ 2
-        const smallSumma2 = parseFloat(Math.pow(smallSumma,2)).toFixed(4);
-        const mediumSumma2 = parseFloat(Math.pow(mediumSumma,2)).toFixed(4);
-        const largeSumma2 = parseFloat(Math.pow(largeSumma,2)).toFixed(4);
-        const totalSumma2 = parseFloat(smallSumma2+mediumSumma2+largeSumma2).toFixed(4);
+        const smallSumma2 = parseFloat(Math.pow(smallSumma,2));
+        const mediumSumma2 = parseFloat(Math.pow(mediumSumma,2));
+        const largeSumma2 = parseFloat(Math.pow(largeSumma,2));
+        const totalSumma2 = parseFloat(smallSumma2+mediumSumma2+largeSumma2);
         // Format the HTML table
         return `
             <div class="row p-3">
@@ -767,6 +783,9 @@ async function generateDataTable(hypothesis, anova) {
                 <div class="col-12 d-flex justify-content-center">
                     <table class="table">
                         <thead>
+                            <tr>
+                                <th>Summary of Data</th>
+                            </tr>
                             <tr>
                                 <th>-</th>
                                 <th>Small</th>
@@ -787,35 +806,35 @@ async function generateDataTable(hypothesis, anova) {
                             </tr>
                             <tr>
                                 <td>∑X</td>
-                                <td>${smallSumma}</td>
-                                <td>${mediumSumma}</td>
-                                <td>${largeSumma}</td>
+                                <td>${smallSumma.toFixed(4)}</td>
+                                <td>${mediumSumma.toFixed(4)}</td>
+                                <td>${largeSumma.toFixed(4)}</td>
                                 <td>-</td>
-                                <td>${totalSumma}</td>
+                                <td>${totalSumma.toFixed(4)}</td>
                             </tr>
                             <tr>
                                 <td>Mean</td>
-                                <td>${smallMean}</td>
-                                <td>${mediumMean}</td>
-                                <td>${largeMean}</td>
+                                <td>${smallMean.toFixed(4)}</td>
+                                <td>${mediumMean.toFixed(4)}</td>
+                                <td>${largeMean.toFixed(4)}</td>
                                 <td>-</td>
-                                <td>${totalMean}</td>
+                                <td>${totalMean.toFixed(4)}</td>
                             </tr>
                             <tr>
                                 <td>∑X<sup>2</sup></td>
-                                <td>${smallSumma2}</td>
-                                <td>${mediumSumma2}</td>
-                                <td>${largeSumma2}</td>
+                                <td>${smallSumma2.toFixed(4)}</td>
+                                <td>${mediumSumma2.toFixed(4)}</td>
+                                <td>${largeSumma2.toFixed(4)}</td>
                                 <td>-</td>
-                                <td>${totalSumma2}</td>
+                                <td>${totalSumma2.toFixed(4)}</td>
                             </tr>
                             <tr>
                                 <td>Std. Dev.</td>
-                                <td>${smallSD}</td>
-                                <td>${mediumSD}</td>
-                                <td>${largeSD}</td>
+                                <td>${smallSD.toFixed(4)}</td>
+                                <td>${mediumSD.toFixed(4)}</td>
+                                <td>${largeSD.toFixed(4)}</td>
                                 <td>-</td>
-                                <td>${totalSD}</td>
+                                <td>${totalSD.toFixed(4)}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -824,4 +843,84 @@ async function generateDataTable(hypothesis, anova) {
         `;
     }
     
+}
+
+async function generatePairwiseTable(pairwiseData){
+    const pairwiseArray = Object.entries(pairwiseData);
+    const svm = pairwiseArray[0][1];
+    const svl = pairwiseArray[1][1];
+    const mvl = pairwiseArray[2][1];
+
+    // Small vs Medium Data
+    const svmSize = svm.means['Small'].sampleSize * 2;
+    const svmF = svm.statistic;
+    const svmPValue = svm.pValue;
+    const svmAlpha = svm.alpha;
+    const svmRejected = svm.rejected;
+
+    // Small vs Large Data
+    const svlSize = svl.means['Small'].sampleSize * 2;
+    const svlF = svl.statistic;
+    const svlPValue = svl.pValue;
+    const svlAlpha = svl.alpha;
+    const svlRejected = svl.rejected;
+
+    // Medium vs Large Data
+    const mvlSize = mvl.means['Medium'].sampleSize * 2;
+    const mvlF = mvl.statistic;
+    const mvlPValue = mvl.pValue;
+    const mvlAlpha = mvl.alpha;
+    const mvlRejected = mvl.rejected;
+
+    console.log("SvM Rejected? ", svmRejected, (svmPValue<=svmAlpha));
+    console.log("SvL Rejected? ", svlRejected, (svlPValue<=svlAlpha));
+    console.log("MvL Rejected? ", mvlRejected, (mvlPValue<=mvlAlpha));
+    // Format the HTML table
+    return `
+            <div class="row p-3" id="anova-table">
+                <div class="col-12 d-flex justify-content-center">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Pairwise ANOVA</th>
+                            <tr>
+                            <tr>
+                                <th>Pairs</th>
+                                <th>Total Size</th>
+                                <th>F Score</th>
+                                <th>P Value (p)</th>
+                                <th>Alpha (a)</th>
+                                <th>Significant Diff.?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Small vs Medium</td>
+                                <td>${svmSize}</td>
+                                <td>${svmF.toFixed(4)}</td>
+                                <td>${svmPValue.toFixed(4)}</td>
+                                <td>${svmAlpha}</td>
+                                <td>${(svmRejected) ? 'Yes' : 'No'}</td>
+                            </tr>
+                            <tr>
+                                <td>Small vs Large</td>
+                                <td>${svlSize}</td>
+                                <td>${svlF.toFixed(4)}</td>
+                                <td>${svlPValue.toFixed(4)}</td>
+                                <td>${svlAlpha}</td>
+                                <td>${(svlRejected) ? 'Yes' : 'No'}</td>
+                            </tr>
+                            <tr>
+                                <td>Medium vs Large</td>
+                                <td>${mvlSize}</td>
+                                <td>${mvlF.toFixed(4)}</td>
+                                <td>${mvlPValue.toFixed(4)}</td>
+                                <td>${mvlAlpha}</td>
+                                <td>${(mvlRejected) ? 'Yes' : 'No'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    `;
 }
