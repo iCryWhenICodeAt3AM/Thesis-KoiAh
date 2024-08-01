@@ -38,16 +38,24 @@ function calculateMetricsPerImage(groundTruth, predictions) {
     allImages.forEach(image => {
         const gtAnnotations = groundTruthByImage[image] || [];
         const predAnnotations = predictionsByImage[image] || [];
-        console.log("paired img: ",image, gtAnnotations, predAnnotations);
+        console.log("paired img: ", image, gtAnnotations, predAnnotations);
+
         let truePositives = 0;
         let falsePositives = 0;
         let falseNegatives = 0;
 
+        // Create arrays to track matched predictions and ground truths
+        const matchedGts = new Set();
+        const matchedPreds = new Set();
+
         // Check each prediction against ground truth
         predAnnotations.forEach(pred => {
-            const match = gtAnnotations.some(gt => calculateIoU(gt.bbox, pred.bbox) >= iouThreshold);
+            const match = gtAnnotations.some(gt => 
+                calculateIoU(gt.bbox, pred.bbox) >= iouThreshold && gt.label === pred.label
+            );
             if (match) {
                 truePositives++;
+                matchedPreds.add(pred); // Track matched predictions
             } else {
                 falsePositives++;
             }
@@ -55,9 +63,13 @@ function calculateMetricsPerImage(groundTruth, predictions) {
 
         // Check each ground truth against predictions
         gtAnnotations.forEach(gt => {
-            const match = predAnnotations.some(pred => calculateIoU(gt.bbox, pred.bbox) >= iouThreshold);
+            const match = predAnnotations.some(pred => 
+                calculateIoU(gt.bbox, pred.bbox) >= iouThreshold && gt.label === pred.label
+            );
             if (!match) {
                 falseNegatives++;
+            } else {
+                matchedGts.add(gt); // Track matched ground truths
             }
         });
 
@@ -65,7 +77,6 @@ function calculateMetricsPerImage(groundTruth, predictions) {
         const precision = truePositives / (truePositives + falsePositives) || 0;
         const recall = truePositives / (truePositives + falseNegatives) || 0;
         const f1Score = 2 * (precision * recall) / (precision + recall) || 0;
-        const accuracy = truePositives / (truePositives + falsePositives + falseNegatives) || 0;
 
         // Determine label type
         const labels = new Set(gtAnnotations.map(ann => ann.label));
@@ -81,13 +92,13 @@ function calculateMetricsPerImage(groundTruth, predictions) {
             precision,
             recall,
             f1Score,
-            accuracy,
             labelType
         });
     });
 
     return metricsPerImage;
 }
+
 
 // Updated evaluateImages function
 async function evaluateImages() {
@@ -212,7 +223,7 @@ async function evaluateImages() {
                 throw new Error(`Invalid response format: ${JSON.stringify(result)}`);
             }
 
-            console.log("Prediction Made!");
+            console.log("Prediction Made!", result);
 
             return result.predictions.map(pred => ({
                 label: pred.class,
@@ -280,6 +291,8 @@ async function evaluateImages() {
 
     // Calculate and display metrics for each image
     let overallMetrics = [];
+    let confusionMatrix = {};
+    let confusionMatrixTable;
 
     if (selectorValue === '1') {
         const metricsKoi = calculateMetricsPerImage(groundTruth.koi, predictions.koi);
@@ -291,6 +304,15 @@ async function evaluateImages() {
 
         displayMetrics(metricsKoi, 'koi-metric');
         displayMetrics(metricsNonKoi, 'non-koi-metric');
+
+        // Calculate confusion matrix
+        confusionMatrix = calculateConfusionMatrix(
+            groundTruth.koi.concat(groundTruth.nonKoi), 
+            predictions.koi.concat(predictions.nonKoi)
+        );
+
+        confusionMatrixTable = document.getElementById('one-confusion-matrix');
+
     } else if (selectorValue === '2') {
         const metricsSmall = calculateMetricsPerImage(groundTruth.small, predictions.small);
         const metricsMedium = calculateMetricsPerImage(groundTruth.medium, predictions.medium);
@@ -304,9 +326,20 @@ async function evaluateImages() {
         displayMetrics(metricsSmall, 'small-metric');
         displayMetrics(metricsMedium, 'medium-metric');
         displayMetrics(metricsLarge, 'large-metric');
+
+        // Calculate confusion matrix
+        confusionMatrix = calculateConfusionMatrix(
+            groundTruth.small.concat(groundTruth.medium).concat(groundTruth.large),
+            predictions.small.concat(predictions.medium).concat(predictions.large)
+        );
+        confusionMatrixTable = document.getElementById('two-confusion-matrix');
     }
 
     console.log('Overall Metrics:', overallMetrics);
+    console.log('Confusion Metrics:', confusionMatrix);
+        
+    // Generate and display the confusion matrix table
+    confusionMatrixTable.innerHTML = await generateConfusionMatrixTable(confusionMatrix);
 
     // Display accuracy graph based on hypothesis
     await displayAccuracyGraph(selectorValue, overallMetrics);
@@ -327,8 +360,7 @@ function displayMetrics(metrics, tableId) {
         row.insertCell(2).innerText = metric.precision.toFixed(2);
         row.insertCell(3).innerText = metric.recall.toFixed(2);
         row.insertCell(4).innerText = metric.f1Score.toFixed(2);
-        row.insertCell(5).innerText = metric.accuracy.toFixed(2);
-        row.insertCell(6).innerText = metric.labelType;
+        row.insertCell(5).innerText = metric.labelType;
     });
 }
 
@@ -348,50 +380,50 @@ async function displayAccuracyGraph(hypothesis, overallMetrics) {
     if (hypothesis === '1') {
         const halfLength = Math.floor(overallMetrics.length / 2);
         for (let i = 0; i < halfLength; i++) {
-            koiAccuracies.push(overallMetrics[i].accuracy);
+            koiAccuracies.push(overallMetrics[i].f1Score);
         }
         for (let i = halfLength; i < overallMetrics.length; i++) {
-            nonKoiAccuracies.push(overallMetrics[i].accuracy);
+            nonKoiAccuracies.push(overallMetrics[i].f1Score);
         }
     } else if (hypothesis === '2') {
         const thirdLength = Math.floor(overallMetrics.length / 3);
         for (let i = 0; i < thirdLength; i++) {
-            smallAccuracies.push(overallMetrics[i].accuracy);
+            smallAccuracies.push(overallMetrics[i].f1Score);
         }
         for (let i = thirdLength; i < 2 * thirdLength; i++) {
-            mediumAccuracies.push(overallMetrics[i].accuracy);
+            mediumAccuracies.push(overallMetrics[i].f1Score);
         }
         for (let i = 2 * thirdLength; i < overallMetrics.length; i++) {
-            largeAccuracies.push(overallMetrics[i].accuracy);
+            largeAccuracies.push(overallMetrics[i].f1Score);
         }
     }
 
     let dataSets = [];
     if (hypothesis === '1') {
         dataSets.push({
-            label: 'Koi Accuracy',
+            label: 'Koi Accuracy (F1-score)',
             data: koiAccuracies,
             borderColor: '#D9534F',
             borderWidth: 1
         }, {
-            label: 'Non-Koi Accuracy',
+            label: 'Non-Koi Accuracy (F1-score)',
             data: nonKoiAccuracies,
             borderColor: '#F0AD4E',
             borderWidth: 1
         });
     } else if (hypothesis === '2') {
         dataSets.push({
-            label: 'Small Accuracy',
+            label: 'Small Accuracy (F1-score)',
             data: smallAccuracies,
             borderColor: '#D9534F',
             borderWidth: 1
         }, {
-            label: 'Medium Accuracy',
+            label: 'Medium Accuracy (F1-score)',
             data: mediumAccuracies,
             borderColor: '#F0AD4E',
             borderWidth: 1
         }, {
-            label: 'Large Accuracy',
+            label: 'Large Accuracy (F1-score)',
             data: largeAccuracies,
             borderColor: '#FFD700',
             borderWidth: 1
@@ -407,17 +439,27 @@ async function displayAccuracyGraph(hypothesis, overallMetrics) {
 
 // Function to create a line chart using Chart.js
 function createLineChart(elementId, labels, dataSets) {
-    let expandGraph = "";
+
     const ctx = document.getElementById(elementId).getContext('2d');
-    if (elementId=='hypothesis-one-graph') {
-        var half_length = Math.ceil(labels.length / 2);    
-        labels = labels.slice(0,half_length);
+
+    // Clear the canvas before drawing
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    let expandGraph;
+
+    if (elementId === 'hypothesis-one-graph') {
+        const half_length = Math.ceil(labels.length / 2);    
+        labels = labels.slice(0, half_length);
         expandGraph = document.getElementById("hypothesis-one-graph-expand").getContext('2d');
     } else {
-        var third_length = Math.ceil(labels.length / 3);
-        labels = labels.slice(0,third_length);
+        const third_length = Math.ceil(labels.length / 3);
+        labels = labels.slice(0, third_length);
         expandGraph = document.getElementById("hypothesis-two-graph-expand").getContext('2d');
     }
+
+    // Clear the expanded graph canvas before drawing
+    expandGraph.clearRect(0, 0, expandGraph.canvas.width, expandGraph.canvas.height);
+
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -438,7 +480,7 @@ function createLineChart(elementId, labels, dataSets) {
                     max: 1.5,
                     title: {
                         display: true,
-                        text: 'Accuracy'
+                        text: 'Accuracy  (F1-score)'
                     }
                 }
             }
@@ -464,7 +506,7 @@ function createLineChart(elementId, labels, dataSets) {
                     max: 1.5,
                     title: {
                         display: true,
-                        text: 'Accuracy'
+                        text: 'Accuracy  (F1-score)'
                     }
                 }
             }
@@ -493,7 +535,7 @@ async function performAnova(hypothesis, overallMetrics) {
 
         // Use only up to the minLength for both groups to balance the data
         for (let i = 0; i < half_length; i++) {
-            x.push(koiGroup[i].accuracy, nonKoiGroup[i].accuracy);
+            x.push(koiGroup[i].f1Score, nonKoiGroup[i].f1Score);
             f.push('Koi', 'Non-Koi');
         }
 
@@ -516,15 +558,15 @@ async function performAnova(hypothesis, overallMetrics) {
         // Populate pairwiseGroups arrays
         for (let i = 0; i < third_length; i++) {
             if (i < smallGroup.length && i < mediumGroup.length) {
-                pairwiseGroups['Small vs Medium'].x.push(smallGroup[i].accuracy, mediumGroup[i].accuracy);
+                pairwiseGroups['Small vs Medium'].x.push(smallGroup[i].f1Score, mediumGroup[i].f1Score);
                 pairwiseGroups['Small vs Medium'].f.push('Small', 'Medium');
             }
             if (i < smallGroup.length && i < largeGroup.length) {
-                pairwiseGroups['Small vs Large'].x.push(smallGroup[i].accuracy, largeGroup[i].accuracy);
+                pairwiseGroups['Small vs Large'].x.push(smallGroup[i].f1Score, largeGroup[i].f1Score);
                 pairwiseGroups['Small vs Large'].f.push('Small', 'Large');
             }
             if (i < mediumGroup.length && i < largeGroup.length) {
-                pairwiseGroups['Medium vs Large'].x.push(mediumGroup[i].accuracy, largeGroup[i].accuracy);
+                pairwiseGroups['Medium vs Large'].x.push(mediumGroup[i].f1Score, largeGroup[i].f1Score);
                 pairwiseGroups['Medium vs Large'].f.push('Medium', 'Large');
             }
         }
@@ -549,7 +591,7 @@ async function performAnova(hypothesis, overallMetrics) {
 
         // Use only up to the minLength for all groups to balance the data
         for (let i = 0; i < third_length; i++) {
-            x.push(smallGroup[i].accuracy, mediumGroup[i].accuracy, largeGroup[i].accuracy);
+            x.push(smallGroup[i].f1Score, mediumGroup[i].f1Score, largeGroup[i].f1Score);
             f.push('Small', 'Medium', 'Large');
         }
 
@@ -923,4 +965,98 @@ async function generatePairwiseTable(pairwiseData){
                 </div>
             </div>
     `;
+}
+
+// Function to extract unique labels from annotations
+function extractLabels(annotations) {
+    const labels = new Set();
+    annotations.forEach(item => {
+        item.annotations.forEach(annotation => {
+            labels.add(annotation.label);
+        });
+    });
+    return Array.from(labels);
+}
+
+// Function to calculate confusion matrix for multiclass classification
+function calculateConfusionMatrix(groundTruth, predictions) {
+    const labels = extractLabels([...groundTruth, ...predictions]); // Extract labels from both ground truth and predictions
+    const matrix = {};
+
+    // Initialize confusion matrix
+    labels.forEach(label => {
+        matrix[label] = {};
+        labels.forEach(predLabel => {
+            matrix[label][predLabel] = 0;
+        });
+    });
+
+    // Map ground truth and predictions by image
+    const groundTruthByImage = groundTruth.reduce((acc, gt) => {
+        acc[gt.image] = gt.annotations;
+        return acc;
+    }, {});
+
+    const predictionsByImage = predictions.reduce((acc, pred) => {
+        acc[pred.image] = pred.annotations;
+        return acc;
+    }, {});
+
+    // Get unique image names from ground truth and predictions
+    const allImages = new Set([...Object.keys(groundTruthByImage), ...Object.keys(predictionsByImage)]);
+
+    // Calculate confusion matrix
+    allImages.forEach(image => {
+        const gtAnnotations = groundTruthByImage[image] || [];
+        const predAnnotations = predictionsByImage[image] || [];
+
+        // Loop through ground truth annotations
+        gtAnnotations.forEach(gt => {
+            const predMatch = predAnnotations.find(pred => calculateIoU(gt.bbox, pred.bbox) >= 0.5);
+
+            if (predMatch) {
+                matrix[gt.label][predMatch.label]++;
+            } else {
+                // Increment False Negative in the actual class row
+                matrix[gt.label][gt.label]++;
+            }
+        });
+
+        // Loop through prediction annotations
+        predAnnotations.forEach(pred => {
+            const gtMatch = gtAnnotations.find(gt => calculateIoU(gt.bbox, pred.bbox) >= 0.5);
+
+            if (!gtMatch) {
+                // Increment False Positive in the predicted class column
+                matrix[pred.label][pred.label]++;
+            }
+        });
+    });
+
+    return matrix;
+}
+
+// Function to generate HTML table for the confusion matrix
+async function generateConfusionMatrixTable(matrix) {
+    const labels = Object.keys(matrix).filter(label => label !== 'Unknown'); // Get unique labels excluding 'Unknown'
+    let tableHtml = '<h3>Confusion Matrix</h3><table class="table" border="1"><thead><tr><th>Truth v</th><th>Predicted -></th></tr><tr><th>Classes</th>';
+
+    // Add table headers
+    labels.forEach(label => {
+        tableHtml += `<td>${label}</td>`;
+    });
+    tableHtml += '</tr></thead><tbody>';
+    
+    // Add rows for each true label
+    labels.forEach(trueLabel => {
+        tableHtml += `<tr><td>${trueLabel}</td>`;
+        labels.forEach(predLabel => {
+            tableHtml += `<td>${matrix[trueLabel] && matrix[trueLabel][predLabel] || 0}</td>`;
+        });
+        tableHtml += '</tr>';
+    });
+
+    tableHtml += '</tr></tbody></table>';
+
+    return tableHtml;
 }
