@@ -6,13 +6,15 @@ function collectElementsForHypothesis(hypothesis) {
             document.getElementById('koi-table'),
             document.getElementById('non-koi-table'),
             document.getElementById('data-one'),
-            document.getElementById('anova-one')
+            document.getElementById('anova-one'),
+            document.getElementById('one-confusion-matrix')
         ];
         sheetTitles = [
             "Koi Table",
             "Non Koi Table",
             "Data Summary",
-            "ANOVA Result"
+            "ANOVA Result",
+            "Multi-Class Confusion"
         ]
     } else if (hypothesis === '2') {
         elements = [
@@ -21,7 +23,8 @@ function collectElementsForHypothesis(hypothesis) {
             document.getElementById('large-table'),
             document.getElementById('data-two'),
             document.getElementById('anova-two'),
-            document.getElementById('pairwise-anova')
+            document.getElementById('pairwise-anova'),
+            document.getElementById('two-confusion-matrix')
         ];
         sheetTitles = [
             "Small Table",
@@ -29,7 +32,8 @@ function collectElementsForHypothesis(hypothesis) {
             "Large Table",
             "Data Summary",
             "ANOVA Result",
-            "Pairwise ANOVA"
+            "Pairwise ANOVA",
+            "Multi-Class Confusion"
         ]
     }
     return { elements, sheetTitles };

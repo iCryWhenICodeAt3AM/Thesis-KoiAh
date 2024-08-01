@@ -443,8 +443,11 @@
                     </div>
                     <div class="cont-inner col-11 ms-4 pt-2 pb-2 border border-3 border-dark">
                         <div class="row">
-                            <div class="col-12">
-                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="export-button-one" type="button" onclick="generateExcelForHypothesis()">Export Results Data</button>
+                            <div class="col-6">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showOneConfusion" type="button" data-bs-toggle="modal" data-bs-target="#oneConfusion">Show Confusion Matrix</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="export-button-two" type="button" onclick="generateExcelForHypothesis()">Export Results Data</button>
                             </div>
                         </div>
                     </div>
@@ -491,7 +494,10 @@
                     </div>
                     <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark">
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-6">
+                                <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="showTwoConfusion" type="button" data-bs-toggle="modal" data-bs-target="#twoConfusion">Show Confusion Matrix</button>
+                            </div>
+                            <div class="col-6">
                                 <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="export-button-two" type="button" onclick="generateExcelForHypothesis()">Export Results Data</button>
                             </div>
                         </div>
@@ -522,7 +528,6 @@
                                         <th>Precision</th>
                                         <th>Recall</th>
                                         <th>F1 Score</th>
-                                        <th>Accuracy</th>
                                         <th>Category</th>
                                     </tr>
                                 </thead>
@@ -556,7 +561,6 @@
                                         <th>Precision</th>
                                         <th>Recall</th>
                                         <th>F1 Score</th>
-                                        <th>Accuracy</th>
                                         <th>Category</th>
                                     </tr>
                                 </thead>
@@ -590,7 +594,6 @@
                                         <th>Precision</th>
                                         <th>Recall</th>
                                         <th>F1 Score</th>
-                                        <th>Accuracy</th>
                                         <th>Category</th>
                                     </tr>
                                 </thead>
@@ -624,7 +627,6 @@
                                         <th>Precision</th>
                                         <th>Recall</th>
                                         <th>F1 Score</th>
-                                        <th>Accuracy</th>
                                         <th>Category</th>
                                     </tr>
                                 </thead>
@@ -658,7 +660,6 @@
                                         <th>Precision</th>
                                         <th>Recall</th>
                                         <th>F1 Score</th>
-                                        <th>Accuracy</th>
                                         <th>Category</th>
                                     </tr>
                                 </thead>
@@ -790,6 +791,38 @@
         </div>
     </div>
     <!-- Modal #12 -->
+    <!-- Modal #13 -->
+    <div class="modal fade" id="oneConfusion" tabindex="-1" aria-labelledby="oneConfusionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hypothesis One: Confusion Matrix</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center text-center">
+                    <div class="results" id="one-confusion-matrix">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #13 -->
+    <!-- Modal #14 -->
+    <div class="modal fade" id="twoConfusion" tabindex="-1" aria-labelledby="twoConfusionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hypothesis Two: Confusion Matrix</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center text-center">
+                    <div class="results" id="two-confusion-matrix">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #14 -->
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
