@@ -1,0 +1,25 @@
+.outer {
+    max-height: 500px; 
+    height: 500px;
+}
+
+.btn {
+    border-radius: 10px;
+    border: 0px;
+    background-color: #88BDBC;
+    color: #254E58 !important;
+}
+
+.desc {
+    max-height: 260px;
+    height: 260px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.hypo-two {
+    max-height: 230px;
+    height: 230px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
