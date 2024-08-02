@@ -242,15 +242,16 @@ async function evaluateImages() {
 
     // Roboflow configurations
     const ROBOFLOW_API_KEY = 'rceoip2HWWqZY9R1cTn4';
-    const KOI_MODEL_VERSION = '2'; // Use KOI model for Hypothesis Two
-    const NON_KOI_MODEL_VERSION = '9';
+    const ONE_MODEL_VERSION = '11';
+    const TWO_MODEL_VERSION = '2';
+
 
     // Check and add missing predictions for Koi images
     if (selectorValue === '1') {
         for (const img of images.koi) {
             if (!predictions.koi.find(pred => pred.image === img.name)) {
                 const imageData = img.data; // Prepare imageData according to your needs
-                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', KOI_MODEL_VERSION, ROBOFLOW_API_KEY);
+                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', ONE_MODEL_VERSION, ROBOFLOW_API_KEY);
                 predictions.koi.push({ image: img.name, annotations: preds });
                 koiPB.add({ image: img.name, annotations: preds });
                 document.getElementById('k-predictions-count').innerText = predictions.koi.length;
@@ -260,7 +261,7 @@ async function evaluateImages() {
         for (const img of images.nonKoi) {
             if (!predictions.nonKoi.find(pred => pred.image === img.name)) {
                 const imageData = img.data; // Prepare imageData according to your needs
-                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', NON_KOI_MODEL_VERSION, ROBOFLOW_API_KEY);
+                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', ONE_MODEL_VERSION, ROBOFLOW_API_KEY);
                 predictions.nonKoi.push({ image: img.name, annotations: preds });
                 nonKoiPB.add({ image: img.name, annotations: preds });
                 document.getElementById('nk-predictions-count').innerText = predictions.nonKoi.length;
@@ -271,7 +272,7 @@ async function evaluateImages() {
             for (const img of images[size]) {
                 if (!predictions[size].find(pred => pred.image === img.name)) {
                     const imageData = img.data; // Prepare imageData according to your needs
-                    const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', KOI_MODEL_VERSION, ROBOFLOW_API_KEY);
+                    const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
                     predictions[size].push({ image: img.name, annotations: preds });
 
                     // Update the corresponding prediction set
@@ -1010,12 +1011,17 @@ function calculateConfusionMatrix(groundTruth, predictions) {
         const gtAnnotations = groundTruthByImage[image] || [];
         const predAnnotations = predictionsByImage[image] || [];
 
+        // Track which predictions have been matched
+        const matchedPreds = new Set();
+
         // Loop through ground truth annotations
         gtAnnotations.forEach(gt => {
             const predMatch = predAnnotations.find(pred => calculateIoU(gt.bbox, pred.bbox) >= 0.5);
 
             if (predMatch) {
+                // Increment True Positive in the actual class row and predicted class column
                 matrix[gt.label][predMatch.label]++;
+                matchedPreds.add(predMatch);
             } else {
                 // Increment False Negative in the actual class row
                 matrix[gt.label][gt.label]++;
@@ -1024,9 +1030,7 @@ function calculateConfusionMatrix(groundTruth, predictions) {
 
         // Loop through prediction annotations
         predAnnotations.forEach(pred => {
-            const gtMatch = gtAnnotations.find(gt => calculateIoU(gt.bbox, pred.bbox) >= 0.5);
-
-            if (!gtMatch) {
+            if (!matchedPreds.has(pred)) {
                 // Increment False Positive in the predicted class column
                 matrix[pred.label][pred.label]++;
             }

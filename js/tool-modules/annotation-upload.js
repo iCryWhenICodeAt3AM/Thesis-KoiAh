@@ -1,4 +1,4 @@
-let currentJsonData = []; // Initialize as an empty array
+let currentJsonData = [];
 
 function loadJson() {
     const jsonFileInput = document.getElementById('jsonFile');
@@ -22,23 +22,20 @@ function loadJson() {
             // Create a set of image names from uploaded images
             const uploadedImageNames = new Set(uploadedImages.map(image => image.name));
 
-            // Add items from the JSON file that are in uploaded images and are not exempted or already existing
+            // Add items from the JSON file that are in uploaded images and are not exempted
             jsonFileData.forEach(jsonItem => {
                 if (jsonItem && jsonItem.image && uploadedImageNames.has(jsonItem.image) && !exemptedFiles.has(jsonItem.image)) {
-                    currentJsonData.push(jsonItem);
+                    // Check if the image already exists in currentJsonData
+                    let existingItem = currentJsonData.find(item => item.image === jsonItem.image);
+                    if (existingItem) {
+                        // If it exists, update annotations if necessary
+                        existingItem.annotations = jsonItem.annotations;
+                    } else {
+                        // If it does not exist, add new item
+                        currentJsonData.push(jsonItem);
+                    }
                     exemptedFiles.add(jsonItem.image);
                     existingFiles.delete(jsonItem.image);
-                }
-            });
-
-            // Add any images from uploadedImages that are not in the JSON file
-            uploadedImages.forEach(uploadedImage => {
-                if (!exemptedFiles.has(uploadedImage.name)) {
-                    currentJsonData.push({
-                        image: uploadedImage.name,
-                        annotations: [] // Assuming new images have no annotations
-                    });
-                    exemptedFiles.add(uploadedImage.name);
                 }
             });
 
