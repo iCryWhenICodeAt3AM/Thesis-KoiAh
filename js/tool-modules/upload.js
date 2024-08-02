@@ -74,5 +74,7 @@ function displayImage() {
     console.log("Uploaded Images Data: ", uploadedImagesData);
     console.log("Uploaded Images: ", uploadedImages);
     console.log("Excluded Images: ", excludedImages.length);
+    console.log("Existing Files: ", existingFiles);
+    console.log("Exempted Files: ", exemptedFiles);
     // alert(excludedImages.length," had errors, check console logs for the names.")
 }

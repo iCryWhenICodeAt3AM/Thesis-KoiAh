@@ -99,7 +99,7 @@ async function exportData(data, exportType = 'default') {
                 if (numLabels === 1) {
                     const label = uniqueLabels[0];
                     const count = item.annotations.filter(ann => ann.label === label).length;
-                    folderName = (count === 1) ? 'Solo' : 'Repeated';
+                    folderName = (count === 1) ? 'Solo' : 'Group';
                 } else {
                     folderName = 'Varied';
                 }
