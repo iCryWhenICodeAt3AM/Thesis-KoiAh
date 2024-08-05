@@ -6,6 +6,8 @@
     <title>KoiAh</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="css/master.css">
+    <link rel="stylesheet" href="css/user-testing-styles/texts.css">
+    <link rel="stylesheet" href="css/user-testing-styles/containers.css">
 </head>
 <body>
     <!-- Navbar # Start -->
@@ -40,50 +42,62 @@
      <div class="container-fluid mt-3">
         <div class="row">
             <!-- Division 1 - Left -->
-            <div class="cont-outer col-5 ms-5 me-5 d-flex align-items-center justify-content-center text-center" style="height:600px;">
+            <div class="cont-outer col-4 ms-4 me-4 d-flex align-items-center justify-content-center text-center" style="height:600px;" id="inputs">
+                <div id="overlay" class="overlay">
+                    <div class="progress-container">
+                        <progress id="progress-bar" class="progress-bar" value="0"></progress>
+                        <p id="progress-text">Processing: 0%</p>
+                        <p id="progress-number">Remaining Images: 0</p>
+                    </div>
+                </div>
                 <div class="container mx-auto text-white text-center">
+                    <!-- Inputs -->
                     <div class="row">
-                        <div class="col-6 offset-3 border border-3 border-dark mb-3 p-2 cont-inner">
-                            <h6><b>Number of Koi Fish</b></h6>
-                            <input type="number" class="form-control text-center" id="numberOfKoiFish" value="1" min=1>
+                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 gap-1 d-flex justify-content-center border border-3 border-dark inputs" id="inputs" name="inputs">
+                            <!-- Input File -->
+                            <input type="file" id="images" name="images" accept="image/*" multiple style="display: none;" onchange="displayImage();"><br><br>
+                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('images').click();displayImage();"><img src="img/file icon.svg" class="me-2">Select file/s</button>
+                            <!-- Input Folder -->
+                            <input type="file" id="folder" name="folder" accept="image/*" webkitdirectory style="display: none;" onchange="displayImage();"><br><br>
+                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('folder').click();"><img src="img/folder icon.svg" class="me-2">Select a folder</button>
                         </div>
-                        <div class="col-6 offset-3 border border-3 border-dark mb-3 pt-2 cont-inner">
-                            <h6><b>Rule to be Applied</b></h6>
-                            <div class="row">
-                                <div class="col-4 offset-1 cont-outer pt-2 pb-2 mb-2">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h6>Rule 1</h6>
-                                        </div>
-                                        <div class="col-12 form-check d-flex justify-content-center ms-2">
-                                            <input class="form-check-input" type="radio" name="rule" id="rule1" value="rule1" onclick="hideTrigger(true)" checked>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4 offset-2 cont-outer  pt-2 pb-2 mb-2">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h6>Rule 2</h6>
-                                        </div>
-                                        <div class="col-12 form-check d-flex justify-content-center ms-2">  
-                                            <input class="form-check-input" type="radio" name="rule" id="rule2" value="rule2" onclick="hideTrigger(false)">
-                                        </div>
-                                    </div>
-                                </div>
+                    </div>
+                    <div class="row">
+                        <div class="cont-inner col-11 p-3 ms-4 border border-3 border-dark" id="root-image-container">
+                            <div class="row image-container text-center" id="image-container">
+                                <!-- Image Uploads Container -->
                             </div>
                         </div>
-                        <div class="col-6 offset-3 border border-3 border-dark mb-3 p-2 cont-inner" id="koiSize">
-                            <h6><b>Average Final Koi Fish Size</b></h6>
-                            <h6>(Inches)</h6>
-                            <input type="number" class="form-control text-center" id="sizeOfKoiFish" value="1" min=1>
+                    </div>
+                    <div class="row">
+                        <div class="cont-inner col-5 p-2 offset-1 mt-2 border border-3 border-dark">
+                            <div class="col-10 offset-1">
+                                <h6>Images</h6>
+                            </div>
+                            <div class="cont-outer offset-1 col-10 image-count" id="image-count">
+                                0
+                            </div>
                         </div>
-                        <div class="col-6 offset-3 border border-3 border-dark mb-3 p-2 cont-inner d-flex align-items-center justify-content-center ">
-                            <button type="button" class="btn btn-sm btn-outline-success" onclick="recommendPondDimensions(1)" id="pondRecommend1" style="display:block; ">
-                                <img src="img/pond icon.svg" alt="pond icon"> Get Recommendation
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-success" onclick="recommendPondDimensions(2)" id="pondRecommend2" style="display:none;">
-                                <img src="img/pond icon.svg" alt="pond icon"> Get Recommendation
-                            </button>
+                        <div class="cont-inner col-5 p-2 ms-2 mt-2 border border-3 border-dark">
+                            <div class="col-10 offset-1">
+                                <h6>Harvest Koi Size</h6>
+                            </div>
+                            <div class="offset-1 col-10 mx-auto d-grid annotated-count">
+                                <select class="cont-outer text-center" name="koi-size" id="koi-size">
+                                    <option value="small">Small</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark">
+                            <div class="row">
+                                <div class="col-6 d-grid mx-auto">
+                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark start-button" id="start-button" onclick="startCounting()" style="font-size: 13px !important;"><b>Start</b></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -91,54 +105,230 @@
             <!-- Division 1 - Left -->
              <!-- ------ -->
             <!-- Division 2 - Right -->
-            <div class="col-5 ms-5">
+            <div class="col-7 ms-4">
                 <div class="row">
-                    <div class="col-12 cont-outer d-flex align-items-center justify-content-center text-center" style="height:275px;">
+                    <div class="col-12 cont-outer text-center p-4 pe-2 pt-2" style="height:225px; ">
+                        <!-- Top -->
                         <div class="row">
-                            <div class="col-12">
-                                <h5><b>Rule Output</b></h5>
-                            </div>
-                            <div class="col-12 mt-3 cont-inner p-2">
-                                <h6>Recommended Total Volume of Water</h6>
-                                <h6>(Gallons)</h6>
-                                <div class="container mt-4" id="ruleFormula">
-                                    
+                            <div class="col-6 pe-4 mt-2">
+                                <!-- Koi -->
+                                <div class="row">
+                                    <div class="cont-inner col-11 m-2 header">
+                                        <!-- Header -->
+                                        <div class="row">
+                                            <div class="col-6 mt-1 mb-1 title">
+                                                Koi
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="koi">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Items -->
+                                    <div class="cont-inner col-5 m-2">
+                                        <div class="row">
+                                            <div class="col-5 mt-1 mb-1 title">
+                                                Sanke
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="sanke">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cont-inner col-5 m-2 ms-4">
+                                        <div class="row">
+                                            <div class="col-6 mt-1 mb-1 title">
+                                                Showa
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="showa">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cont-inner col-5 m-2">
+                                        <div class="row">
+                                            <div class="col-5 mt-1 mb-1 title">
+                                                Kohaku
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="kohaku">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cont-inner col-5 m-2 ms-4">
+                                        <div class="row">
+                                            <div class="col-6 mt-1 mb-1 title">
+                                                Asagi
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="asagi">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cont-inner col-5 m-2">
+                                        <div class="row">
+                                            <div class="col-5 mt-1 mb-1 title">
+                                                Bekko
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="bekko">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cont-inner col-5 m-2 ms-4">
+                                        <div class="row">
+                                            <div class="col-6 mt-1 mb-1 title">
+                                                Hikarimono
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="hikarimono">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="container mt-4 cont-outer" id="ruleOutput">
-                                    
+                            </div>
+                            <div class="col-6 ps-4 mt-2">
+                                <!-- Non-koi -->
+                                <div class="row">
+                                    <div class="cont-inner col-11 m-2 header">
+                                        <!-- Header -->
+                                        <div class="row">
+                                            <div class="col-6 mt-1 mb-1 title">
+                                                Non-Koi
+                                            </div>
+                                            <div class="cont-outer col-5 mt-1 mb-1 me-1" id="non-koi">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Items -->
+                                    <div class="cont-inner col-5 m-2">
+                                        <div class="row">
+                                            <div class="col-5 mt-1 mb-1 title">
+                                                People
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="people">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cont-inner col-5 m-2 ms-4">
+                                        <div class="row">
+                                            <div class="col-6 mt-1 mb-1 title">
+                                                Goldfish
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2"  id="goldfish">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cont-inner col-5 m-2">
+                                        <div class="row">
+                                            <div class="col-5 mt-1 mb-1 title">
+                                                Lilies
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="lilies">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cont-inner col-5 m-2 ms-4">
+                                        <div class="row">
+                                            <div class="col-6 mt-1 mb-1 title" >
+                                                Rocks
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="rocks">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="cont-inner col-11 m-2 header">
+                                        <!-- Header -->
+                                        <div class="row">
+                                            <div class="col-6 mt-1 mb-1 title">
+                                                Total Objects
+                                            </div>
+                                            <div class="cont-outer col-5 m-1 ms-2" id="total">
+                                                0
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 cont-outer mt-4 d-flex align-items-center justify-content-center text-center" style="height:300px;">
+                    <div class="col-12 cont-outer mt-2 p-3 text-center" style="height:365px;">
+                        <!-- Bottom -->
                         <div class="row">
-                            <div class="col-12">
-                                <h5><b>Pond Dimensions Recommendation</b></h5>
-                                <h6>(Rectangle)</h6>
-                            </div>
-                            <div class="col-10 offset-1 mt-2 cont-inner text-center">
-                                <div class="row justify-content-center p-2">
-                                    <div class="col-3 m-1 inner-pill">Length</div>
-                                    <div class="col-3 m-1 inner-pill">Width</div>
-                                    <div class="col-3 m-1 inner-pill">Depth</div>
-                                    <div class="col-3 m-1 inner-pill" id="length">0</div>
-                                    <div class="col-3 m-1 inner-pill" id="width">0</div>
-                                    <div class="col-3 m-1 inner-pill" id="depth">3</div>
+                            <div class="col-5 mt-5">
+                                <div class="row">
+                                    <div class="col-12 border border-3 border-dark mb-1 p-2 ms-4 cont-inner">
+                                        <h6><b>Number of Koi Fish</b></h6>
+                                        <input type="number" class="form-control text-center" id="numberOfKoiFish" value="1" min=1>
+                                    </div>
+                                    <div class="col-12 border border-3 border-dark mb-1 pt-2 ms-4 cont-inner">
+                                        <h6><b>Rule to be Applied</b></h6>
+                                        <div class="row">
+                                            <div class="col-4 cont-outer offset-1 pt-2 pb-2 mb-2">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <h6>Rule 1</h6>
+                                                    </div>
+                                                    <div class="col-12 form-check d-flex justify-content-center ms-2">
+                                                        <input class="form-check-input" type="radio" name="rule" id="rule1" value="rule1" onclick="recommendPondDimensions(1)" checked>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 offset-2 cont-outer  pt-2 pb-2 mb-2">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <h6>Rule 2</h6>
+                                                    </div>
+                                                    <div class="col-12 form-check d-flex justify-content-center ms-2">  
+                                                        <input class="form-check-input" type="radio" name="rule" id="rule2" value="rule2" onclick="recommendPondDimensions(2)">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <div class="col-10 offset-1 mt-3 cont-inner text-center">
-                                <div class="row justify-content-center p-2">
-                                    <div class="col-12">
-                                        <h6>Actual Total Volume of Water</h6>
-                                        <h6>(Cubic Feet & Gallons)</h6>
+                            <!-- Out -->
+                            <div class="col-6 ms-5 mt-0">
+                                <div class="row">
+                                    <div class="col-12 mt-1 cont-inner p-2 border border-3 border-dark">
+                                        <h6>Recommended Total Volume of Water (Gallons)</h6>
+                                        <div class="container mt-2" id="ruleFormula">
+                                            
+                                        </div>
+                                        <div class="container mt-2 cont-outer" id="ruleOutput">
+                                            
+                                        </div>
                                     </div>
-                                    <div class="col-4 inner-pill" id="cubicFeet">
-                                        0 ft<sup>3</sup>
+                                    <div class="col-12 mt-2 cont-inner text-center  border border-3 border-dark">
+                                        <div class="row justify-content-center p-2">
+                                            <div class="col-3 m-1 inner-pill">Length</div>
+                                            <div class="col-3 m-1 inner-pill">Width</div>
+                                            <div class="col-3 m-1 inner-pill">Depth</div>
+                                            <div class="col-3 m-1 inner-pill" id="length">0 ft</div>
+                                            <div class="col-3 m-1 inner-pill" id="width">0 ft</div>
+                                            <div class="col-3 m-1 inner-pill" id="depth">3 ft</div>
+                                        </div>
                                     </div>
-                                    <div class="col-2"><h6>=</h6></div>
-                                    <div class="col-4 inner-pill" id="gallons">
-                                        0 gal
+                                    <div class="col-12 mt-2 cont-inner text-center  border border-3 border-dark">
+                                        <div class="row justify-content-center p-2">
+                                            <div class="col-12">
+                                                <h6>Actual Total Volume of Water</h6>
+                                                <h6>(Cubic Feet & Gallons)</h6>
+                                            </div>
+                                            <div class="col-4 inner-pill" id="cubicFeet">
+                                                0 ft<sup>3</sup>
+                                            </div>
+                                            <div class="col-2"><h6>=</h6></div>
+                                            <div class="col-4 inner-pill" id="gallons">
+                                                0 gal
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -153,9 +343,12 @@
     <!-- Content # End -->
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
      <!-- Components -->
-    <script src="js/pondcomponents.js"></script>
-    <script src="js/pondformula.js"></script>
+    <script src="js/tool-modules/upload.js"></script>
+    <script src="js/user-testing-modules/pondformula.js"></script>
+    <script src="js/user-testing-modules/progress-bar.js"></script>
+    <script src="js/user-testing-modules/main.js"></script>
 </body>
 </html>

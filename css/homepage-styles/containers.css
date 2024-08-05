@@ -18,8 +18,24 @@
 }
 
 .hypo-two {
-    max-height: 230px;
-    height: 230px;
+    max-height: 190px;
+    height: 190px;
     overflow-y: auto;
     scrollbar-width: none;
+}
+
+.results {
+    max-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.cont-inner{
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+a {
+    text-decoration: none;
+    color: #88BDBC;
 }

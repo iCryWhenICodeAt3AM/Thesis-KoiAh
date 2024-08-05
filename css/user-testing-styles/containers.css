@@ -1,0 +1,11 @@
+.header {
+    background-color: #4da6bd !important;
+    color: #000 !important;
+    border: #000 2px solid;
+}
+
+#root-image-container {
+    max-height: 275px;
+    height: 275px;
+}
+

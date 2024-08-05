@@ -45,6 +45,7 @@ async function startAnnotation() {
     console.log("Class Limit: ", classLimit);
 
     // Interface actions
+    const annotatedCount = document.getElementById('annotated-count');
     const processStatus = document.getElementById('process-status');
     const pendingImages = document.getElementById('pending-images');
     const annotatedImages = document.getElementById('annotated-images');
@@ -74,7 +75,7 @@ async function startAnnotation() {
     // Initial Processing
     reset(processStatus.innerText, pendingImages.innerText, annotatedImages.innerText, previousImage.innerText, classContainer, itemListContainer); // Reset all status in the output
     processInitialData(currentJsonData, annotatedImages, classContainer, classLimit);
-    let annotatedImagesCount = parseInt(annotatedImages.innerText);
+    let annotatedImagesCount = parseInt(annotatedCount.innerText);
     startButton.disabled = true; // Disable start button
 
     const processImage = async (imageFile) => {
@@ -144,11 +145,13 @@ async function startAnnotation() {
             reader.readAsDataURL(imageFile);
         });
     };
-
+    initializeProgressBar(imageFiles.length);
+    let processedImages = 0;
     // Start of the annotation process
     for (const imageFile of imageFiles) {
         await processImage(imageFile);
-        // await delay(1000); // 1 second delay
+        processedImages++;
+        updateProgress(processedImages);
         pendingImagesCount -= 1;
         annotatedImagesCount++;
         pendingImages.innerText = pendingImagesCount;
@@ -159,7 +162,10 @@ async function startAnnotation() {
     }
     processStatus.innerText = "Completed";
     startButton.disabled = false; // Enable start button
-
+    // Complete the progress bar
+    completeProgressBar();
+    // Optionally hide the overlay after processing is complete
+    document.getElementById('overlay').style.display = 'none';
 }
 
 // Append item to item list container
@@ -189,8 +195,10 @@ function appendItem(itemNumber, filename, container, objects, classes){
 
 // Set all output group to default
 function reset(status, pending, annotated, previousImage, classes, items){
-    status, previousImage = "-";
-    pending, annotated = "0";
+    status = "-";
+    previousImage = "-";
+    pending = "0";
+    annotated = "0";
     classes.innerHTML = "";
     items.innerHTML = "";
 }

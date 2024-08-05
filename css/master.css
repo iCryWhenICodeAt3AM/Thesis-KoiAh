@@ -61,7 +61,59 @@ a#brandName, a.nav-link{
     padding-top: 3px;
 }
 /* Pills */
-
 #accuracyChart{
     background-color: #fff;
+}
+
+/* -- */
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    height: 25px;
+    width: 25px;
+    border-radius: 40%;
+    cursor: pointer;
+    padding: 5px;
+    display: none; /* Hide by default */
+}
+.image-wrapper:hover .delete-btn {
+    display: block; /* Show on hover */
+}
+/*  */
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    display: none;
+}
+
+/* Progress Container */
+.progress-container {
+    position:absolute;
+    top: 35%;
+    left: 40%;
+    background: #254E58;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: #88BDBC 5px solid;
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    border-radius: 5px;
+    appearance: none;
+    color: #88BDBC;
+    background-color: #88BDBC;
 }

@@ -1,0 +1,12 @@
+.title {
+    white-space: nowrap; 
+    overflow-y: auto; 
+    scrollbar-width: none;
+}
+
+button {
+    font-size: 10px ;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+}

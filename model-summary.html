@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KoiAh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/master.css">
+    <link rel="stylesheet" href="css/homepage-styles/texts.css">
+    <link rel="stylesheet" href="css/homepage-styles/containers.css">
+</head>
+<body>
+    <!-- Navbar # Start -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a href="index.html"><img class="ms-5" src="img/logo.svg" alt="KoiAh Logo"></a>
+            <a class="navbar-brand ms-2" id="brandName" href="index.html">Koi<u id="underline">Ah</u></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav position-absolute top-1 start-50 translate-middle-x">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html"><u id="underline">Homepage</u></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="user%20testing.html">User Testing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="experiment.html">Experimentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="tool.html">Tool</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>  
+    <!-- Navbar # End -->
+
+    <!-- Content # Start -->
+     <div class="container-fluid mt-3">
+        <div class="row">
+            <div class="col-12 p-5 pb-3 pt-0">
+                <div class="row">
+                    <div class="cont-outer col-12 text-center">
+                        <div class="row">
+                            <div class="col-2 mt-4">
+                                <a href="data-summary.html"><h5>Data Summary</h5></a>
+                            </div>
+                            <div class="col-8">
+                                <h1>Model Summary</h1>
+                            </div>
+                            <div class="col-2 mt-4">
+                                <a href="index.html"><h5>Home</h5></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Division 1 - Left -->
+            <div class="col-5 ms-5 me-3" style="height:485px;">
+                <div class="row">
+                    <div class="cont-outer col-12 text-center p-2 outer">
+                        <h3 class="cont-inner p-1">Hypothesis One: Combined</h3>
+                        <div class="row">
+                            <div class="col-7 text-start">
+                                <img class="border border-3 border-dark m-1" src="img/Model - Performance Metrics - Combined.png" alt="Performance" width="300">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-8 d-grid mx-auto mt-2 pt-3">
+                                    <button class="btn btn-success btn-sm border border-3 border-dark" type="button" data-bs-toggle="modal" data-bs-target="#hypOnePM">Show Description</button>
+                                </div>
+                            </div>
+                            <div class="col-7 text-start">
+                                <img class="border border-3 border-dark m-1" src="img/mAP - Class - Combined - Test Set.png" alt="" width="300">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-8 d-grid mx-auto mt-5 pt-3">
+                                    <button class="btn btn-success btn-sm border border-3 border-dark" type="button" data-bs-toggle="modal" data-bs-target="#hypoOneAPTest">Show Description</button>
+                                </div>
+                            </div>
+                            <div class="col-7 text-start">
+                                <img class="border border-3 border-dark m-1" src="img/mAP - Class - Combined - Validation Set.png" alt="" width="300">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-8 d-grid mx-auto mt-5 pt-3">
+                                    <button class="btn btn-success btn-sm border border-3 border-dark" type="button" data-bs-toggle="modal" data-bs-target="#hypoOneAPVal">Show Description</button>
+                                </div>
+                            </div>
+                            <div class="col-8 d-grid mx-auto">
+                                <button class="btn btn-success btn-sm border border-3 border-dark" type="button" data-bs-toggle="modal" data-bs-target="#hypoOneTG">Show Training Graphs</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Division 1 - Left -->
+            <!-- Division 2 - Right -->
+            <div class="col-5 offset-1">
+                <div class="row">
+                    <div class="cont-outer col-12 text-center p-2 outer">
+                        <h3 class="cont-inner p-1">Hypothesis Two: Koi</h3>
+                        <div class="row">
+                            <div class="col-7 text-start">
+                                <img class="border border-3 border-dark m-1" src="img/Model - Performance Metrics - Koi.png" alt="Performance" width="300" height="70">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-8 d-grid mx-auto mt-2 pt-3">
+                                    <button class="btn btn-success btn-sm border border-3 border-dark" type="button" data-bs-toggle="modal" data-bs-target="#hypTwoPM">Show Description</button>
+                                </div>
+                            </div>
+                            <div class="col-7 text-start">
+                                <img class="border border-3 border-dark m-1" src="img/mAP - Class - Koi - Test Set.png" alt="" width="300" height="150">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-8 d-grid mx-auto mt-5 pt-3">
+                                    <button class="btn btn-success btn-sm border border-3 border-dark" type="button" data-bs-toggle="modal" data-bs-target="#hypoTwoAPTest">Show Description</button>
+                                </div>
+                            </div>
+                            <div class="col-7 text-start">
+                                <img class="border border-3 border-dark m-1" src="img/mAP - Class - Koi - Validation Set.png" alt="" width="300" height="160">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-8 d-grid mx-auto mt-5 pt-3">
+                                    <button class="btn btn-success btn-sm border border-3 border-dark" type="button" data-bs-toggle="modal" data-bs-target="#hypoTwoAPVal">Show Description</button>
+                                </div>
+                            </div>
+                            <div class="col-8 d-grid mx-auto">
+                                <button class="btn btn-success btn-sm border border-3 border-dark" type="button" data-bs-toggle="modal" data-bs-target="#hypoTwoTG">Show Training Graphs</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Division 2 - Right -->
+        </div>
+     </div>
+    <!-- Content # End -->
+    <!-- Modal #1 -->
+    <div class="modal fade" id="hypOnePM" tabindex="-1" aria-labelledby="hypOnePMLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="hypOnePMLabel">Hypothesis One: Performance Metrics</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12 p-2">
+                        <div class="row">
+                            <div class="col-6 results">
+                                <img class="mt-5" src="img/Model - Performance Metrics - Combined.png" alt="dataset" width="500">
+                            </div>
+                            <div class="col-6">
+                                <div class="col-12 mt-4">
+                                    <p class="pb-0 mb-1">The third image displays three key performance metrics for the model:</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>mAP (Mean Average Precision)</b>: The average of average precision scores for all classes, which is 85.2%. This metric gives a general sense of the model's accuracy.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Precision</b>: The ratio of true positive predictions to the total positive predictions, which is 82.7%. It indicates the model's ability to avoid false positives.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Recall</b>: The ratio of true positive predictions to the total actual positives, which is 81.1%. It indicates the model's ability to identify all relevant instances.</p>
+                                    <p class="pb-0 mb-1">Each of these metrics provides a different perspective on the model's performance, helping to understand its strengths and areas for improvement.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #1 -->
+    <!-- Modal #2 -->
+    <div class="modal fade" id="hypoOneAPTest" tabindex="-1" aria-labelledby="hypoOneAPTestLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="hypoOneAPTestLabel">Hypothesis One: Test Set AP</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12 p-2">
+                        <div class="row">
+                            <div class="col-7 results">
+                                <img src="img/mAP - Class - Combined - Test Set.png" alt="hypothesis-two">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-12 mt-4">
+                                    <p class="pb-0 mb-1">The image shows the average precision scores for each class evaluated on the test set. It includes various classes such as different koi varieties (e.g., Asagi, Bekko, Sanke, Showa) and non-koi objects (e.g., Goldfish, People, Lilies).</p> 
+                                    <br>
+                                    <p class="pb-0 mb-1">The scores indicate how accurately the model identifies and distinguishes between different classes in the test set. For instance, Goldfish have a high precision of 97, while Rocks have a lower precision of 58.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #2 -->
+    <!-- Modal #3 -->
+    <div class="modal fade" id="hypoOneAPVal" tabindex="-1" aria-labelledby="hypoOneAPValLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="hypoOneAPVal">Hypothesis One: Validation Set AP</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12 p-2">
+                        <div class="row">
+                            <div class="col-7 results">
+                                <img src="img/mAP - Class - Combined - Validation Set.png" alt="hypothesis-two">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-12 mt-4">
+                                    <p class="pb-0 mb-1">The image shows the average precision scores for each class based on the validation set. It provides an insight into the model's performance during the validation phase.  </p>
+                                    <br>
+                                    <p class="pb-0 mb-1">The validation set results typically guide model tuning and improvement before final testing. In this image, classes like Bekko and Sanke have very high precision scores (Both are 95), while People and Rocks have lower precision scores (64 and 77, respectively).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #3 -->
+    <!-- Modal #4 -->
+    <div class="modal fade" id="hypoOneTG" tabindex="-1" aria-labelledby="hypoOneTGLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="hypoOneTG">Hypothesis One: Training Graphs</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12 p-2" style="height: 500px;">
+                        <div class="row">
+                            <div class="col-12 text-center results">
+                                <img src="img/Training Graphs - Combined.png" alt="hypothesis-two">
+                            </div>
+                            <div class="col-10 offset-1">
+                                <div class="col-12 mt-4">
+                                    <p class="pb-0 mb-1">The image shows various performance metrics and losses for the model over 300 epochs:</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Class Loss</b>: This shows the classification loss over epochs, starting high and decreasing steadily. The smooth curve indicates consistent improvement in classification accuracy as training progresses.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Box Loss</b>: This represents the localization error for bounding boxes. The fluctuations in the graph are due to variations in the predicted bounding boxes, which is common in object detection tasks as the model learns to adjust box coordinates more accurately.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Object Loss</b>: This shows the objectness loss, which measures the confidence in the presence of objects. Similar to box loss, it starts higher and decreases with fluctuations as the model learns to distinguish objects better.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Precision</b>: The ratio of true positive predictions to the total positive predictions. It shows a rapid improvement initially and then stabilizes, indicating the model's ability to minimize false positives.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Recall</b>: The ratio of true positive predictions to the total actual positives. This metric also improves over time, reflecting the model's increasing ability to identify all relevant instances.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>mAP (Mean Average Precision)</b>: The average of average precision scores for all classes. The steady rise in this metric suggests overall improvement in the model's detection accuracy.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>mAP_50_95</b>: This metric tracks mAP at different IoU thresholds. The continuous improvement indicates better performance across varying levels of detection difficulty.</p>
+                                    <p class="pb-0 mb-1">Each of these metrics provides a different perspective on the model's performance, highlighting its strengths and areas for improvement. The fluctuations, especially in box and object losses, are typical in training deep learning models as they adjust to better fit the training data.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #4 -->
+    <!-- Modal #5 -->
+    <div class="modal fade" id="hypTwoPM" tabindex="-1" aria-labelledby="hypTwoPMLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="hypTwoPMLabel">Hypothesis Two: Performance Metrics</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12 p-2">
+                        <div class="row">
+                            <div class="col-6 results">
+                                <img class="mt-5" src="img/Model - Performance Metrics - Koi.png" alt="dataset" width="500">
+                            </div>
+                            <div class="col-6">
+                                <div class="col-12 mt-4">
+                                    <p class="pb-0 mb-1">The image shows three key performance metrics for the model:</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>mAP (Mean Average Precision)</b>: The average of average precision scores for all classes, which is 91.7%. This metric gives a general sense of the model's accuracy.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Precision</b>: The ratio of true positive predictions to the total positive predictions, which is 88.5%. It indicates the model's ability to avoid false positives.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Recall</b>: The ratio of true positive predictions to the total actual positives, which is 88.3%. It indicates the model's ability to identify all relevant instances.</p>
+                                    <p class="pb-0 mb-1">Each of these metrics provides a different perspective on the model's performance, helping to understand its strengths and areas for improvement.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #5 -->
+    <!-- Modal #6 -->
+    <div class="modal fade" id="hypoTwoAPTest" tabindex="-1" aria-labelledby="hypoTwoAPTestLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="hypoTwoAPTestLabel">Hypothesis Two: Test Set AP</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12 p-2">
+                        <div class="row">
+                            <div class="col-7 results mt-5">
+                                <img class="mt-3" src="img/mAP - Class - Koi - Test Set.png" alt="hypothesis-two">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-12 mt-0">
+                                    <p class="pb-0 mb-1">The image shows the average precision scores for each class evaluated on the test set. It includes various koi varieties:</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>All</b>: The overall average precision across all classes is 89%, providing a general measure of the model's accuracy.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Asagi</b>: This class has a high average precision of 91%, indicating the model's strong performance in accurately identifying Asagi koi.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Bekko</b>: With an average precision of 89%, the model shows good accuracy in detecting Bekko koi.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Hikarimono</b>: This class has a lower average precision of 86%, suggesting that the model has more difficulty accurately identifying Hikarimono koi compared to other varieties.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Kohaku</b>: The model performs well in detecting Kohaku koi, with an average precision of 91%.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Sanke</b>: Sanke koi detection has the highest average precision at 92%, indicating excellent model performance for this variety.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Showa</b>: Showa koi detection has an average precision of 87%, reflecting good but slightly lower performance compared to other koi varieties.</p>
+                                    <p class="pb-0 mb-1">These scores provide insights into the model's ability to distinguish between different koi varieties in the test set. While the model performs exceptionally well with some classes like Sanke and Asagi, there is room for improvement in others like Hikarimono and Showa.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #6 -->
+    <!-- Modal #7 -->
+    <div class="modal fade" id="hypoTwoAPVal" tabindex="-1" aria-labelledby="hypoTwoAPValLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="hypoTwoAPVal">Hypothesis Two: Validation Set AP</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12 p-2">
+                        <div class="row">
+                            <div class="col-7 mt-5 results">
+                                <img src="img/mAP - Class - Koi - Validation Set.png" alt="hypothesis-two">
+                            </div>
+                            <div class="col-5">
+                                <div class="col-12 mt-0">
+                                    <p class="pb-0 mb-1">The image shows the average precision scores for each class evaluated on the validation set. It includes various koi varieties:</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>All</b>: The overall average precision across all classes is 92%, providing a general measure of the model's accuracy.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Asagi</b>: This class has a high average precision of 92%, indicating the model's strong performance in accurately identifying Asagi koi.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Bekko</b>: With an average precision of 92%, the model shows good accuracy in detecting Bekko koi.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Hikarimono</b>: This class has a higher average precision of 94%, suggesting that the model accurately identifies Hikarimono koi.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Kohaku</b>: The model performs well in detecting Kohaku koi, with an average precision of 91%.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Sanke</b>: Sanke koi detection has an average precision of 93%, indicating excellent model performance for this variety.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Showa</b>: Showa koi detection has an average precision of 88%, reflecting slightly lower performance compared to other koi varieties.</p>
+                                    <p class="pb-0 mb-1">These scores provide insights into the model's ability to distinguish between different koi varieties in the validation set. While the model performs exceptionally well with some classes like Hikarimono and Sanke, there is slightly lower performance for others like Showa.</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #7 -->
+    <!-- Modal #8 -->
+    <div class="modal fade" id="hypoTwoTG" tabindex="-1" aria-labelledby="hypoTwoTGLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="cont-outer modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="hypoTwoTG">Hypothesis Two: Training Graphs</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="cont-inner col-12 p-2" style="height: 500px;">
+                        <div class="row">
+                            <div class="col-12 text-center results">
+                                <img src="img/Training Graphs - Koi.png" alt="hypothesis-two">
+                            </div>
+                            <div class="col-10 offset-1">
+                                <div class="col-12 mt-4">
+                                    <p class="pb-0 mb-1">The image shows various performance metrics and losses for the model over 300 epochs:</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Class Loss</b>: This metric shows the classification loss over time, which starts high and gradually decreases. The decreasing trend indicates that the model's ability to classify correctly is improving as training progresses.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Box Loss</b>: This graph tracks the error in predicting the bounding box coordinates for objects. The observed fluctuations reflect the model's adjustments in learning to predict more accurate bounding boxes during the training process.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Object Loss</b>: This represents the loss related to the model's confidence in detecting the presence of an object. The initial high value that decreases over time indicates that the model is becoming more confident and accurate in detecting objects as training advances.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Precision</b>: This metric measures the proportion of true positive predictions out of all positive predictions made by the model. The rapid increase followed by stabilization suggests the model's growing ability to avoid false positives.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>Recall</b>: This metric shows the ratio of correctly identified positive instances to the total actual positives. The upward trend highlights the model's improving capability to capture relevant objects in the data.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>mAP (Mean Average Precision)</b>: The mAP curve indicates the overall detection performance by averaging precision across different classes. The steady upward trend reflects the model's increasing accuracy in detecting multiple classes of objects.</p>
+                                    <p class="pb-0 mb-1 ms-3"><b>mAP_50_95</b>: This metric tracks the mean average precision at various Intersection over Union (IoU) thresholds, providing a comprehensive view of detection accuracy under different difficulty levels. The consistent improvement signifies better model performance across varying detection challenges.</p>
+                                    <p class="pb-0 mb-1">Each of these metrics provides insights into different aspects of the model's training process, including its classification accuracy, localization precision, and overall detection performance. The variations in some loss graphs, particularly box and object losses, are normal and expected as the model optimizes itself over time.</p>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal #8 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
