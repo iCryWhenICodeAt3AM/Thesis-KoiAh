@@ -42,7 +42,14 @@
     <div class="container-fluid mt-3">
         <div class="row">
             <!-- Division 1 - Left -->
-            <div class="cont-outer col-5 ms-5 me-5 text-center" style="height:600px;">
+            <div class="cont-outer col-5 ms-5 me-5 text-center" style="height:600px;" id="inputs">
+                <div id="overlay" class="overlay">
+                    <div class="progress-container">
+                        <progress id="progress-bar" class="progress-bar" value="0"></progress>
+                        <p id="progress-text">Processing: 0%</p>
+                        <p id="progress-number">Remaining Images: 0</p>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="cont-inner col-6 offset-3 d-flex mt-1 justify-content-center border border-3 border-dark">
                         <label for="" class="m-1 p-1"><b>Hypothesis</b></label>
@@ -532,7 +539,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="koi-metric">
-                    
+                                        
                                 </tbody>
                             </table>
                         </div>
@@ -834,6 +841,7 @@
     <script src="js/experiment-modules/uploadFiles.js"></script>
     <script src="js/experiment-modules/uploadGT.js"></script>
     <script src="js/experiment-modules/uploadPB.js"></script>
+    <script src="js/user-testing-modules/progress-bar.js"></script>
     <script src="js/experiment-modules/main.js"></script>
     <script src="js/experiment-modules/export.js"></script>
 </body>

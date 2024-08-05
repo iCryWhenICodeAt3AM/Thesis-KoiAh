@@ -44,6 +44,7 @@ function parseGroundTruth(event, category) {
             }
 
             // Process and add the ground truth data to the respective set if the image is in the image uploads
+            console.log(json, imageUploads);
             json.forEach(item => {
                 const imageName = item.image;
                 if (imageUploads.some(image => image.name === imageName)) {

@@ -245,9 +245,26 @@ async function evaluateImages() {
     const ONE_MODEL_VERSION = '11';
     const TWO_MODEL_VERSION = '2';
 
+    let unprocessed = 0;
+    let processed = 0;
 
     // Check and add missing predictions for Koi images
     if (selectorValue === '1') {
+        for (const img of images.koi) {
+            if (!predictions.koi.find(pred => pred.image === img.name)) {
+                unprocessed++;
+            }
+        }
+        for (const img of images.nonKoi) {
+            if (!predictions.nonKoi.find(pred => pred.image === img.name)) {
+                unprocessed++;
+            }
+        }
+        console.log("Unprocessed: ", unprocessed);
+        // Initialize progress bar
+        initializeProgressBar(unprocessed);
+
+        // Process Koi images
         for (const img of images.koi) {
             if (!predictions.koi.find(pred => pred.image === img.name)) {
                 const imageData = img.data; // Prepare imageData according to your needs
@@ -255,9 +272,11 @@ async function evaluateImages() {
                 predictions.koi.push({ image: img.name, annotations: preds });
                 koiPB.add({ image: img.name, annotations: preds });
                 document.getElementById('k-predictions-count').innerText = predictions.koi.length;
+                updateProgress(++processed); // Update progress
             }
         }
 
+        // Process Non-Koi images
         for (const img of images.nonKoi) {
             if (!predictions.nonKoi.find(pred => pred.image === img.name)) {
                 const imageData = img.data; // Prepare imageData according to your needs
@@ -265,31 +284,72 @@ async function evaluateImages() {
                 predictions.nonKoi.push({ image: img.name, annotations: preds });
                 nonKoiPB.add({ image: img.name, annotations: preds });
                 document.getElementById('nk-predictions-count').innerText = predictions.nonKoi.length;
+                updateProgress(++processed); // Update progress
             }
         }
     } else if (selectorValue === '2') {
-        for (const size of ['small', 'medium', 'large']) {
-            for (const img of images[size]) {
-                if (!predictions[size].find(pred => pred.image === img.name)) {
-                    const imageData = img.data; // Prepare imageData according to your needs
-                    const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
-                    predictions[size].push({ image: img.name, annotations: preds });
-
-                    // Update the corresponding prediction set
-                    if (size === 'small') {
-                        smallPB.add({ image: img.name, annotations: preds });
-                    } else if (size === 'medium') {
-                        mediumPB.add({ image: img.name, annotations: preds });
-                    } else if (size === 'large') {
-                        largePB.add({ image: img.name, annotations: preds });
-                    }
-
-                    document.getElementById(`${size}-predictions-count`).innerText = predictions[size].length;
-                }
+        // Process Small images
+        for (const img of images.small) {
+            if (!predictions.small.find(pred => pred.image === img.name)) {
+                unprocessed++;
             }
+        }
+        for (const img of images.medium) {
+            if (!predictions.medium.find(pred => pred.image === img.name)) {
+                unprocessed++;
+            }
+        }
+        for (const img of images.large) {
+            if (!predictions.large.find(pred => pred.image === img.name)) {
+                unprocessed++;
+            }
+        }
+        // Initialize progress bar
+        initializeProgressBar(unprocessed);
+
+        // Process Small images
+        for (const img of images.small) {
+            if (!predictions.small.find(pred => pred.image === img.name)) {
+                const imageData = img.data; // Prepare imageData according to your needs
+                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
+                predictions.small.push({ image: img.name, annotations: preds });
+                smallPB.add({ image: img.name, annotations: preds });
+                document.getElementById('small-predictions-count').innerText = predictions.small.length;
+            }
+            updateProgress(++processed); // Update progress
+        }
+
+        // Process Medium images
+        for (const img of images.medium) {
+            if (!predictions.medium.find(pred => pred.image === img.name)) {
+                const imageData = img.data; // Prepare imageData according to your needs
+                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
+                predictions.medium.push({ image: img.name, annotations: preds });
+                mediumPB.add({ image: img.name, annotations: preds });
+                document.getElementById('medium-predictions-count').innerText = predictions.medium.length;
+            }
+            updateProgress(++processed); // Update progress
+        }
+
+        // Process Large images
+        for (const img of images.large) {
+            if (!predictions.large.find(pred => pred.image === img.name)) {
+                const imageData = img.data; // Prepare imageData according to your needs
+                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
+                predictions.large.push({ image: img.name, annotations: preds });
+                largePB.add({ image: img.name, annotations: preds });
+                document.getElementById('large-predictions-count').innerText = predictions.large.length;
+            }
+            updateProgress(predictions.small.length + predictions.medium.length + predictions.large.length); // Update progress
         }
     }
 
+    // Complete progress bar after processing
+    completeProgressBar();
+
+    // Optionally hide the overlay after processing is complete
+    document.getElementById('overlay').style.display = 'none';
+    
     // Calculate and display metrics for each image
     let overallMetrics = [];
     let confusionMatrix = {};
