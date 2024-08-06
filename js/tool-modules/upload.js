@@ -23,13 +23,14 @@ function sanitizeFileName(name) {
 function displayImage() {
     let excludedImages = [];
     let imageIndex = 0;
-    const images = document.getElementById('images').files;
-    const folder = document.getElementById('folder').files;
-
-    const uploads = [...images, ...folder];
-
+    const imagesInput = document.getElementById('images');
+    const folderInput = document.getElementById('folder');
     const imageContainer = document.getElementById('image-container');
     const imageCount = document.getElementById('image-count');
+    const classLimit = document.getElementById('classLimit');
+
+    // Combine files from both inputs
+    const uploads = [...imagesInput.files, ...folderInput.files];
 
     for (const image of uploads) {
         let htmlContent = '';
@@ -55,10 +56,6 @@ function displayImage() {
                             </div>
                         </div>
                     `;
-                    // const img = document.createElement('img');
-                    // img.className = 'col-3 p-1 ' + safeId;
-                    // img.id = safeId;
-                    // img.src = event.target.result;
                     imageContainer.innerHTML += htmlContent;
 
                     // Store image data in the global variable
@@ -68,19 +65,25 @@ function displayImage() {
                     });
                     uploadedImagesData.push(theImage);
                     imageCount.innerText = uploadedImages.length;
+                    classLimit.value = uploadedImages.length;
                 };
             })(image);
             reader.onerror = function(error) {
                 console.error('Error reading file:', image.name, error);
                 excludedImages.push(image.name);
-                existingFiles.remove(image.name);
-                uploadedImagesData.remove(image.name);
+                existingFiles.delete(image.name);
+                uploadedImagesData = uploadedImagesData.filter(img => img.name !== image.name);
             };
             reader.readAsDataURL(image);
         } else {
             excludedImages.push(image.name);
         }
     }
+    
+    // Clear file inputs after processing
+    imagesInput.value = '';
+    folderInput.value = '';
+
     console.log("Uploaded Images Data: ", uploadedImagesData);
     console.log("Uploaded Images: ", uploadedImages);
     console.log("Excluded Images: ", excludedImages.length);
@@ -88,6 +91,7 @@ function displayImage() {
     console.log("Exempted Files: ", exemptedFiles);
     // alert(excludedImages.length," had errors, check console logs for the names.")
 }
+
 
 
 // Function to handle the image delete
@@ -100,8 +104,10 @@ async function deleteImage(index, imageName) {
 
     // Remove the image data from the global variables
     existingFiles.delete(imageName);
+    exemptedFiles.delete(imageName);
     uploadedImages = uploadedImages.filter(img => img.name !== imageName);
     resultJsonData = resultJsonData.filter(json => json[0] !== imageName);
+    console.log(`Uploaded Images: ${uploadedImages}, Results: ${resultJsonData}`);
     if (typeof currentJsonData !== 'undefined' && currentJsonData.length > 0) {
         currentJsonData = currentJsonData.filter(json => json.image !== imageName);
         document.getElementById("annotated-count").innerText = currentJsonData.length;

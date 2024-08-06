@@ -1,14 +1,12 @@
 // Function to open the modal
 function openExportModal() {
-    const modal = document.getElementById('export-modal');
     populateClassTable(); // Populate the table with class names and checkboxes
-    modal.style.display = 'block';
+    $('#export-modal').modal('show'); // Show the modal using Bootstrap's jQuery method
 }
 
 // Function to close the modal
 function closeModal() {
-    const modal = document.getElementById('export-modal');
-    modal.style.display = 'none';
+    $('#export-modal').modal('hide'); // Hide the modal using Bootstrap's jQuery method
 }
 
 // Function to populate the class table in the modal
@@ -17,15 +15,25 @@ function populateClassTable() {
     classContainer.innerHTML = ''; // Clear existing content
 
     const table = document.createElement('table');
-    table.innerHTML = '<tr><th>Select</th><th>Class Name</th></tr>';
+    table.classList.add('table', 'table-striped', 'table-hover', 'table-bordered', 'table-export'); // Add Bootstrap table classes
+    table.innerHTML = `
+        <thead class="thead-dark">
+            <tr>
+                <th>Select</th>
+                <th>Class Name</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    `;
 
     Object.keys(globalLabelCounts).forEach(label => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><input type="checkbox" class="class-checkbox" value="${label}" /></td>
+            <td class="text-center"><input type="checkbox" class="class-checkbox" value="${label}" /></td>
             <td>${label}</td>
         `;
-        table.appendChild(row);
+        table.querySelector('tbody').appendChild(row);
     });
 
     classContainer.appendChild(table);

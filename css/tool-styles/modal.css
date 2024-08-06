@@ -43,14 +43,6 @@
     background-color: rgba(0,0,0,0.4);
 }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
 .close-button {
     color: #aaa;
     float: right;
@@ -63,4 +55,20 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* Ensure the modal body centers content and prevents overflow */
+.imgshow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    padding: 0; /* Remove padding to prevent extra space */
+}
+
+/* Style for the canvas to fit within the modal */
+#c {
+    max-width: 100%;
+    max-height: 80vh; /* Adjust as needed to fit within the modal */
+    display: block;
 }
