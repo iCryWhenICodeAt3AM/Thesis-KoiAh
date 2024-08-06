@@ -315,8 +315,8 @@ async function evaluateImages() {
                 predictions.small.push({ image: img.name, annotations: preds });
                 smallPB.add({ image: img.name, annotations: preds });
                 document.getElementById('small-predictions-count').innerText = predictions.small.length;
+                updateProgress(++processed); // Update progress
             }
-            updateProgress(++processed); // Update progress
         }
 
         // Process Medium images
@@ -327,8 +327,8 @@ async function evaluateImages() {
                 predictions.medium.push({ image: img.name, annotations: preds });
                 mediumPB.add({ image: img.name, annotations: preds });
                 document.getElementById('medium-predictions-count').innerText = predictions.medium.length;
+                updateProgress(++processed); // Update progress
             }
-            updateProgress(++processed); // Update progress
         }
 
         // Process Large images
@@ -339,8 +339,8 @@ async function evaluateImages() {
                 predictions.large.push({ image: img.name, annotations: preds });
                 largePB.add({ image: img.name, annotations: preds });
                 document.getElementById('large-predictions-count').innerText = predictions.large.length;
+                updateProgress(++processed); // Update progress
             }
-            updateProgress(predictions.small.length + predictions.medium.length + predictions.large.length); // Update progress
         }
     }
 
