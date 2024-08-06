@@ -86,7 +86,7 @@ async function startAnnotation() {
             reader.onload = async (event) => {
                 const base64Image = event.target.result.split(',')[1];
                 const imageName = imageFile.name;
-                console.log("Base 64: ", event.target.result.split(',')[1]);
+                // console.log("Base 64: ", event.target.result.split(',')[1]);
                 // Display Image
                 const img = `
                     <div class="col-12">
@@ -94,13 +94,14 @@ async function startAnnotation() {
                     </div>
                 `;
                 processingContainer.innerHTML = img;
-
+                
                 try {
                     const response = await axios({
                         method: 'POST',
                         url: `https://detect.roboflow.com/${model}`,
                         params: {
-                            api_key: apiKey
+                            api_key: apiKey,
+                            // confidence: confidence
                         },
                         data: base64Image,
                         headers: {
@@ -108,6 +109,12 @@ async function startAnnotation() {
                         }
                     });
 
+                    for (const prediction of response.data.predictions) {
+                        console.log("Label: ", prediction.class, " Confidence: ", prediction.confidence);
+                    }
+
+
+                    console.log(response);
                     let formattedAnnotations = response.data.predictions.map(prediction => ({
                         label: prediction.class,
                         coordinates: {
@@ -140,6 +147,10 @@ async function startAnnotation() {
                     reject(error);
                     startButton.disabled = false; // Enable start button
                     alert("Please input the model & version, or the API Key.");
+                    // Complete the progress bar
+                    completeProgressBar();
+                    // Optionally hide the overlay after processing is complete
+                    document.getElementById('overlay').style.display = 'none';
                 }
             };
             reader.readAsDataURL(imageFile);
@@ -292,6 +303,7 @@ function processInitialData(currentJsonData, annotatedImages, classContainer, cl
         classContainer.innerHTML += item;
     });
 
+    
     // Step 3: Post the processed items in the itemListContainer
     const itemListContainer = document.getElementById('itemlist-container');
     itemListContainer.innerHTML = '';
@@ -299,39 +311,28 @@ function processInitialData(currentJsonData, annotatedImages, classContainer, cl
     filteredData.forEach((item, index) => {
         const imageName = item.image;
         const annotations = item.annotations;
-
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'cont-outer row p-1 mt-2';
-        itemDiv.addEventListener('click', () => showImageModal(imageName));
-
-        const numberDiv = document.createElement('div');
-        numberDiv.className = 'col-1';
-        numberDiv.innerHTML = `<h6 class="m-0">${index + 1}</h6>`;
-        itemDiv.appendChild(numberDiv);
-
-        const nameDiv = document.createElement('div');
-        nameDiv.className = 'col-6';
-        nameDiv.id = formatLabel(imageName);
-        nameDiv.style.whiteSpace = 'nowrap';
-        nameDiv.style.overflowY = 'auto';
-        nameDiv.style.scrollbarWidth = 'none';
-        nameDiv.innerHTML = `<h6 class="m-0">${imageName}</h6>`;
-        itemDiv.appendChild(nameDiv);
-
+    
         const uniqueLabels = [...new Set(annotations.map(annotation => annotation.label))];
-
-        const labelCountDiv = document.createElement('div');
-        labelCountDiv.className = 'col-2';
-        labelCountDiv.innerHTML = `<h6 class="m-0">${annotations.length}</h6>`;
-        itemDiv.appendChild(labelCountDiv);
-
-        const annotationCountDiv = document.createElement('div');
-        annotationCountDiv.className = 'col-2';
-        annotationCountDiv.innerHTML = `<h6 class="m-0">${uniqueLabels.length}</h6>`;
-        itemDiv.appendChild(annotationCountDiv);
-
-        itemListContainer.appendChild(itemDiv);
+    
+        htmlContent = `
+            <div class="cont-outer row p-1 mt-2" onclick="showImageModal('${imageName}')">
+                <div class="col-1">
+                    <h6 class="m-0">${index + 1}</h6>
+                </div>
+                <div class="col-6" id="${formatLabel(imageName)}" style="white-space: nowrap; overflow-y: auto; scrollbar-width: none;">
+                    <h6 class="m-0">${imageName}</h6>
+                </div>
+                <div class="col-2">
+                    <h6 class="m-0">${annotations.length}</h6>
+                </div>
+                <div class="col-2">
+                    <h6 class="m-0">${uniqueLabels.length}</h6>
+                </div>
+            </div>
+        `;
+    
         annotatedImages.innerText = (index + 1);
+        itemListContainer.innerHTML += htmlContent;
     });
 
     console.log('Filtered Data:', filteredData);

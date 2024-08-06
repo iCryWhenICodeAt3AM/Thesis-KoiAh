@@ -1,7 +1,7 @@
-function showImageModal(filename) {
+async function showImageModal(filename) {
+    console.log(filename);
     // Find the image and its annotations from the currentJson or resultJson
     const jsonData = [...filteredData, ...resultJsonData];
-    console.log(filteredData, resultJsonData);
     const data = jsonData.find(item => item.image === filename);
     if (!data) {
         console.error("No data found for the filename:", filename);
@@ -9,7 +9,7 @@ function showImageModal(filename) {
     }
 
     const { annotations } = data;
-    
+
     // Find the image file in uploadedImages array
     const imageFile = uploadedImages.find(file => file.name === filename);
     if (!imageFile) {
@@ -30,74 +30,71 @@ function showImageModal(filename) {
         case 'webp':
             mimeType = 'image/webp';
             break;
-        // Add other cases as needed
         default:
-            mimeType = 'image/jpeg'; // Fallback to JPEG if unknown
+            mimeType = 'image/jpeg';
     }
 
     // Create an image element
     const img = new Image();
-
-    // Create canvas elements
-    const canvas = document.getElementById('c');
-    const ctx = canvas.getContext('2d');
-    const canvasOverlay = document.getElementById('cover');
-    const ctxOverlay = canvasOverlay.getContext('2d');
-
     img.onload = function() {
-        // Set canvas sizes
+        const canvas = document.getElementById('c');
+        const ctx = canvas.getContext('2d');
+
+        // Calculate scaling factors based on canvas and image dimensions
+        const xScale = canvas.width / img.width;
+        const yScale = canvas.height / img.height;
+
+        // Set canvas size to match image dimensions
         canvas.width = img.width;
         canvas.height = img.height;
-        canvas.style.maxHeight = img.height;
-        canvas.style.maxWidth = img.width;
-        canvasOverlay.width = img.width;
-        canvasOverlay.height = img.height;
 
-        // Draw the image on the base canvas
-        ctx.drawImage(img, 0, 0, img.width, img.height);
+        // Draw the image on the canvas
+        ctx.drawImage(img, 0, 0);
 
-        // Clear the overlay canvas
-        ctxOverlay.clearRect(0, 0, img.width, img.height);
-
-        // Draw annotations
+        // Draw scaled annotations
         annotations.forEach(annotation => {
             const { x, y, width, height } = annotation.coordinates;
 
+            // Adjust coordinates based on the scaling factor
+            const adjustedX = x * xScale;
+            const adjustedY = y * yScale;
+            const adjustedWidth = width * xScale;
+            const adjustedHeight = height * yScale;
+
+            // Calculate top-left corner for rect
+            const rectX = adjustedX - adjustedWidth / 2;
+            const rectY = adjustedY - adjustedHeight / 2;
+
             // Draw rectangle
-            ctxOverlay.beginPath();
-            ctxOverlay.rect(x, y, width, height);
-            ctxOverlay.lineWidth = 2;
-            ctxOverlay.strokeStyle = 'red';
-            ctxOverlay.stroke();
+            ctx.beginPath();
+            ctx.rect(rectX, rectY, adjustedWidth, adjustedHeight);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'red';
+            ctx.stroke();
 
             // Draw label
-            ctxOverlay.font = '14px Arial';
-            ctxOverlay.fillStyle = 'red';
-            ctxOverlay.fillText(annotation.label, x, y > 10 ? y - 5 : y + 15);
+            ctx.font = '14px Arial';
+            ctx.fillStyle = 'red';
+            ctx.fillText(annotation.label, rectX, rectY > 10 ? rectY - 5 : rectY + 15);
         });
+
+        // Adjust canvas style to fit within modal without stretching
+        canvas.style.maxWidth = '100%';
+        canvas.style.maxHeight = '80vh'; // Ensure it fits within the modal's height
     };
 
-    // Specify the src to load the image
     const imageDataUrl = `data:${mimeType};base64,${imageFile.data}`;
     img.src = imageDataUrl;
 
-
-    // Show the modal
-    const modal = document.getElementById('imageModal');
-    modal.style.display = 'block';
-
-    // Add event listener to close the modal
-    const closeButton = document.getElementById('closeModal');
-    closeButton.onclick = function() {
-        modal.style.display = 'none';
+    img.onerror = function() {
+        console.error("Image failed to load.");
+        alert("Image could not be loaded.");
     };
 
-    // Close modal when clicking outside the content
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
+    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    modal.show();
+
+    document.getElementById('closeModal').onclick = function() {
+        modal.hide();
     };
 }
-
-
