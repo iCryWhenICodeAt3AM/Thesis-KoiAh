@@ -407,7 +407,13 @@ async function evaluateImages() {
 
     // Process Anova
     await performAnova(selectorValue, overallMetrics);
+
+    $('#hypOneModal').modal('show');
 }
+
+// async function evaluateImages(){
+//     $('#hypOneModal').modal('show');
+// }
 
 // Function to display metrics in a table
 function displayMetrics(metrics, tableId) {
@@ -503,23 +509,26 @@ function createLineChart(elementId, labels, dataSets) {
 
     const ctx = document.getElementById(elementId).getContext('2d');
 
-    // Clear the canvas before drawing
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-    let expandGraph;
+    // let expandGraph;
 
     if (elementId === 'hypothesis-one-graph') {
         const half_length = Math.ceil(labels.length / 2);    
         labels = labels.slice(0, half_length);
-        expandGraph = document.getElementById("hypothesis-one-graph-expand").getContext('2d');
+        // expandGraph = document.getElementById("hypothesis-one-graph-expand").getContext('2d');
     } else {
         const third_length = Math.ceil(labels.length / 3);
         labels = labels.slice(0, third_length);
-        expandGraph = document.getElementById("hypothesis-two-graph-expand").getContext('2d');
+        // expandGraph = document.getElementById("hypothesis-two-graph-expand").getContext('2d');
     }
 
-    // Clear the expanded graph canvas before drawing
-    expandGraph.clearRect(0, 0, expandGraph.canvas.width, expandGraph.canvas.height);
+    // Check if expandGraph is defined
+    if (ctx) {
+        // Clear the expanded graph canvas before drawing
+        console.log('Clearing canvas');
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    } else {
+        console.error('Failed to get canvas context');
+    }
 
     new Chart(ctx, {
         type: 'line',
@@ -547,32 +556,32 @@ function createLineChart(elementId, labels, dataSets) {
             }
         }
     });
-    new Chart(expandGraph, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: dataSets
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Image Index'
-                    }
-                },
-                y: {
-                    min: -0.5,
-                    max: 1.5,
-                    title: {
-                        display: true,
-                        text: 'Accuracy  (F1-score)'
-                    }
-                }
-            }
-        }
-    });
+    // new Chart(expandGraph, {
+    //     type: 'line',
+    //     data: {
+    //         labels: labels,
+    //         datasets: dataSets
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         scales: {
+    //             x: {
+    //                 title: {
+    //                     display: true,
+    //                     text: 'Image Index'
+    //                 }
+    //             },
+    //             y: {
+    //                 min: -0.5,
+    //                 max: 1.5,
+    //                 title: {
+    //                     display: true,
+    //                     text: 'Accuracy  (F1-score)'
+    //                 }
+    //             }
+    //         }
+    //     }
+    // });
 }
 
 // Perform ANOVA Call

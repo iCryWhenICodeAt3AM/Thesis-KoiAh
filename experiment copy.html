@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/master.css">
     <link rel="stylesheet" href="css/experiment-styles/texts.css">
     <link rel="stylesheet" href="css/experiment-styles/containers.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Navbar # Start -->
@@ -433,7 +432,7 @@
                         </div>
                     </div>
                     <div class="cont-inner col-11 ms-4 pt-2 pb-2 mt-2 border border-3 border-dark">
-                        <!-- <canvas id="hypothesis-one-graph"></canvas> -->
+                        <canvas id="hypothesis-one-graph"></canvas>
                         <div class="row">
                             <div class="col-6 offset-3 mb-2">
                                 <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="oneShowModal" type="button" data-bs-toggle="modal" data-bs-target="#oneGraphModal">Expand Graph</button>
@@ -481,7 +480,7 @@
                         </div>
                     </div>
                     <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark">
-                        <!-- <canvas id="hypothesis-two-graph"></canvas> -->
+                        <canvas id="hypothesis-two-graph"></canvas>
                         <div class="row">
                             <div class="col-6 offset-3 mb-2">
                                 <button class="btn btn-success btn-sm border border-3 border-dark showTable" id="twoShowModal" type="button" data-bs-toggle="modal" data-bs-target="#twoGraphModal">Expand Graph</button>
@@ -518,107 +517,6 @@
         </div>
      </div>
     <!-- Content # End -->
-    <!-- Modal #Origin -->
-    <div class="modal fade" id="hypOneModal" tabindex="-1" aria-labelledby="hypOneModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="cont-outer modal-content">
-                <div class="modal-header">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link active" id="anova-tab" data-bs-toggle="tab" data-bs-target="#anova" type="button" role="tab" aria-controls="anova" aria-selected="true">ANOVA</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button" role="tab" aria-controls="data" aria-selected="false">DATA</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link" id="matrix-tab" data-bs-toggle="tab" data-bs-target="#matrix" type="button" role="tab" aria-controls="matrix" aria-selected="false">MATRIX</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="table-tab" data-bs-toggle="tab" data-bs-target="#table" type="button" role="tab" aria-controls="table" aria-selected="false">TABLE</button>
-                          </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="koi-tab" data-bs-toggle="tab" data-bs-target="#koi" type="button" role="tab" aria-controls="koi" aria-selected="false">KOI</button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="non-koi-tab" data-bs-toggle="tab" data-bs-target="#non-koi" type="button" role="tab" aria-controls="non-koi" aria-selected="false">NON-KOI</button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="export-tab" data-bs-toggle="tab" data-bs-target="#export" type="button" role="tab" aria-controls="export" aria-selected="false">EXPORT</button>
-                          </li>
-                    </ul>             
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-12">
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="anova" role="tabpanel" aria-labelledby="anova-tab">
-                                <div class="results" id="anova-one">
-                                    <!--  -->
-                                    
-                                    <!--  -->
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="data" role="tabpanel" aria-labelledby="data-tab">
-                                <div class="results" id="data-one">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="matrix" role="tabpanel" aria-labelledby="matrix-tab">
-                                <div class="results" id="one-confusion-matrix">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
-                                <div class="cont-inner col-12" id="hypothesis-one-graph-container">
-                                    <canvas id="hypothesis-one-graph"></canvas>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="koi" role="tabpanel" aria-labelledby="koi-tab">
-                                <div class="results" id="koi-table">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Image</th>
-                                                <th>Precision</th>
-                                                <th>Recall</th>
-                                                <th>F1 Score</th>
-                                                <th>Category</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="koi-metric">
-                                                
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="non-koi" role="tabpanel" aria-labelledby="non-koi-tab">
-                                <div class="results" id="non-koi-table">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Image</th>
-                                                <th>Precision</th>
-                                                <th>Recall</th>
-                                                <th>F1 Score</th>
-                                                <th>Category</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="non-koi-metric">
-                            
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="export" role="tabpanel" aria-labelledby="export-tab">
-                                EXPORT
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal #Origin -->
     <!-- Modal #1 -->
     <div class="modal fade" id="koiModal" tabindex="-1" aria-labelledby="koiModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -629,7 +527,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="cont-inner col-8 offset-2">
-                        <!-- <div class="results" id="koi-table">
+                        <div class="results" id="koi-table">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -645,7 +543,7 @@
                                         
                                 </tbody>
                             </table>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -662,7 +560,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="cont-inner col-8 offset-2">
-                        <!-- <div class="results" id="non-koi-table">
+                        <div class="results" id="non-koi-table">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -678,7 +576,7 @@
                     
                                 </tbody>
                             </table>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -793,9 +691,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- <div class="cont-inner col-12" id="hypothesis-one-graph-expand-container">
+                    <div class="cont-inner col-12" id="hypothesis-one-graph-expand-container">
                         <canvas id="hypothesis-one-graph-expand"></canvas>
-                    </div> -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -827,11 +725,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex justify-content-center text-center">
-                    <!-- <div class="results" id="anova-one"> -->
+                    <div class="results" id="anova-one">
                         <!--  -->
                         
                         <!--  -->
-                    <!-- </div> -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -862,8 +760,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex justify-content-center text-center">
-                    <!-- <div class="results" id="data-one">
-                    </div> -->
+                    <div class="results" id="data-one">
+                    </div>
                 </div>
             </div>
         </div>
@@ -910,8 +808,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex justify-content-center text-center">
-                    <!-- <div class="results" id="one-confusion-matrix">
-                    </div> -->
+                    <div class="results" id="one-confusion-matrix">
+                    </div>
                 </div>
             </div>
         </div>
