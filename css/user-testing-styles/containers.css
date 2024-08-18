@@ -9,3 +9,17 @@
     height: 275px;
 }
 
+/* Ensure the modal body centers content and prevents overflow */
+.imgshow {
+    overflow: auto;
+    padding: 0; /* Remove padding to prevent extra space */
+}
+
+#classesList {
+    display: flex;
+    margin: 10px 10px;
+}
+
+.form-check {
+    margin-left: 10px;
+}

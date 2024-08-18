@@ -2,6 +2,7 @@
 const ROBOFLOW_API_KEY = 'rceoip2HWWqZY9R1cTn4';
 const ONE_MODEL_VERSION = '11';
 let resultJsonData = [];
+let filteredData = [];
 
 function checkWhichRadioIsChecked() {
     const checkedRadio = document.querySelector('input[name="rule"]:checked');
@@ -41,6 +42,7 @@ async function plotAnnotations() {
     let goldfishCounter = 0;
     let liliesCounter = 0;
     let rocksCounter = 0;
+    let unknownCounter = 0;
 
     // Containers
     const koiCount = document.getElementById('koi');
@@ -55,11 +57,14 @@ async function plotAnnotations() {
     const goldfishCount = document.getElementById('goldfish');
     const liliesCount = document.getElementById('lilies');
     const rocksCount = document.getElementById('rocks');
-    const totalCount = document.getElementById('total');
+    const unknownCount = document.getElementById('unknown');
     const numberOfKoiFish = document.getElementById('numberOfKoiFish');
 
     // Function to update counters
-    function updateCounters(label) {
+    function updateCounters(label, confidence) {
+        if (confidence < 0.4) {
+            label = 'Unknown';
+        }
         switch (label) {
             case 'Sanke':
                 sankeCounter++;
@@ -101,6 +106,10 @@ async function plotAnnotations() {
                 rocksCounter++;
                 nonKoiCounter++;
                 break;
+            case 'Unknown':
+                unknownCounter++;
+                nonKoiCounter++;
+                break;
         }
         // Update the DOM elements
         koiCount.textContent = koiCounter;
@@ -115,17 +124,18 @@ async function plotAnnotations() {
         goldfishCount.textContent = goldfishCounter;
         liliesCount.textContent = liliesCounter;
         rocksCount.textContent = rocksCounter;
-        totalCount.textContent = koiCounter + nonKoiCounter;
+        unknownCount.textContent = unknownCounter;
         numberOfKoiFish.value = koiCounter;
     }
 
     for (const [name, annotation] of resultJsonData) {
         console.log(name, annotation);
         annotation.forEach(annotation => {
-            updateCounters(annotation.label);
+            updateCounters(annotation.label, annotation.confidence);
         });
     }
 }
+
 
 
 // Predict function
@@ -189,7 +199,8 @@ async function getRoboflowPrediction(imageData, model, version, apiKey) {
             method: 'POST',
             url: `https://detect.roboflow.com/${model}/${version}`,
             params: {
-                api_key: apiKey
+                api_key: apiKey,
+                confidence: 0.10
             },
             data: imageData,
             headers: {
@@ -205,15 +216,23 @@ async function getRoboflowPrediction(imageData, model, version, apiKey) {
 
         console.log("Prediction Made!", result);
 
-        let formattedAnnotations = response.data.predictions.map(prediction => ({
-            label: prediction.class,
-            coordinates: {
-                x: prediction.x,
-                y: prediction.y,
-                width: prediction.width,
-                height: prediction.height
+        let formattedAnnotations = response.data.predictions.map(prediction => {
+            let label = prediction.class;
+            if (prediction.confidence < 0.4) {
+                label = 'Unknown';
             }
-        }));
+        
+            return {
+                label: label,
+                coordinates: {
+                    x: prediction.x,
+                    y: prediction.y,
+                    width: prediction.width,
+                    height: prediction.height
+                },
+                confidence: prediction.confidence // Keep the confidence in case you need it later
+            };
+        });
 
         return formattedAnnotations;
 

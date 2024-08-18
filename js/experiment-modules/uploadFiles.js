@@ -74,20 +74,21 @@ function displayImage(event) {
         countElementId = "nk-images-count";
         uploadedImages = nonKoiImageUploads;
     } else if (isSmall) {
+        containerId = "small-image-container";
         countElementId = "small-images-count";
         uploadedImages = smallImageUploads;
     } else if (isMedium) {
+        containerId = "medium-image-container";
         countElementId = "medium-images-count";
         uploadedImages = mediumImageUploads;
     } else if (isLarge) {
+        containerId = "large-image-container";
         countElementId = "large-images-count";
         uploadedImages = largeImageUploads;
     }
 
     // Get the container and count elements
-    if (isKoi || isNonKoi) {
-        imageContainer = document.getElementById(containerId);
-    }
+    imageContainer = document.getElementById(containerId);
     const countElement = document.getElementById(countElementId);
 
     // Loop through files and store them
@@ -105,13 +106,11 @@ function displayImage(event) {
                 data: e.target.result.split(',')[1] // Keep base64 data
             });
 
-            if (isKoi || isNonKoi) {
-                const img = document.createElement("img");
-                img.src = e.target.result;
-                img.classList.add("img-thumbnail", "m-1"); // Add Bootstrap classes for styling
-                img.style.width = "100px"; // Adjust the size as needed
-                imageContainer.appendChild(img);
-            }
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.classList.add("img-thumbnail", "m-1"); // Add Bootstrap classes for styling
+            img.style.width = "75px"; // Adjust the size as needed
+            imageContainer.appendChild(img);
 
             // Update the image count after each image is read
             countElement.innerText = uploadedImages.length;

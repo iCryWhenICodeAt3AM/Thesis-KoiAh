@@ -59,9 +59,6 @@
 
 /* Ensure the modal body centers content and prevents overflow */
 .imgshow {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     overflow: auto;
     padding: 0; /* Remove padding to prevent extra space */
 }

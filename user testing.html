@@ -243,13 +243,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="cont-inner col-11 m-2 header">
+                                    <div class="cont-inner col-11 m-2">
                                         <!-- Header -->
                                         <div class="row">
                                             <div class="col-6 mt-1 mb-1 title">
-                                                Total Objects
+                                                Unknown Objects
                                             </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="total">
+                                            <div class="cont-outer col-5 m-1 ms-2" id="unknown">
                                                 0
                                             </div>
                                         </div>
@@ -342,7 +342,24 @@
         </div>
      </div>
     <!-- Content # End -->
-
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content cont-outer">
+                <div class="modal-header">
+                    <h5 class="modal-title">Annotated Image</h5>
+                    <button type="button" class="btn-close" id="closeModal"></button>
+                </div>
+                <div class="modal-body imgshow">
+                    <h5 class="ms-2 mt-2">Classes Filter</h5>
+                    <div class="classesList cont-inner m-2" id="classesList">
+                        <!-- Classes List Filter -->
+                    </div>
+                    <canvas id="c" style="max-width: 100%; height: auto;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -351,5 +368,6 @@
     <script src="js/user-testing-modules/pondformula.js"></script>
     <script src="js/user-testing-modules/progress-bar.js"></script>
     <script src="js/user-testing-modules/main.js"></script>
+    <script src="js/tool-modules/show-image.js"></script>
 </body>
 </html>

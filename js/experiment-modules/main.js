@@ -408,12 +408,13 @@ async function evaluateImages() {
     // Process Anova
     await performAnova(selectorValue, overallMetrics);
 
-    $('#hypOneModal').modal('show');
+    if (selectorValue === '1') {
+        $('#hypOneModal').modal('show');
+    } else {
+        $('#hypTwoModal').modal('show');
+    }
 }
 
-// async function evaluateImages(){
-//     $('#hypOneModal').modal('show');
-// }
 
 // Function to display metrics in a table
 function displayMetrics(metrics, tableId) {
@@ -504,33 +505,27 @@ async function displayAccuracyGraph(hypothesis, overallMetrics) {
     }
 }
 
-// Function to create a line chart using Chart.js
+// Track the chart instance globally or within a closure if needed
+let chartInstance = null;
+
 function createLineChart(elementId, labels, dataSets) {
-
     const ctx = document.getElementById(elementId).getContext('2d');
-
-    // let expandGraph;
 
     if (elementId === 'hypothesis-one-graph') {
         const half_length = Math.ceil(labels.length / 2);    
         labels = labels.slice(0, half_length);
-        // expandGraph = document.getElementById("hypothesis-one-graph-expand").getContext('2d');
     } else {
         const third_length = Math.ceil(labels.length / 3);
         labels = labels.slice(0, third_length);
-        // expandGraph = document.getElementById("hypothesis-two-graph-expand").getContext('2d');
     }
 
-    // Check if expandGraph is defined
-    if (ctx) {
-        // Clear the expanded graph canvas before drawing
-        console.log('Clearing canvas');
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    } else {
-        console.error('Failed to get canvas context');
+    // Destroy the existing chart if it exists
+    if (chartInstance) {
+        chartInstance.destroy();
     }
 
-    new Chart(ctx, {
+    // Create a new chart instance
+    chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -556,32 +551,6 @@ function createLineChart(elementId, labels, dataSets) {
             }
         }
     });
-    // new Chart(expandGraph, {
-    //     type: 'line',
-    //     data: {
-    //         labels: labels,
-    //         datasets: dataSets
-    //     },
-    //     options: {
-    //         responsive: true,
-    //         scales: {
-    //             x: {
-    //                 title: {
-    //                     display: true,
-    //                     text: 'Image Index'
-    //                 }
-    //             },
-    //             y: {
-    //                 min: -0.5,
-    //                 max: 1.5,
-    //                 title: {
-    //                     display: true,
-    //                     text: 'Accuracy  (F1-score)'
-    //                 }
-    //             }
-    //         }
-    //     }
-    // });
 }
 
 // Perform ANOVA Call
@@ -965,22 +934,22 @@ async function generatePairwiseTable(pairwiseData){
 
     // Small vs Medium Data
     const svmSize = svm.means['Small'].sampleSize * 2;
-    const svmF = svm.statistic;
-    const svmPValue = svm.pValue;
+    const svmF = svm.statistic || 0;
+    const svmPValue = svm.pValue || 0;
     const svmAlpha = svm.alpha;
     const svmRejected = svm.rejected;
 
     // Small vs Large Data
     const svlSize = svl.means['Small'].sampleSize * 2;
-    const svlF = svl.statistic;
-    const svlPValue = svl.pValue;
+    const svlF = svl.statistic || 0;
+    const svlPValue = svl.pValue || 0;
     const svlAlpha = svl.alpha;
     const svlRejected = svl.rejected;
 
     // Medium vs Large Data
     const mvlSize = mvl.means['Medium'].sampleSize * 2;
-    const mvlF = mvl.statistic;
-    const mvlPValue = mvl.pValue;
+    const mvlF = mvl.statistic || 0;
+    const mvlPValue = mvl.pValue || 0;
     const mvlAlpha = mvl.alpha;
     const mvlRejected = mvl.rejected;
 
@@ -1112,7 +1081,7 @@ function calculateConfusionMatrix(groundTruth, predictions) {
 // Function to generate HTML table for the confusion matrix
 async function generateConfusionMatrixTable(matrix) {
     const labels = Object.keys(matrix).filter(label => label !== 'Unknown'); // Get unique labels excluding 'Unknown'
-    let tableHtml = '<h3>Confusion Matrix</h3><table class="table" border="1"><thead><tr><th>Truth v</th><th>Predicted -></th></tr><tr><th>Classes</th>';
+    let tableHtml = '<h3>Confusion Matrix</h3><table class="table"><thead><tr><th>Truth v</th><th>Predicted -></th></tr><tr><th>Classes</th>';
 
     // Add table headers
     labels.forEach(label => {
