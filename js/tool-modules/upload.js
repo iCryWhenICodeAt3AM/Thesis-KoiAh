@@ -49,7 +49,7 @@ function displayImage() {
             reader.onload = (function(theImage) {
                 return function(event) {
                     htmlContent += `
-                        <div class="image-wrapper col-3 ${++imageIndex}" id="${imageIndex}">
+                        <div class="image-wrapper col-3 ${++imageIndex}" id="${imageIndex}" onclick="showImageModal('${theImage.name}')">
                             <div class="row d-flex justify-content-center">
                                 <button class="delete-btn" onclick="deleteImage('${imageIndex}', '${theImage.name}')">X</button>
                                 <img class="col-12 p-1" src="${event.target.result}">

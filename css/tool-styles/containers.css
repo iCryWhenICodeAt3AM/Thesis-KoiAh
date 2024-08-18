@@ -62,3 +62,12 @@ th, td {
     background-color: #88BDBC !important;
     color: #254E58 !important;
 }
+
+#classesList {
+    display: flex;
+    margin: 10px 10px;
+}
+
+.form-check {
+    margin-left: 10px;
+}

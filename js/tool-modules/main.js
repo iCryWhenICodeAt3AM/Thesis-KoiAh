@@ -101,7 +101,7 @@ async function startAnnotation() {
                         url: `https://detect.roboflow.com/${model}`,
                         params: {
                             api_key: apiKey,
-                            // confidence: confidence
+                            // confidence: 0.10
                         },
                         data: base64Image,
                         headers: {

@@ -1,9 +1,9 @@
 .img-container {
-    height: 80px;
-    max-height: 80px;
+    height: 175px;
+    max-height: 175px;
 }
 
-#hypothesis-two, #hypothesis-two-output {
+#hypothesis-two {
     display: none;
 }
 
@@ -63,17 +63,40 @@
     white-space: nowrap;
 }
 
-#hypothesis-one-graph, #hypothesis-two-graph {
-    display: block; 
-    box-sizing: border-box; 
-    height: 245px; 
-    width: 491px;
-}
 
-#hypothesis-one-graph-expand-container, #hypothesis-one-graph-expand, #hypothesis-two-graph-expand-container, #hypothesis-two-graph-expand {
+#hypothesis-one-graph-container, #hypothesis-one-graph, #hypothesis-two-graph-container, #hypothesis-two-graph {
     display: block; 
     box-sizing: border-box; 
-    max-height: 500px; 
+    max-height: 450px; 
     width: 1106px;
 }
 
+/* Remove underline from nav-link */
+.links {
+    text-decoration: none;
+    color: #fff!important; /* Default text color for non-active */
+}
+
+/* Active tab styles */
+.links.active {
+    background-color: #88BDBC!important;
+    color: #fff !important; /* Active text color */
+}
+
+/* Non-active tab styles */
+.links {
+    background-color: #254E58 !important;
+    color: #fff !important; /* Non-active text color */
+}
+
+/* Hover effect for tabs */
+.links:hover {
+    background-color: #4A6A74 !important; /* Slightly darker for hover */
+    color: #fff!important;
+}
+
+/* Focused tab styles */
+.links:focus {
+    outline: none;
+    box-shadow: none;
+}
