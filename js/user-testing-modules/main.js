@@ -1,6 +1,6 @@
 // Roboflow configurations
 const ROBOFLOW_API_KEY = 'rceoip2HWWqZY9R1cTn4';
-const ONE_MODEL_VERSION = '11';
+const ONE_MODEL_VERSION = '13';
 let resultJsonData = [];
 let filteredData = [];
 
@@ -158,7 +158,7 @@ async function predict() {
         console.log(uploadedImages[index].name);
 
         if (existingFiles.has(uploadedImages[index].name) && !resultJsonData.some(item => item[0] === uploadedImages[index].name)) {
-            const prediction = await getRoboflowPrediction(uploadedImages[index].data, 'koiah-version-controls', ONE_MODEL_VERSION, ROBOFLOW_API_KEY);
+            const prediction = await getRoboflowPrediction(uploadedImages[index].data, 'thesis-koiah', ONE_MODEL_VERSION, ROBOFLOW_API_KEY);
             resultJsonData.push([
                 uploadedImages[index].name,
                 prediction
@@ -200,7 +200,7 @@ async function getRoboflowPrediction(imageData, model, version, apiKey) {
             url: `https://detect.roboflow.com/${model}/${version}`,
             params: {
                 api_key: apiKey,
-                confidence: 0.10
+                confidence: 0.20
             },
             data: imageData,
             headers: {
