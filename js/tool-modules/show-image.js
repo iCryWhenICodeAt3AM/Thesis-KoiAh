@@ -1,37 +1,80 @@
-function generateClassChecklist(annotations, renderAnnotations) {
+function generateClassList(annotations, renderAnnotations) {
     const uniqueClasses = [...new Set(annotations.map(annotation => annotation.label))];
-    const classesListDiv = document.getElementById('classesList');
+    const classListDiv = document.getElementById('classList');
 
     // Clear the list first
-    classesListDiv.innerHTML = '';
+    classListDiv.innerHTML = '';
 
-    // Create a checklist item for each unique class
+    // Create a clickable item for each unique class
     uniqueClasses.forEach(label => {
         const div = document.createElement('div');
-        div.className = 'form-check';
+        div.className = 'col-12';
 
-        const input = document.createElement('input');
-        input.type = 'checkbox';
-        input.className = 'form-check-input';
-        input.id = `class-${label}`;
-        input.value = label;
-        input.checked = true; // Default to checked
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
 
-        const labelElement = document.createElement('label');
-        labelElement.className = 'form-check-label';
-        labelElement.setAttribute('for', `class-${label}`);
-        labelElement.textContent = label;
+        const countDiv = document.createElement('div');
+        countDiv.className = 'col-4';
+        countDiv.textContent = annotations.filter(annotation => annotation.label === label).length;
 
-        // Attach event listener to re-render annotations on change
-        input.addEventListener('change', renderAnnotations);
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'col-8';
+        labelDiv.textContent = label;
+        labelDiv.style.cursor = 'pointer';
+        labelDiv.dataset.label = label;
+        labelDiv.classList.add('active'); // Default to active
 
-        div.appendChild(input);
-        div.appendChild(labelElement);
-        classesListDiv.appendChild(div);
+        // Attach event listener to toggle visibility of annotations
+        labelDiv.addEventListener('click', function() {
+            this.classList.toggle('active');
+            renderAnnotations();
+        });
+
+        rowDiv.appendChild(countDiv);
+        rowDiv.appendChild(labelDiv);
+        div.appendChild(rowDiv);
+        classListDiv.appendChild(div);
     });
 }
 
-async function showImageModal(filename) {
+function generateItemList(annotations, renderAnnotations) {
+    const itemListDiv = document.getElementById('itemList');
+
+    // Clear the list first
+    itemListDiv.innerHTML = '';
+
+    // Create a clickable item for each annotation
+    annotations.forEach((annotation, index) => {
+        const div = document.createElement('div');
+        div.className = 'col-12';
+
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'col-12';
+        labelDiv.textContent = `${annotation.label} (${(annotation.confidence * 100).toFixed(2)}%)`;
+        labelDiv.style.cursor = 'pointer';
+        labelDiv.dataset.index = index;
+
+        // Attach event listener to highlight the annotation on hover
+        labelDiv.addEventListener('mouseenter', function() {
+            renderAnnotations([annotation]);
+        });
+
+        // Attach event listener to reset annotations on mouse leave
+        labelDiv.addEventListener('mouseleave', function() {
+            renderAnnotations();
+        });
+
+        rowDiv.appendChild(labelDiv);
+        div.appendChild(rowDiv);
+        itemListDiv.appendChild(div);
+    });
+}
+
+let locked = false;
+async function showImageAnnotation(filename) {
     console.log(filename);
     console.log(filteredData, resultJsonData);
 
@@ -75,28 +118,31 @@ async function showImageModal(filename) {
         const canvas = document.getElementById('c');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = img.width;
-        canvas.height = img.height;
+        // Calculate scaling factors to maintain aspect ratio and enforce minimum dimensions
+        const maxDimension = 225;
+        const scale = Math.max(maxDimension / img.width, maxDimension / img.height);
+        const canvasWidth = img.width * scale;
+        const canvasHeight = img.height * scale;
 
-        const xScale = canvas.width / img.width;
-        const yScale = canvas.height / img.height;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
 
-        // Function to render annotations based on checked classes
-        function renderAnnotations() {
+        // Function to render annotations based on active labels
+        function renderAnnotations(filteredAnnotations = annotations) {
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-            ctx.drawImage(img, 0, 0); // Redraw the image
+            ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight); // Draw the image
 
-            // Get checked classes
-            const checkedClasses = Array.from(document.querySelectorAll('#classesList input:checked')).map(input => input.value);
+            // Get active labels
+            const activeLabels = Array.from(document.querySelectorAll('#classList .col-8.active')).map(div => div.dataset.label);
 
             // Draw scaled annotations
-            annotations.filter(annotation => checkedClasses.includes(annotation.label)).forEach(annotation => {
+            filteredAnnotations.filter(annotation => activeLabels.includes(annotation.label)).forEach(annotation => {
                 const { x, y, width, height } = annotation.coordinates;
 
-                const adjustedX = x * xScale;
-                const adjustedY = y * yScale;
-                const adjustedWidth = width * xScale;
-                const adjustedHeight = height * yScale;
+                const adjustedX = x * scale;
+                const adjustedY = y * scale;
+                const adjustedWidth = width * scale;
+                const adjustedHeight = height * scale;
 
                 const rectX = adjustedX - adjustedWidth / 2;
                 const rectY = adjustedY - adjustedHeight / 2;
@@ -109,23 +155,19 @@ async function showImageModal(filename) {
 
                 ctx.font = '14px Arial';
                 ctx.fillStyle = annotation.label !== "Unknown" ? 'red' : 'yellow';
-                ctx.fillText(annotation.label, rectX, rectY > 10 ? rectY - 5 : rectY + 15);
+                ctx.fillText(`${annotation.label} (${(annotation.confidence * 100).toFixed(2)}%)`, rectX, rectY > 10 ? rectY - 5 : rectY + 15);
             });
         }
 
-        // Generate the class checklist with the render function attached
-        generateClassChecklist(annotations, renderAnnotations);
+        // Generate the class list and item list with the render function attached
+        generateClassList(annotations, renderAnnotations);
+        generateItemList(annotations, renderAnnotations);
 
         // Initial rendering of annotations
         renderAnnotations();
 
-        canvas.style.maxWidth = '100%';
-        canvas.style.maxHeight = '80vh';
-
-        // Re-render annotations when the checklist changes
-        document.querySelectorAll('#classesList input').forEach(input => {
-            input.addEventListener('change', renderAnnotations);
-        });
+        canvas.style.maxWidth = '350px';
+        canvas.style.maxHeight = '350px';
     };
 
     img.onerror = function() {
@@ -137,18 +179,24 @@ async function showImageModal(filename) {
     const imageDataUrl = `data:${mimeType};base64,${imageFile.data}`;
     img.src = imageDataUrl;
 
-    // Ensure the modal is shown after image loading
-    const modalElement = document.getElementById('imageModal');
-    const modal = new bootstrap.Modal(modalElement);
-    
-    // Ensure that the modal is fully loaded and displayed before attempting to render annotations
-    modalElement.addEventListener('shown.bs.modal', () => {
-        // You can put additional code here if needed after the modal is fully shown
-    });
-
-    modal.show();
-
-    document.getElementById('closeModal').onclick = function() {
-        modal.hide();
-    };
+    if (!locked) {
+        // Show image of the first item in the list
+        console.log('Showing image of the first item in the list');
+        locked = true;
+    }
 }
+
+// Toggle between class list and item list
+document.querySelector('.btn-sm.active').addEventListener('click', function() {
+    document.getElementById('classList').style.display = 'block';
+    document.getElementById('itemList').style.display = 'none';
+    this.classList.add('active');
+    this.nextElementSibling.classList.remove('active');
+});
+
+document.querySelector('.btn-sm:not(.active)').addEventListener('click', function() {
+    document.getElementById('classList').style.display = 'none';
+    document.getElementById('itemList').style.display = 'block';
+    this.classList.add('active');
+    this.previousElementSibling.classList.remove('active');
+});

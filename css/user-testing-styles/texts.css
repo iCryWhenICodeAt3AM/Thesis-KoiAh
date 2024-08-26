@@ -10,3 +10,23 @@ button {
     white-space: nowrap;
     scrollbar-width: none;
 }
+
+.sub-header {
+    opacity: 0.56 !important;
+    font-weight: 300;
+}
+
+#percent {
+    color: #88BDBC !important;
+}
+
+.numberTag {
+    font-size: 30px;
+    margin-right: 10px;
+    color: #254E58;
+}
+
+.labelTag {
+    color: #1B121B;
+    opacity: 0.86;
+}

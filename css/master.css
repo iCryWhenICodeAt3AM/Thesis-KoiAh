@@ -59,10 +59,13 @@ nav.navbar{
 
 /* Button Style */
 .btn{
-    border-radius: 10px;
+    border-radius: 30px;
     border: 0px;
-    background-color: #254E58;
-    color: #88BDBC !important;
+    background-color: #254E58 !important;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
 }
 /* Button Style */
 
@@ -135,24 +138,19 @@ nav.navbar{
     display: none;
 }
 
-/* Progress Container */
-.progress-container {
-    position:absolute;
-    top: 35%;
-    left: 40%;
-    background: #254E58;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    border: #88BDBC 5px solid;
+.header{
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 20px;
+    margin: auto;
+    margin-bottom: 20px;
+    align-content: center;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
 }
 
-/* Progress Bar */
-.progress-bar {
-    width: 100%;
-    height: 30px;
-    border-radius: 5px;
-    appearance: none;
-    color: #88BDBC;
-    background-color: #88BDBC;
+.uploaded {
+    max-width: 150px;
+    max-height: 150px;
 }
