@@ -34,6 +34,7 @@ function displayImage() {
 
     for (const image of uploads) {
         let htmlContent = '';
+        let htmlContentExtra = "";
         // Get file extension and check if it's an image format
         const idxDot = image.name.lastIndexOf(".") + 1;
         const extFile = image.name.substr(idxDot, image.name.length).toLowerCase();
@@ -49,14 +50,26 @@ function displayImage() {
             reader.onload = (function(theImage) {
                 return function(event) {
                     htmlContent += `
-                        <div class="image-wrapper col-3 ${++imageIndex}" id="${imageIndex}" onclick="showImageModal('${theImage.name}')">
+                        <div class="image-wrapper col-3 ${++imageIndex}" id="${imageIndex}0">
                             <div class="row d-flex justify-content-center">
                                 <button class="delete-btn" onclick="deleteImage('${imageIndex}', '${theImage.name}')">X</button>
-                                <img class="col-12 p-1" src="${event.target.result}">
+                                <img class="col-12 p-1 uploaded" src="${event.target.result}">
                             </div>
                         </div>
                     `;
                     imageContainer.innerHTML += htmlContent;
+                    // Check if the webpage is user-testing.html
+                    if (window.location.pathname.includes("user%20testing.html")) {
+                        htmlContentExtra += `
+                        <div class="image-wrapper col-12 ${imageIndex}" id="${imageIndex}1" onclick="showImageAnnotation('${theImage.name}')">
+                            <div class="row d-flex justify-content-center">
+                                <img class="col-12 p-1 uploaded" src="${event.target.result}">
+                            </div>
+                        </div>
+                        `;
+                        // Add your code here
+                        document.getElementById("image-container-extra").innerHTML += htmlContentExtra;
+                    }
 
                     // Store image data in the global variable
                     uploadedImages.push({
@@ -64,8 +77,8 @@ function displayImage() {
                         data: event.target.result.split(',')[1] // Keep base64 data
                     });
                     uploadedImagesData.push(theImage);
-                    imageCount.innerText = uploadedImages.length;
-                    classLimit.value = uploadedImages.length;
+                    // imageCount.innerText = uploadedImages.length;
+                    // classLimit.value = uploadedImages.length;
                 };
             })(image);
             reader.onerror = function(error) {
@@ -97,9 +110,12 @@ function displayImage() {
 // Function to handle the image delete
 async function deleteImage(index, imageName) {
     // Remove the image element from the DOM
-    const imgWrapper = document.getElementById(index);
-    if (imgWrapper) {
-        imgWrapper.remove();
+    for (let i = 0; i < 2; i++) {
+        let imgWrapper = document.getElementById(`${index}${i}`).remove();
+        console.log("Deleted Image Wrapper: ", index, i);
+        if (imgWrapper) {
+            imgWrapper.remove();
+        }
     }
 
     // Remove the image data from the global variables
@@ -123,10 +139,8 @@ async function deleteImage(index, imageName) {
         console.log("PLOT!!!", resultJsonData);
         await plotAnnotations(); // Update annotation counts
     }
-    // Update the image count
-    const imageCount = document.getElementById('image-count');
-    imageCount.innerText = uploadedImages.length;
-    
     console.log("Deleted Image:", imageName);
     console.log("Files: ", existingFiles, "Images: ", uploadedImages);
+
+
 }

@@ -10,147 +10,35 @@ function checkWhichRadioIsChecked() {
     if (checkedRadio.id == 'rule1') {
         return true;
     } else {
-        return false
+        return false;
     }
 }
 
 async function startCounting() {
-    const rule1 = checkWhichRadioIsChecked();
-    console.log(rule1);
     if (existingFiles.size != 0) {
+        initialize();
         await predict();
-    }
-
-    if (rule1) {
-        recommendPondDimensions(1);
+        active++;
+        updateProgress();
+        pageLoad();
     } else {
-        recommendPondDimensions(2);
+        alert("Please upload images to continue.");
+        active--;
+        updateProgress();
+        pageLoad();
     }
 }
-
-async function plotAnnotations() {
-    // Initialize counters
-    let koiCounter = 0;
-    let sankeCounter = 0;
-    let showaCounter = 0;
-    let kohakuCounter = 0;
-    let asagiCounter = 0;
-    let bekkoCounter = 0;
-    let hikarimonoCounter = 0;
-    let nonKoiCounter = 0;
-    let peopleCounter = 0;
-    let goldfishCounter = 0;
-    let liliesCounter = 0;
-    let rocksCounter = 0;
-    let unknownCounter = 0;
-
-    // Containers
-    const koiCount = document.getElementById('koi');
-    const sankeCount = document.getElementById('sanke');
-    const showaCount = document.getElementById('showa');
-    const kohakuCount = document.getElementById('kohaku');
-    const asagiCount = document.getElementById('asagi');
-    const bekkoCount = document.getElementById('bekko');
-    const hikarimonoCount = document.getElementById('hikarimono');
-    const nonKoiCount = document.getElementById('non-koi');
-    const peopleCount = document.getElementById('people');
-    const goldfishCount = document.getElementById('goldfish');
-    const liliesCount = document.getElementById('lilies');
-    const rocksCount = document.getElementById('rocks');
-    const unknownCount = document.getElementById('unknown');
-    const numberOfKoiFish = document.getElementById('numberOfKoiFish');
-
-    // Function to update counters
-    function updateCounters(label, confidence) {
-        if (confidence < 0.4) {
-            label = 'Unknown';
-        }
-        switch (label) {
-            case 'Sanke':
-                sankeCounter++;
-                koiCounter++;
-                break;
-            case 'Showa':
-                showaCounter++;
-                koiCounter++;
-                break;
-            case 'Kohaku':
-                kohakuCounter++;
-                koiCounter++;
-                break;
-            case 'Asagi':
-                asagiCounter++;
-                koiCounter++;
-                break;
-            case 'Bekko':
-                bekkoCounter++;
-                koiCounter++;
-                break;
-            case 'Hikarimono':
-                hikarimonoCounter++;
-                koiCounter++;
-                break;
-            case 'People':
-                peopleCounter++;
-                nonKoiCounter++;
-                break;
-            case 'Goldfish':
-                goldfishCounter++;
-                nonKoiCounter++;
-                break;
-            case 'Lilies':
-                liliesCounter++;
-                nonKoiCounter++;
-                break;
-            case 'Rocks':
-                rocksCounter++;
-                nonKoiCounter++;
-                break;
-            case 'Unknown':
-                unknownCounter++;
-                nonKoiCounter++;
-                break;
-        }
-        // Update the DOM elements
-        koiCount.textContent = koiCounter;
-        sankeCount.textContent = sankeCounter;
-        showaCount.textContent = showaCounter;
-        kohakuCount.textContent = kohakuCounter;
-        asagiCount.textContent = asagiCounter;
-        bekkoCount.textContent = bekkoCounter;
-        hikarimonoCount.textContent = hikarimonoCounter;
-        nonKoiCount.textContent = nonKoiCounter;
-        peopleCount.textContent = peopleCounter;
-        goldfishCount.textContent = goldfishCounter;
-        liliesCount.textContent = liliesCounter;
-        rocksCount.textContent = rocksCounter;
-        unknownCount.textContent = unknownCounter;
-        numberOfKoiFish.value = koiCounter;
-    }
-
-    for (const [name, annotation] of resultJsonData) {
-        console.log(name, annotation);
-        annotation.forEach(annotation => {
-            updateCounters(annotation.label, annotation.confidence);
-        });
-    }
-}
-
-
 
 // Predict function
 async function predict() {
     const totalImages = uploadedImages.length;
     let pending = 0;
-    
+
     for (let index = 0; index < totalImages; index++) {
         if (existingFiles.has(uploadedImages[index].name) && !resultJsonData.some(item => item[0] === uploadedImages[index].name)) {
             pending++;
         }
     }
-
-    // Initialize the progress bar
-    initializeProgressBar(pending);
 
     let processedImages = 0;
 
@@ -164,23 +52,17 @@ async function predict() {
                 prediction
             ]);
             console.log(resultJsonData);
-            await plotAnnotations();
+            // await plotAnnotations();
 
             // Update the progress bar
             processedImages++;
-            updateProgress(processedImages);
+            console.log(processedImages, " Processed Images");
+            updateProgress1(processedImages);
         } else {
             console.log("Already in: ", uploadedImages[index].name, resultJsonData);
         }
     }
-
-    // Complete the progress bar
-    completeProgressBar();
-
-    // Optionally hide the overlay after processing is complete
-    document.getElementById('overlay').style.display = 'none';
 }
-
 
 function readFileAsDataURL(file) {
     return new Promise((resolve, reject) => {
@@ -190,7 +72,6 @@ function readFileAsDataURL(file) {
         reader.readAsDataURL(file);
     });
 }
-
 
 // Function to fetch Roboflow predictions
 async function getRoboflowPrediction(imageData, model, version, apiKey) {
@@ -221,7 +102,7 @@ async function getRoboflowPrediction(imageData, model, version, apiKey) {
             if (prediction.confidence < 0.4) {
                 label = 'Unknown';
             }
-        
+
             return {
                 label: label,
                 coordinates: {

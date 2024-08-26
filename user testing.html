@@ -1,373 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KoiAh</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="icon" href="img/logo.svg">
-    <link rel="stylesheet" href="css/master.css">
-    <link rel="stylesheet" href="css/user-testing-styles/texts.css">
-    <link rel="stylesheet" href="css/user-testing-styles/containers.css">
-</head>
-<body>
-    <!-- Navbar # Start -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a href="index.html"><img class="ms-5" src="img/logo.svg" alt="KoiAh Logo"></a>
-            <a class="navbar-brand ms-2" id="brandName" href="index.html">Koi<u id="underline">Ah</u></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav position-absolute top-1 start-50 translate-middle-x">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.html">Homepage</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#"><u id="underline">User Testing</u></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="experiment.html">Experimentation</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="tool.html">Tool</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>  
-    <!-- Navbar # End -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>KoiAh</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="icon" href="img/logo.svg">
+        <link rel="stylesheet" href="css/user-testing-styles/step-bar.css">
+        <link rel="stylesheet" href="css/master.css">
+        <link rel="stylesheet" href="css/user-testing-styles/texts.css">
+        <link rel="stylesheet" href="css/user-testing-styles/containers.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+        <!-- TensorFlow.js -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 
-    <!-- Content # Start -->
-     <div class="container-fluid mt-3">
-        <div class="row">
-            <!-- Division 1 - Left -->
-            <div class="cont-outer col-4 ms-4 me-4 d-flex align-items-center justify-content-center text-center" style="height:600px;" id="inputs">
-                <div id="overlay" class="overlay">
-                    <div class="progress-container">
-                        <progress id="progress-bar" class="progress-bar" value="0"></progress>
-                        <p id="progress-text">Processing: 0%</p>
-                        <p id="progress-number">Remaining Images: 0</p>
-                    </div>
-                </div>
-                <div class="container mx-auto text-white text-center">
-                    <!-- Inputs -->
-                    <div class="row">
-                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 gap-1 d-flex justify-content-center border border-3 border-dark inputs" id="inputs" name="inputs">
-                            <!-- Input File -->
-                            <input type="file" id="images" name="images" accept="image/*" multiple style="display: none;" onchange="displayImage();"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('images').click();displayImage();"><img src="img/file icon.svg" class="me-2">Select file/s</button>
-                            <!-- Input Folder -->
-                            <input type="file" id="folder" name="folder" accept="image/*" webkitdirectory style="display: none;" onchange="displayImage();"><br><br>
-                            <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('folder').click();"><img src="img/folder icon.svg" class="me-2">Select a folder</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="cont-inner col-11 p-3 ms-4 border border-3 border-dark" id="root-image-container">
-                            <div class="row image-container text-center" id="image-container">
-                                <!-- Image Uploads Container -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="cont-inner col-5 p-2 offset-1 mt-2 border border-3 border-dark">
-                            <div class="col-10 offset-1">
-                                <h6>Images</h6>
-                            </div>
-                            <div class="cont-outer offset-1 col-10 image-count" id="image-count">
-                                0
-                            </div>
-                        </div>
-                        <div class="cont-inner col-5 p-2 ms-2 mt-2 border border-3 border-dark">
-                            <div class="col-10 offset-1">
-                                <h6>Harvest Koi Size</h6>
-                            </div>
-                            <div class="offset-1 col-10 mx-auto d-grid annotated-count">
-                                <select class="cont-outer text-center" name="koi-size" id="koi-size">
-                                    <option value="small">Small</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="large">Large</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="cont-inner col-11 ms-4 pt-2 pb-2 m-2 border border-3 border-dark">
-                            <div class="row">
-                                <div class="col-6 d-grid mx-auto">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark start-button" id="start-button" onclick="startCounting()" style="font-size: 13px !important;"><b>Start</b></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Division 1 - Left -->
-             <!-- ------ -->
-            <!-- Division 2 - Right -->
-            <div class="col-7 ms-4">
-                <div class="row">
-                    <div class="col-12 cont-outer text-center p-4 pe-2 pt-2" style="height:225px; ">
-                        <!-- Top -->
+        <!-- Roboflow.js -->
+        <script src="https://cdn.roboflow.com/0.2.26/roboflow.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="d-flex flex-column flex-shrink-0 p-3 text-dark bg-dark col-2 sticky-top" id="sidebar">
+                    <a href="/" class="text-decoration-none mb-5 mt-2">
                         <div class="row">
-                            <div class="col-6 pe-4 mt-2">
-                                <!-- Koi -->
-                                <div class="row">
-                                    <div class="cont-inner col-11 m-2 header">
-                                        <!-- Header -->
-                                        <div class="row">
-                                            <div class="col-6 mt-1 mb-1 title">
-                                                Koi
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="koi">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Items -->
-                                    <div class="cont-inner col-5 m-2">
-                                        <div class="row">
-                                            <div class="col-5 mt-1 mb-1 title">
-                                                Sanke
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="sanke">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="cont-inner col-5 m-2 ms-4">
-                                        <div class="row">
-                                            <div class="col-6 mt-1 mb-1 title">
-                                                Showa
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="showa">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="cont-inner col-5 m-2">
-                                        <div class="row">
-                                            <div class="col-5 mt-1 mb-1 title">
-                                                Kohaku
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="kohaku">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="cont-inner col-5 m-2 ms-4">
-                                        <div class="row">
-                                            <div class="col-6 mt-1 mb-1 title">
-                                                Asagi
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="asagi">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="cont-inner col-5 m-2">
-                                        <div class="row">
-                                            <div class="col-5 mt-1 mb-1 title">
-                                                Bekko
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="bekko">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="cont-inner col-5 m-2 ms-4">
-                                        <div class="row">
-                                            <div class="col-6 mt-1 mb-1 title">
-                                                Hikarimono
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="hikarimono">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-6 ps-4 mt-2">
-                                <!-- Non-koi -->
-                                <div class="row">
-                                    <div class="cont-inner col-11 m-2 header">
-                                        <!-- Header -->
-                                        <div class="row">
-                                            <div class="col-6 mt-1 mb-1 title">
-                                                Non-Koi
-                                            </div>
-                                            <div class="cont-outer col-5 mt-1 mb-1 me-1" id="non-koi">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Items -->
-                                    <div class="cont-inner col-5 m-2">
-                                        <div class="row">
-                                            <div class="col-5 mt-1 mb-1 title">
-                                                People
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="people">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="cont-inner col-5 m-2 ms-4">
-                                        <div class="row">
-                                            <div class="col-6 mt-1 mb-1 title">
-                                                Goldfish
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2"  id="goldfish">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="cont-inner col-5 m-2">
-                                        <div class="row">
-                                            <div class="col-5 mt-1 mb-1 title">
-                                                Lilies
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="lilies">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="cont-inner col-5 m-2 ms-4">
-                                        <div class="row">
-                                            <div class="col-6 mt-1 mb-1 title" >
-                                                Rocks
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="rocks">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="cont-inner col-11 m-2">
-                                        <!-- Header -->
-                                        <div class="row">
-                                            <div class="col-6 mt-1 mb-1 title">
-                                                Unknown Objects
-                                            </div>
-                                            <div class="cont-outer col-5 m-1 ms-2" id="unknown">
-                                                0
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-12 text-center">
+                                <img src="img/logo.svg" alt="KoiAh Logo" id="koiahLogo">
+                                <span class="" style="font-size: 20px; color: #FFF;">Koi<u id="underline">Ah</u></span>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12 cont-outer mt-2 p-3 text-center" style="height:365px;">
-                        <!-- Bottom -->
-                        <div class="row">
-                            <div class="col-5 mt-5">
-                                <div class="row">
-                                    <div class="col-12 border border-3 border-dark mb-1 p-2 ms-4 cont-inner">
-                                        <h6><b>Number of Koi Fish</b></h6>
-                                        <input type="number" class="form-control text-center" id="numberOfKoiFish" value="1" min=1>
-                                    </div>
-                                    <div class="col-12 border border-3 border-dark mb-1 pt-2 ms-4 cont-inner">
-                                        <h6><b>Rule to be Applied</b></h6>
-                                        <div class="row">
-                                            <div class="col-4 cont-outer offset-1 pt-2 pb-2 mb-2">
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <h6>Rule 1</h6>
-                                                    </div>
-                                                    <div class="col-12 form-check d-flex justify-content-center ms-2">
-                                                        <input class="form-check-input" type="radio" name="rule" id="rule1" value="rule1" onclick="recommendPondDimensions(1)" checked>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-4 offset-2 cont-outer  pt-2 pb-2 mb-2">
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <h6>Rule 2</h6>
-                                                    </div>
-                                                    <div class="col-12 form-check d-flex justify-content-center ms-2">  
-                                                        <input class="form-check-input" type="radio" name="rule" id="rule2" value="rule2" onclick="recommendPondDimensions(2)">
-                                                    </div>
-                                                </div>
+                        <span href="index.html" class="mt-2 d-flex justify-content-center">
+                        </span>
+                    </a>
+                    <ul class="nav nav-pills flex-column mb-auto mt-2">
+                      <li class="nav-item">
+                        <a href="/" class="nav-link mt-2 mb-2" aria-current="page">
+                            <img src="img/Homepage icon.svg" alt="Homepage Icon" class="me-2">
+                            Homepage
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="nav-link mt-2 mb-2 active">
+                            <img src="img/User Testing icon.svg" alt="Homepage Icon" class="me-2">
+                            User Testing
+                        </a>
+                      </li>
+                      <li>
+                        <a href="experiment.html" class="nav-link mt-2 mb-2">
+                            <img src="img/Experiment icon.svg" alt="Homepage Icon" class="me-2">
+                            Experiment
+                        </a>
+                      </li>
+                      <li>
+                        <a href="tool.html" class="nav-link mt-2 mb-2">
+                            <img src="img/Tool icon.svg" alt="Homepage Icon" class="me-2">
+                            Tool
+                        </a>
+                      </li>
+                    </ul>
+                    
+                </div>
+                <div class="col-10 text-center d-block">
+                    <div class="col-12 d-flex contents" id="pageOne">
+                        <div class="row" style="width:100%; margin: 0px; padding: 0px;">
+                            <div class="col-8 offset-2 text-start p-5 pb-0">
+                                <h3>
+                                    <b class="head">Get Started!</b>
+                                </h3>
+                                <h5 class="sub-header m-0">
+                                    Start by uploading your koi images.
+                                </h5>                                 
+                            </div>
+
+                            <div class="col-12 m-auto mt-0 pt-0">
+                                <div class="d-flex justify-content-center p-0 m-0">
+                                    <input type="file" id="images" name="images" accept="image/*" multiple style="display: none;" onchange="displayImage();">
+                                    <button type="button" class="btn btn-success btn-lg text-white toggle-button me-2" onclick="document.getElementById('images').click();displayImage();" style="width: 250px !important; height: auto;"><img src="img/img icon.svg" class="me-2">Upload koi images</button>
+                                    <!-- Input Folder -->
+                                    <input type="file" id="folder" name="folder" accept="image/*" webkitdirectory style="display: none;" onchange="displayImage();">
+                                    <button type="button" class="btn btn-success btn-lg text-white toggle-button me-2" onclick="document.getElementById('folder').click();" style="width: 250px !important; height: auto;"><img src="img/folder upload.svg" class="me-2" >Select a folder</button>
+                                </div>
+                            </div>
+                            <div class="col-7 header mt-0 pt-0 mb-0 move" style="height: 250px; margin: auto;">
+                                <div class="row image-container text-center p-3 toggle-button" id="image-container" style="display:flex;"> 
+                                    <!-- Image Uploads Container -->
+                                </div>
+                                <div class="col-12 m-auto toggle-progress" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-2 offset-1 pe-0 me-3 ps-0">
+                                            <img src="img/cloud icon.svg" alt="">
+                                        </div>
+                                        <div class="col-8 text-start ms-0 ps-0 pe-3">
+                                            <span class="h3"><b id="percent">50%</b></span><span class="ms-2 h5 opacity-50">Detecting objects...</span>
+
+                                            <div class="progress mt-2">
+                                                <div class="progress-bar" id="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Out -->
-                            <div class="col-6 ms-5 mt-0">
-                                <div class="row">
-                                    <div class="col-12 mt-1 cont-inner p-2 border border-3 border-dark">
-                                        <h6>Recommended Total Volume of Water (Gallons)</h6>
-                                        <div class="container mt-2" id="ruleFormula">
-                                            
-                                        </div>
-                                        <div class="container mt-2 cont-outer" id="ruleOutput">
-                                            
-                                        </div>
+                                <div class="row toggle-final" style="display:none;">
+                                    <div class="col-8" id="showImageAnnotation">
+                                        <canvas id="c"></canvas>
                                     </div>
-                                    <div class="col-12 mt-2 cont-inner text-center  border border-3 border-dark">
-                                        <div class="row justify-content-center p-2">
-                                            <div class="col-3 m-1 inner-pill">Length</div>
-                                            <div class="col-3 m-1 inner-pill">Width</div>
-                                            <div class="col-3 m-1 inner-pill">Depth</div>
-                                            <div class="col-3 m-1 inner-pill" id="length">0 ft</div>
-                                            <div class="col-3 m-1 inner-pill" id="width">0 ft</div>
-                                            <div class="col-3 m-1 inner-pill" id="depth">3 ft</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 mt-2 cont-inner text-center  border border-3 border-dark">
-                                        <div class="row justify-content-center p-2">
+                                    <div class="col-4">
+                                        <div class="row">
                                             <div class="col-12">
-                                                <h6>Actual Total Volume of Water</h6>
-                                                <h6>(Cubic Feet & Gallons)</h6>
-                                            </div>
-                                            <div class="col-4 inner-pill" id="cubicFeet">
-                                                0 ft<sup>3</sup>
-                                            </div>
-                                            <div class="col-2"><h6>=</h6></div>
-                                            <div class="col-4 inner-pill" id="gallons">
-                                                0 gal
+                                                <button class="btn btn-sm active">Classes</button>
+                                                <button class="btn btn-sm">List</button>
                                             </div>
                                         </div>
+                                        <div class="row" id="classList">
+
+                                        </div>
+                                        <div class="row" id="itemList" style="display: none;">
+
+                                        </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-2 header m-0 ms-0 me-3 toggle-final move" style="height: 250px; display: none;">
+                                <div class="row image-container text-center p-3" id="image-container-extra" style="display:flex;"> 
+                                    <!-- Image Uploads Container -->
+                                </div>
+                            </div>
+                            <div class="col-7 m-auto mt-0 pt-0">
+                                <div class="d-grid mx-auto text p-0 m-0">
+                                    <button type="button" id="progress-next" class="btn btn-lg toggle-button"><img src="img/proceed icon.svg" class="me-2">Proceed</button>
+                                 </div>
+                            </div>
+                            <div class="col-4 offset-4 mt-0 pt-2">
+                                <div id="progress">
+                                    <div id="progress-bar1"></div>
+                                    <ul id="progress-num">
+                                      <li class="step active">1</li>
+                                      <li class="step">2</li>
+                                      <li class="step">3</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-            </div>
-            <!-- Division 2 - Right -->
+             </div>
         </div>
-     </div>
-    <!-- Content # End -->
-    <!-- Image Modal -->
-    <div id="imageModal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content cont-outer">
-                <div class="modal-header">
-                    <h5 class="modal-title">Annotated Image</h5>
-                    <button type="button" class="btn-close" id="closeModal"></button>
-                </div>
-                <div class="modal-body imgshow">
-                    <h5 class="ms-2 mt-2">Classes Filter</h5>
-                    <div class="classesList cont-inner m-2" id="classesList">
-                        <!-- Classes List Filter -->
-                    </div>
-                    <canvas id="c" style="max-width: 100%; height: auto;"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-     <!-- Components -->
-    <script src="js/tool-modules/upload.js"></script>
-    <script src="js/user-testing-modules/pondformula.js"></script>
-    <script src="js/user-testing-modules/progress-bar.js"></script>
-    <script src="js/user-testing-modules/main.js"></script>
-    <script src="js/tool-modules/show-image.js"></script>
-</body>
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <!-- Components -->
+        <script src="js/tool-modules/upload.js"></script>
+        <script src="js/user-testing-modules/step-bar.js"></script>
+        <script src="js/user-testing-modules/pondformula.js"></script>
+        <script src="js/user-testing-modules/progress-bar.js"></script>
+        <script src="js/user-testing-modules/main.js"></script>
+        <script src="js/tool-modules/show-image.js"></script>
+    </body>
 </html>

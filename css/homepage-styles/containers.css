@@ -27,18 +27,6 @@
     opacity: 0.86;
 }
 
-.header{
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-    border-radius: 20px;
-    margin: auto;
-    margin-bottom: 20px;
-    align-content: center;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    -ms-border-radius: 20px;
-    -o-border-radius: 20px;
-}
-
 .arrowDown{
     background-color: #254E58 !important;
     border-radius: 20px;

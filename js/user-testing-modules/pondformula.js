@@ -70,4 +70,4 @@ function recommendPondDimensions(rule) {
 }
 
 // Sample Run
-recommendPondDimensions(1); // Rule 1 - Default
+// recommendPondDimensions(1); // Rule 1 - Default

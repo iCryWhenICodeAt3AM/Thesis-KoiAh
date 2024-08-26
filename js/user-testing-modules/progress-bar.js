@@ -1,48 +1,30 @@
+let images = 0;
 // Initialize progress bar
-function initializeProgressBar(totalItems) {
-    const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
-    const progressNumber = document.getElementById('progress-number');
-    
-    if (progressBar) {
-        progressBar.max = totalItems;
-        progressBar.value = 0;
-        if (progressText) {
-            progressText.innerText = `Processing: 0%`;
-            progressNumber.innerText = `Remaining Images: ${totalItems}`;
-        }
+function initialize() {
+    const progressText = document.getElementById('percent');
+    const progressBar1 = document.getElementById('progress-bar');
+    if (progressBar1) {
+        progressText.innerHTML = '0%';
+        progressBar1.style.width = '0%';
     }
-    // Optionally hide the overlay after processing is complete
-    document.getElementById('overlay').style.display = 'block';
+
+    // Get the number of items
+    images = existingFiles.size;
+    console.log(images," Images");
 }
 
 // Update progress bar
-function updateProgress(completedItems) {
-    const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
-    const progressNumber = document.getElementById('progress-number');
-    const remaining = parseInt(progressNumber.innerText.replace("Remaining Images: ", ""));
-    if (progressBar) {
-        progressBar.value = completedItems;
-        const percentage = Math.round((completedItems / progressBar.max) * 100);
+function updateProgress1(completedItems) {
+    const progressBar1 = document.getElementById('progress-bar');
+    const progressText = document.getElementById('percent');
+    if (progressBar1) {
+        console.log()
+        const percentage = Math.round((completedItems / images) * 100);
+        console.log(percentage, "percentage");
+
         if (progressText) {
-            progressText.innerText = `Processing: ${percentage}%`;
-            progressNumber.innerText = `Remaining Images: ${remaining - 1}`;
+            progressText.innerHTML = `${percentage}%`;
+            progressBar1.style.width = `${percentage}%`; // Set the width of the progress bar
         }
     }
 }
-
-// Complete progress bar
-function completeProgressBar() {
-    const progressBar = document.getElementById('progress-bar');
-    const progressNumber = document.getElementById('progress-number');
-    if (progressBar) {
-        progressBar.value = progressBar.max;
-        const progressText = document.getElementById('progress-text');
-        if (progressText) {
-            progressText.innerText = `Processing: 100%`;
-            progressNumber.innerText = `Remaining Images: 0`;
-        }
-    }
-}
-

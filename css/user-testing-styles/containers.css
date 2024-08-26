@@ -1,8 +1,4 @@
-.header {
-    background-color: #4da6bd !important;
-    color: #000 !important;
-    border: #000 2px solid;
-}
+
 
 #root-image-container {
     max-height: 275px;
@@ -22,4 +18,52 @@
 
 .form-check {
     margin-left: 10px;
+}
+
+button {
+    background-color: #254E58 !important;
+    color: #fff !important;
+}
+
+#image-container, #image-container-extra, #classList {
+    overflow-y: auto;
+    max-height: 250px;
+}
+
+.progress {
+    border-radius: 30px;
+    height: 35px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
+}
+
+.progress-bar {
+    background: linear-gradient(45deg, #88BDBC 25%, transparent 25%, transparent 50%, #88BDBC 50%, #88BDBC 75%, transparent 75%, transparent);
+    background-size: 40px 40px;
+    border-radius: 30px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
+    animation: progress-bar-animation 2s ease-in-out infinite;
+}
+
+@keyframes progress-bar-animation {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 40px 0;
+    }
+}
+
+.image-wrapper {
+    cursor: pointer;
+}
+
+button.active {
+    background-color: #88BDBC !important;
+    color: #121212 !important;
 }
