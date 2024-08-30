@@ -204,7 +204,7 @@ async function showImageAnnotation(filename) {
                 ctx.beginPath();
                 ctx.rect(rectX, rectY, adjustedWidth, adjustedHeight);
                 ctx.lineWidth = Math.min(canvasWidth, canvasHeight) / 100;
-                ctx.strokeStyle = annotation.label !== "Unknown" ? 'white' : 'red';
+                ctx.strokeStyle = annotation.label !== "Unknown" ? 'white' : 'yellow';
                 ctx.stroke();
 
                 ctx.font = `${Math.min(canvasWidth, canvasHeight) / 30}px Arial`;
