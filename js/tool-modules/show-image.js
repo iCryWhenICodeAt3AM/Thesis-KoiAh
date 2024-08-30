@@ -5,36 +5,61 @@ function generateClassList(annotations, renderAnnotations) {
     // Clear the list first
     classListDiv.innerHTML = '';
 
-    // Create a clickable item for each unique class
+    // Create a Bootstrap table for the class list
+    const table = document.createElement('table');
+    table.style.maxHeight = '350px';
+    table.className = 'table table-striped table-hover';
+
+    // Create the table head
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    const countHeader = document.createElement('th');
+    countHeader.textContent = 'Count';
+    const labelHeader = document.createElement('th');
+    labelHeader.textContent = 'Label';
+    headerRow.appendChild(countHeader);
+    headerRow.appendChild(labelHeader);
+    thead.appendChild(headerRow);
+
+    // Create the table body
+    const tbody = document.createElement('tbody');
+
+    // Create a row for each unique class
     uniqueClasses.forEach(label => {
-        const div = document.createElement('div');
-        div.className = 'col-12';
+        const tr = document.createElement('tr');
 
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'row';
+        // Create the count cell
+        const countCell = document.createElement('td');
+        countCell.textContent = annotations.filter(annotation => annotation.label === label).length;
 
-        const countDiv = document.createElement('div');
-        countDiv.className = 'col-4';
-        countDiv.textContent = annotations.filter(annotation => annotation.label === label).length;
-
-        const labelDiv = document.createElement('div');
-        labelDiv.className = 'col-8';
-        labelDiv.textContent = label;
-        labelDiv.style.cursor = 'pointer';
-        labelDiv.dataset.label = label;
-        labelDiv.classList.add('active'); // Default to active
+        // Create the label cell
+        const labelCell = document.createElement('td');
+        labelCell.textContent = label;
+        labelCell.style.cursor = 'pointer';
+        labelCell.dataset.label = label;
+        labelCell.classList.add('active'); // Default to active
+        labelCell.style.backgroundColor = 'lightblue'; // Set active color to light blue
 
         // Attach event listener to toggle visibility of annotations
-        labelDiv.addEventListener('click', function() {
+        labelCell.addEventListener('click', function() {
             this.classList.toggle('active');
             renderAnnotations();
         });
 
-        rowDiv.appendChild(countDiv);
-        rowDiv.appendChild(labelDiv);
-        div.appendChild(rowDiv);
-        classListDiv.appendChild(div);
+        // Append the count cell and label cell to the table row
+        tr.appendChild(countCell);
+        tr.appendChild(labelCell);
+
+        // Append the table row to the table body
+        tbody.appendChild(tr);
     });
+
+    // Append the table head and body to the table
+    table.appendChild(thead);
+    table.appendChild(tbody);
+
+    // Append the table to the class list div
+    classListDiv.appendChild(table);
 }
 
 function generateItemList(annotations, renderAnnotations) {
@@ -43,34 +68,55 @@ function generateItemList(annotations, renderAnnotations) {
     // Clear the list first
     itemListDiv.innerHTML = '';
 
-    // Create a clickable item for each annotation
+    // Create a Bootstrap table for the annotations
+    const table = document.createElement('table');
+    table.style.maxHeight = '350px';
+    table.className = 'table table-striped table-hover';
+
+    // Create the table head
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    const labelHeader = document.createElement('th');
+    labelHeader.textContent = 'Annotation';
+    headerRow.appendChild(labelHeader);
+    thead.appendChild(headerRow);
+
+    // Create the table body
+    const tbody = document.createElement('tbody');
+
+    // Add each annotation as a table row
     annotations.forEach((annotation, index) => {
-        const div = document.createElement('div');
-        div.className = 'col-12';
+        const tr = document.createElement('tr');
 
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'row';
-
-        const labelDiv = document.createElement('div');
-        labelDiv.className = 'col-12';
-        labelDiv.textContent = `${annotation.label} (${(annotation.confidence * 100).toFixed(2)}%)`;
-        labelDiv.style.cursor = 'pointer';
-        labelDiv.dataset.index = index;
+        // Create the label cell
+        const labelCell = document.createElement('td');
+        labelCell.textContent = `${annotation.label} (${(annotation.confidence * 100).toFixed(2)}%)`;
+        labelCell.style.cursor = 'pointer';
+        labelCell.dataset.index = index;
 
         // Attach event listener to highlight the annotation on hover
-        labelDiv.addEventListener('mouseenter', function() {
+        labelCell.addEventListener('mouseenter', function() {
             renderAnnotations([annotation]);
         });
 
         // Attach event listener to reset annotations on mouse leave
-        labelDiv.addEventListener('mouseleave', function() {
+        labelCell.addEventListener('mouseleave', function() {
             renderAnnotations();
         });
 
-        rowDiv.appendChild(labelDiv);
-        div.appendChild(rowDiv);
-        itemListDiv.appendChild(div);
+        // Append the label cell to the table row
+        tr.appendChild(labelCell);
+
+        // Append the table row to the table body
+        tbody.appendChild(tr);
     });
+
+    // Append the table head and body to the table
+    table.appendChild(thead);
+    table.appendChild(tbody);
+
+    // Append the table to the item list div
+    itemListDiv.appendChild(table);
 }
 
 let locked = false;
@@ -118,11 +164,19 @@ async function showImageAnnotation(filename) {
         const canvas = document.getElementById('c');
         const ctx = canvas.getContext('2d');
 
-        // Calculate scaling factors to maintain aspect ratio and enforce minimum dimensions
-        const maxDimension = 225;
-        const scale = Math.max(maxDimension / img.width, maxDimension / img.height);
-        const canvasWidth = img.width * scale;
-        const canvasHeight = img.height * scale;
+        // Calculate scaling factors to maintain aspect ratio and enforce maximum dimensions
+        const maxWidth = 350;
+        const maxHeight = 350;
+        let canvasWidth = img.width;
+        let canvasHeight = img.height;
+
+        if (canvasWidth > maxWidth || canvasHeight > maxHeight) {
+            const widthRatio = maxWidth / canvasWidth;
+            const heightRatio = maxHeight / canvasHeight;
+            const scale = Math.min(widthRatio, heightRatio);
+            canvasWidth = canvasWidth * scale;
+            canvasHeight = canvasHeight * scale;
+        }
 
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
@@ -133,28 +187,28 @@ async function showImageAnnotation(filename) {
             ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight); // Draw the image
 
             // Get active labels
-            const activeLabels = Array.from(document.querySelectorAll('#classList .col-8.active')).map(div => div.dataset.label);
+            const activeLabels = Array.from(document.querySelectorAll('#classList td.active')).map(td => td.dataset.label);
 
             // Draw scaled annotations
             filteredAnnotations.filter(annotation => activeLabels.includes(annotation.label)).forEach(annotation => {
                 const { x, y, width, height } = annotation.coordinates;
 
-                const adjustedX = x * scale;
-                const adjustedY = y * scale;
-                const adjustedWidth = width * scale;
-                const adjustedHeight = height * scale;
+                const adjustedX = x * (canvasWidth / img.width);
+                const adjustedY = y * (canvasHeight / img.height);
+                const adjustedWidth = width * (canvasWidth / img.width);
+                const adjustedHeight = height * (canvasHeight / img.height);
 
                 const rectX = adjustedX - adjustedWidth / 2;
                 const rectY = adjustedY - adjustedHeight / 2;
 
                 ctx.beginPath();
                 ctx.rect(rectX, rectY, adjustedWidth, adjustedHeight);
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = annotation.label !== "Unknown" ? 'red' : 'yellow';
+                ctx.lineWidth = Math.min(canvasWidth, canvasHeight) / 100;
+                ctx.strokeStyle = annotation.label !== "Unknown" ? 'white' : 'yellow';
                 ctx.stroke();
 
-                ctx.font = '14px Arial';
-                ctx.fillStyle = annotation.label !== "Unknown" ? 'red' : 'yellow';
+                ctx.font = `${Math.min(canvasWidth, canvasHeight) / 30}px Arial`;
+                ctx.fillStyle = annotation.label !== "Unknown" ? 'white' : 'yellow';
                 ctx.fillText(`${annotation.label} (${(annotation.confidence * 100).toFixed(2)}%)`, rectX, rectY > 10 ? rectY - 5 : rectY + 15);
             });
         }
@@ -166,8 +220,8 @@ async function showImageAnnotation(filename) {
         // Initial rendering of annotations
         renderAnnotations();
 
-        canvas.style.maxWidth = '350px';
-        canvas.style.maxHeight = '350px';
+        canvas.style.maxWidth = '400px';
+        canvas.style.maxHeight = '';
     };
 
     img.onerror = function() {
@@ -187,14 +241,14 @@ async function showImageAnnotation(filename) {
 }
 
 // Toggle between class list and item list
-document.querySelector('.btn-sm.active').addEventListener('click', function() {
+document.querySelector('.btn-md.active').addEventListener('click', function() {
     document.getElementById('classList').style.display = 'block';
     document.getElementById('itemList').style.display = 'none';
     this.classList.add('active');
     this.nextElementSibling.classList.remove('active');
 });
 
-document.querySelector('.btn-sm:not(.active)').addEventListener('click', function() {
+document.querySelector('.btn-md:not(.active)').addEventListener('click', function() {
     document.getElementById('classList').style.display = 'none';
     document.getElementById('itemList').style.display = 'block';
     this.classList.add('active');
