@@ -16,6 +16,11 @@
     margin: 10px 10px;
 }
 
+#classList, #itemList {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
 .form-check {
     margin-left: 10px;
 }
@@ -25,11 +30,15 @@ button {
     color: #fff !important;
 }
 
-#image-container, #image-container-extra, #classList {
+#image-container, #classList {
     overflow-y: auto;
     max-height: 250px;
 }
 
+#image-container-extra{
+    overflow-y: auto;
+    max-height: 325px;
+}
 .progress {
     border-radius: 30px;
     height: 35px;

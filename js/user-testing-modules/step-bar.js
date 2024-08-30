@@ -67,5 +67,8 @@ function pageLoad() {
         document.querySelector(".sub-header").innerHTML = "Your images have been processed. ";
         // document.querySelectorAll(".move").style.height = "400px";
         showImageAnnotation(resultJsonData[0][0]);
+        document.getElementById("main").style.height = "350px";
+        document.getElementById("secondary").style.height = "350px";
+
     }
 }
