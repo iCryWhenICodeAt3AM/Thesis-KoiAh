@@ -13,10 +13,22 @@ function initialize() {
     console.log(images," Images");
 }
 
+function initialize1(unprocessed){
+    const progressText = document.getElementById('percent-num');
+    const progressBar1 = document.getElementById('progress-bar');
+    if (progressBar1) {
+        progressText.innerHTML = '0%';
+        progressBar1.style.width = '0%';
+    }
+    // Get the number of items
+    images = unprocessed;
+    console.log(images," Images");
+}
+
 // Update progress bar
 function updateProgress1(completedItems) {
     const progressBar1 = document.getElementById('progress-bar');
-    const progressText = document.getElementById('percent');
+    const progressText = document.getElementById('percent-num');
     if (progressBar1) {
         console.log()
         const percentage = Math.round((completedItems / images) * 100);

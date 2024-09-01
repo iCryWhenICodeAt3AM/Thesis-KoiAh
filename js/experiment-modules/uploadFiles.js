@@ -28,12 +28,12 @@ const largePB = new Set();
 // Hypothesis One Components
 const koiImageCount = document.getElementById("k-images-count");
 const nonKoiImageCount = document.getElementById("nk-images-count");
-const koiGroundTruthCount = document.getElementById("k-ground-truth-count");
-const nonKoiGroundTruthCount = document.getElementById("nk-ground-truth-count");
-const koiPredictionsCount = document.getElementById("k-predictions-count");
-const nonKoiPredictionsCount = document.getElementById("nk-predictions-count");
-const koiImageContainer = document.getElementById("k-image-container");
-const nonKoiImageContainer = document.getElementById("nk-image-container");
+const koiGroundTruthCount = document.querySelector(".k-ground-truth-count");
+const nonKoiGroundTruthCount = document.querySelector(".nk-ground-truth-count");
+const koiPredictionsCount = document.querySelector(".k-predictions-count");
+const nonKoiPredictionsCount = document.querySelector(".nk-predictions-count");
+const koiImageContainer = document.querySelector(".k-image-container");
+const nonKoiImageContainer = document.querySelector(".nk-image-container");
 
 // Hypothesis Two Components
 const smallImageCount = document.getElementById("small-images-count");
@@ -63,33 +63,35 @@ function displayImage(event) {
     let countElementId = "";
     let uploadedImages = [];
     let imageContainer = "";
+    let imageIndex = 0;
+
 
     // Determine the container and count element based on input type
     if (isKoi) {
-        containerId = "k-image-container";
+        // containerId = "k-img-count";
         countElementId = "k-images-count";
         uploadedImages = koiImageUploads;
     } else if (isNonKoi) {
-        containerId = "nk-image-container";
+        // containerId = "nk-image-container";
         countElementId = "nk-images-count";
         uploadedImages = nonKoiImageUploads;
     } else if (isSmall) {
-        containerId = "small-image-container";
+        // containerId = "small-image-container";
         countElementId = "small-images-count";
         uploadedImages = smallImageUploads;
     } else if (isMedium) {
-        containerId = "medium-image-container";
+        // containerId = "medium-image-container";
         countElementId = "medium-images-count";
         uploadedImages = mediumImageUploads;
     } else if (isLarge) {
-        containerId = "large-image-container";
+        // containerId = "large-image-container";
         countElementId = "large-images-count";
         uploadedImages = largeImageUploads;
     }
 
     // Get the container and count elements
     imageContainer = document.getElementById(containerId);
-    const countElement = document.getElementById(countElementId);
+    const countElement = document.querySelector(`.${countElementId}`);
 
     // Loop through files and store them
     for (const file of files) {
@@ -106,25 +108,28 @@ function displayImage(event) {
                 data: e.target.result.split(',')[1] // Keep base64 data
             });
 
-            const img = document.createElement("img");
-            img.src = e.target.result;
-            img.classList.add("img-thumbnail", "m-1"); // Add Bootstrap classes for styling
-            img.style.width = "75px"; // Adjust the size as needed
-            imageContainer.appendChild(img);
-
+            // imageContainer.innerHTML += `
+            //     <div class="image-wrapper col-2 ${++imageIndex}" id="${imageIndex}0">
+            //         <div class="row d-flex justify-content-center">
+            //             <button class="delete-btn" onclick="deleteImage('${imageIndex}', '${file.name}')">X</button>
+            //             <img class="col-12 p-1 uploaded" src="${e.target.result}">
+            //         </div>
+            //     </div>
+            // `;
+            countElement.innerText = koiImageUploads.length;
             // Update the image count after each image is read
-            countElement.innerText = uploadedImages.length;
+            // countElement.innerText = uploadedImages.length;
 
             // Logging the counts and uploads for debugging
-            console.log("");
+            // console.log("");
             console.log("Images Count: ", uploadedImages.length);
-            console.log("---");
-            console.log("Koi Images: ", koiImageUploads);
-            console.log("Non Koi Images: ", nonKoiImageUploads);
-            console.log("---");
-            console.log("Small Images: ", smallImageUploads);
-            console.log("Medium Images: ", mediumImageUploads);
-            console.log("Large Images: ", largeImageUploads);
+            // console.log("---");
+            // console.log("Koi Images: ", koiImageUploads);
+            // console.log("Non Koi Images: ", nonKoiImageUploads);
+            // console.log("---");
+            // console.log("Small Images: ", smallImageUploads);
+            // console.log("Medium Images: ", mediumImageUploads);
+            // console.log("Large Images: ", largeImageUploads);
         };
         reader.readAsDataURL(file);
     }

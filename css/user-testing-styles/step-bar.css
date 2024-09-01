@@ -5,8 +5,8 @@
 
 #progress-bar1 {
     position: absolute;
-    background: lightseagreen;
-    height: 5px;
+    background: #254E58;
+    height: 2px;
     width: 0%;
     top: 50%;
     left: 0;
@@ -22,31 +22,30 @@
 
 #progress-num::before {
     content: "";
-    background-color: lightgray;
+    background-color: #D9D9D9;
     position: absolute;
     top: 50%;
     left: 0;
-    height: 5px;
+    height: 2px;
     width: 100%;
     z-index: -1;
 }
 
 #progress-num .step {
-    border: 3px solid lightgray;
+    border: 3px solid #D9D9D9;
     border-radius: 100%;
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
     line-height: 25px;
     text-align: center;
-    background-color: #fff;
-    font-family: sans-serif;
-    font-size: 14px;    
+    background-color: #D9D9D9;
+    font-size: 15px;    
     position: relative;
     z-index: 1;
 }
 
 #progress-num .step.active {
-    border-color: lightseagreen;
-    background-color: lightseagreen;
+    border-color: #254E58;
+    background-color: #254E58;
     color: #fff;
 }

@@ -1,4 +1,7 @@
-
+#data {
+    max-height: 350px;
+    overflow-y: auto;
+}
 
 #root-image-container {
     max-height: 275px;
@@ -76,3 +79,10 @@ button.active {
     background-color: #88BDBC !important;
     color: #121212 !important;
 }
+
+#k-image-container, #nk-image-container {
+    max-height: 250px;
+    height: 250px;
+    overflow-y: auto;
+}
+
