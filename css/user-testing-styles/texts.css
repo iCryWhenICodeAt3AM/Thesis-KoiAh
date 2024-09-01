@@ -16,7 +16,7 @@ button {
     font-weight: 300;
 }
 
-#percent {
+#percent, #percent-num {
     color: #88BDBC !important;
 }
 
@@ -29,4 +29,22 @@ button {
 .labelTag {
     color: #1B121B;
     opacity: 0.86;
+}
+
+#filename-item, #filename-class, #current-image, #previous-image {
+    white-space: nowrap; 
+    overflow-y: auto; 
+    scrollbar-width: none;
+}
+
+
+.table td {
+    text-align: center;
+    /* color: #88BDBC;
+    background-color: #254E58; */
+    max-width: 150px;
+    width: 150px;
+    overflow-y: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
 }

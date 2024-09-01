@@ -1,670 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KoiAh</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="icon" href="img/logo.svg">
-    <link rel="stylesheet" href="css/master.css">
-    <link rel="stylesheet" href="css/experiment-styles/texts.css">
-    <link rel="stylesheet" href="css/experiment-styles/containers.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-</head>
-<body>
-    <!-- Navbar # Start -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a href="index.html"><img class="ms-5" src="img/logo.svg" alt="KoiAh Logo"></a>
-            <a class="navbar-brand ms-2" id="brandName" href="index.html">Koi<u id="underline">Ah</u></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav position-absolute top-1 start-50 translate-middle-x">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.html">Homepage</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="user testing.html">User Testing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#"><u id="underline">Experimentation</u></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="tool.html">Tool</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>  
-    <!-- Navbar # End -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>KoiAh</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="icon" href="img/logo.svg">
+        <link rel="stylesheet" href="css/user-testing-styles/step-bar.css">
+        <link rel="stylesheet" href="css/master.css">
+        <link rel="stylesheet" href="css/user-testing-styles/texts.css">
+        <link rel="stylesheet" href="css/user-testing-styles/containers.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+        <!-- TensorFlow.js -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 
-    <!-- Content # Start -->
-    <div class="container-fluid mt-3">
-        <div class="row">
-            <!-- Division 1 - Left -->
-            <div class="cont-outer col-12 text-center" style="height:500px;" id="inputs">
-                <div id="overlay" class="overlay">
-                    <div class="progress-container">
-                        <progress id="progress-bar" class="progress-bar" value="0"></progress>
-                        <p id="progress-text">Processing: 0%</p>
-                        <p id="progress-number">Remaining Images: 0</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="cont-inner col-6 offset-3 d-flex mt-4 justify-content-center border border-3 border-dark">
-                        <label for="" class="m-1 p-1"><b>Hypothesis</b></label>
-                        <select name="hypothesis" id="hypothesis" class="cont-outer m-1 p-1 border border-3 border-dark" onchange="changeInputs()">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
-                    </div>
-                </div>
-                <!-- Hypothesis #1 -->
-                <div class="container text-white text-center" id="hypothesis-one">
-                    <!-- Koi Inputs Section -->
-                    <div class="row">
-                        <div class="cont-inner col-5 pt-2 pb-2 m-2 ms-5  me-5 border border-3 border-dark koiInputs" id="koiInputs" name="koiInputs">
-                            <div class="row">
-                                <div class="col-12 text-center">
-                                    <h6><b>Koi Fish</b></h6>
-                                </div>
+        <!-- Roboflow.js -->
+        <script src="https://cdn.roboflow.com/0.2.26/roboflow.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="d-flex flex-column flex-shrink-0 p-3 text-dark bg-dark col-2 sticky-top" id="sidebar">
+                    <a href="/" class="text-decoration-none mb-5 mt-2">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <img src="img/logo.svg" alt="KoiAh Logo" id="koiahLogo">
+                                <span class="" style="font-size: 20px; color: #FFF;">Koi<u id="underline">Ah</u></span>
                             </div>
-                            <div class="row">
-                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-3" >
-                                    <!-- Input File -->
-                                    <input type="file" id="koiImages" name="koiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiImages').click();"><img src="img/file icon.svg" class="me-1">Input File</button>
+                        </div>
+                        <span href="index.html" class="mt-2 d-flex justify-content-center">
+                        </span>
+                    </a>
+                    <ul class="nav nav-pills flex-column mb-auto mt-2">
+                      <li class="nav-item">
+                        <a href="/" class="nav-link mt-2 mb-2" aria-current="page">
+                            <img src="img/Homepage icon.svg" alt="Homepage Icon" class="me-2">
+                            Homepage
+                        </a>
+                      </li>
+                      <li>
+                        <a href="user testing.html" class="nav-link mt-2 mb-2">
+                            <img src="img/User Testing icon.svg" alt="Homepage Icon" class="me-2">
+                            User Testing
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="nav-link mt-2 mb-2 active">
+                            <img src="img/Experiment icon.svg" alt="Homepage Icon" class="me-2">
+                            Experiment
+                        </a>
+                      </li>
+                      <li>
+                        <a href="tool.html" class="nav-link mt-2 mb-2">
+                            <img src="img/Tool icon.svg" alt="Homepage Icon" class="me-2">
+                            Tool
+                        </a>
+                      </li>
+                    </ul>
+                    
+                </div>
+                <div class="col-10 text-center d-block">
+                    <div class="col-12 d-flex contents" id="pageOne">
+                        <div class="row" style="width:100%; margin: 0px; padding: 0px;">
+                            <div class="col-8 offset-2 text-start p-5 pb-0">
+                                <h3>
+                                    <b class="head">Get Started!</b>
+                                </h3>
+                                <h5 class="sub-header m-0">
+                                    Start by selecting the hypothesis to test.
+                                </h5>
+                            </div>
+                            <div class="col-7 m-auto mt-0 pt-0">
+                                <div class="d-grid mx-auto" id="koi-image">
+                                        <input type="file" id="koiImages" name="koiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
+                                        <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('koiImages').click();" id="koi-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-2">Upload Koi Images</button>
                                 </div>
-                                <div class="col-4 d-grid p-0 m-1">
-                                    <!-- Ground Truth JSON File -->
+                                <div class="d-grid mx-auto">
                                     <input type="file" id="koiGroundTruthJson" name="koiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'koi')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth</button>
+                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('koiGroundTruthJson').click();" id="koi-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-2">Upload Koi Truth JSON</button>
                                 </div>
-                                <div class="col-4 d-grid gap-2 p-0 m-1">
-                                    <!-- Predictions JSON File -->
+                                <div class="d-grid mx-auto">
                                     <input type="file" id="koiPredictionsJson" name="koiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'koi')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('koiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions</button>
+                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('koiPredictionsJson').click();" id="koi-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Koi Predictions JSON</button>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="cont-inner col-5 pt-2 pb-2 m-2 ms-5 offset-1 border border-3 border-dark nonKoiInputs" id="nonKoiInputs" name="nonKoiInputs">
-                            <div class="row">
-                                <div class="col-12 text-center">
-                                    <h6><b>Non-Koi Objects</b></h6>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-3">
-                                    <!-- Input File -->
+                                <!--  -->
+                                <div class="d-grid mx-auto" id="koi-image">
                                     <input type="file" id="nonKoiImages" name="nonKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiImages').click();"><img src="img/file icon.svg" class="me-1">Input File</button>
+                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('nonKoiImages').click();" id="non-koi-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-2">Upload Non-Koi Images</button>
                                 </div>
-                                <div class="col-4 d-grid p-0 m-1">
-                                    <!-- Ground Truth JSON File -->
+                                <div class="d-grid mx-auto">
                                     <input type="file" id="nonKoiGroundTruthJson" name="nonKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'nonKoi')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth</button>
+                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('nonKoiGroundTruthJson').click();" id="non-koi-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Non-Koi Truth JSON</button>
                                 </div>
-                                <div class="col-4 d-grid gap-2 p-0 m-1">
-                                    <!-- Predictions JSON File -->
+                                <div class="d-grid mx-auto">
                                     <input type="file" id="nonKoiPredictionsJson" name="nonKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'nonKoi')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('nonKoiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions</button>
+                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('nonKoiPredictionsJson').click();" id="non-koi-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Non-Koi Predictions JSON</button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- Data Information Section -->
-                    <div class="row">
-                        <div class="col-5 p-3 pt-0 pb-2 ms-5 me-5" id="koi-data-container">
-                            <div class="row">
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            Images
-                                        </div>
-                                        <div class="cont-outer col-7" id="k-images-count">
-                                            0
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            Gr. Tr.
-                                        </div>
-                                        <div class="cont-outer col-7" id="k-ground-truth-count">
-                                            0
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            Pred.
-                                        </div>
-                                        <div class="cont-outer col-7" id="k-predictions-count">
-                                            0
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-5 p-3 pt-0 pb-2 ms-5" id="nk-data-container">
-                            <div class="row">
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            Images
-                                        </div>
-                                        <div class="cont-outer col-7" id="nk-images-count">
-                                            0
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            Gr. Tr.
-                                        </div>
-                                        <div class="cont-outer col-7" id="nk-ground-truth-count">
-                                            0
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            Pred.
-                                        </div>
-                                        <div class="cont-outer col-7" id="nk-predictions-count">
-                                            0
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Image Display Section -->
-                    <div class="row">
-                        <div class="cont-inner col-5 p-3 ms-5 me-5 border border-3 border-dark img-container" id="koi-image-container">
-                            <div class="row image-container" id="k-image-container">
-                                <!-- Image Uploads Container -->
-                            </div>
-                        </div>
-                        <div class="cont-inner col-5 p-3 ms-5 border border-3 border-dark img-container" id="non-koi-image-container">
-                            <div class="row image-container" id="nk-image-container">
-                                <!-- Image Uploads Container -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Hypothesis #1 -->
-                <!-- Hypothesis #2 -->
-                <div class="container-fluid text-white text-center" id="hypothesis-two">
-                    <!-- Koi Inputs Section -->
-                    <div class="row mt-2 ">
-                        <div class="cont-inner col-3 pt-2 pb-2 ms-5 border border-3 border-dark koiInputs" id="smallKoiInputs" name="smallKoiInputs">
-                            <div class="row">
-                                <div class="col-12 text-center">
-                                    <h6><b>Small Koi Fish</b></h6>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-1">
-                                    <!-- Input File -->
-                                    <input type="file" id="smallKoiImages" name="smallKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('smallKoiImages').click();"><img src="img/file icon.svg" class="me-1">Images</button>
-                                </div>
-                                <div class="col-4 d-grid p-0 m-1">
-                                    <!-- Ground Truth JSON File -->
-                                    <input type="file" id="smallKoiGroundTruthJson" name="smallKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'small')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('smallKoiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth</button>
-                                </div>
-                                <div class="col-4 d-grid gap-2 p-0 m-1">
-                                    <!-- Predictions JSON File -->
-                                    <input type="file" id="smallKoiPredictionsJson" name="smallKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'small')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('smallKoiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="cont-inner col-3 pt-2 pb-2 offset-1 border border-3 border-dark koiInputs" id="mediumKoiInputs" name="mediumKoiInputs">
-                            <div class="row">
-                                <div class="col-12 text-center">
-                                    <h6><b>Medium Koi Fish</b></h6>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-1">
-                                    <!-- Input File -->
-                                    <input type="file" id="mediumKoiImages" name="mediumKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('mediumKoiImages').click();"><img src="img/file icon.svg" class="me-1">Images</button>
-                                </div>
-                                <div class="col-4 d-grid p-0 m-1">
-                                    <!-- Ground Truth JSON File -->
-                                    <input type="file" id="mediumKoiGroundTruthJson" name="mediumKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'medium')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('mediumKoiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth</button>
-                                </div>
-                                <div class="col-4 d-grid gap-2 p-0 m-1">
-                                    <!-- Predictions JSON File -->
-                                    <input type="file" id="mediumKoiPredictionsJson" name="mediumKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'medium')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('mediumKoiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="cont-inner col-3 pt-2 pb-2 offset-1 border border-3 border-dark nonKoiInputs" id="nonKoiInputs" name="nonKoiInputs">
-                            <div class="row">
-                                <div class="col-12 text-center">
-                                    <h6><b>Large Koi Fish</b></h6>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3 d-grid gap-2 p-0 m-1 ms-1">
-                                    <!-- Input File -->
-                                    <input type="file" id="largeKoiImages" name="largeKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('largeKoiImages').click();"><img src="img/file icon.svg" class="me-1">Images</button>
-                                </div>
-                                <div class="col-4 d-grid p-0 m-1">
-                                    <!-- Ground Truth JSON File -->
-                                    <input type="file" id="largeKoiGroundTruthJson" name="largeKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'large')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('largeKoiGroundTruthJson').click();"><img src="img/json file.svg" class="me-1">Ground Truth</button>
-                                </div>
-                                <div class="col-4 d-grid gap-2 p-0 m-1">
-                                    <!-- Predictions JSON File -->
-                                    <input type="file" id="largeKoiPredictionsJson" name="largeKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'large')">
-                                    <button type="button" class="btn btn-success btn-sm border border-3 border-dark" onclick="document.getElementById('largeKoiPredictionsJson').click();"><img src="img/json file.svg" class="me-1">Predictions</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Data Information Section -->
-                    <div class="row mt-2">
-                        <div class="col-3 p-3 pt-0 pb-2 ms-5" id="koi-data-container">
-                            <div class="row">
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                            <div class="col-7 header mt-0 pt-0 mb-0 move" id="main" style="height: 250px; margin: auto;">
+                                <div class="container" id="hypothesis-select" style="display: block;">
                                     <div class="row">
                                         <div class="col-6">
-                                            Images
+                                            <label class="form-check-label" for="hypothesis1">
+                                                <h4>Hypothesis 1</h4>
+                                            </label>
                                         </div>
-                                        <div class="cont-outer col-5" id="small-images-count">
-                                            0
+                                        <div class="col-6">
+                                            <label class="form-check-label" for="hypothesis2">
+                                               <h4>Hypothesis 2</h4>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <input class="form-check-input" type="radio" name="hypothesis" id="hypothesis1" value="hypothesis1" style="transform: scale(1.5);" checked>
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-check-input" type="radio" name="hypothesis" id="hypothesis2" value="hypothesis2" style="transform: scale(1.5);">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            Gr. Tr.
-                                        </div>
-                                        <div class="cont-outer col-5" id="small-ground-truth-count">
-                                            0
-                                        </div>
-                                    </div>
+                                <div class="container" id="koi-img-base" style="display: none;">
+                                    <span class="h3"><b id="percent" class="me-2 k-images-count">0</b></span><span class="ms-2 h5 opacity-50">Uploaded koi image/s</span>
                                 </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
+                                <div class="container" id="koi-gt-base" style="display: none;">
+                                    <span class="h3"><b id="percent" class="me-2 k-ground-truth-count">0</b></span><span class="ms-2 h5 opacity-50">Matched truth annotations with image</span>
+                                </div>
+                                <div class="container" id="koi-pred-base" style="display: none;">
+                                    <span class="h3"><b id="percent" class="me-2 k-predictions-count">0</b></span><span class="ms-2 h5 opacity-50">Matched predictions annotations with image</span>
+                                </div>
+                                <div class="container" id="non-koi-img-base" style="display: none;">
+                                    <span class="h3"><b id="percent" class="me-2 nk-images-count">0</b></span><span class="ms-2 h5 opacity-50">Uploaded non-koi image/s</span>
+                                </div>
+                                <div class="container" id="non-koi-gt-base" style="display: none;">
+                                    <span class="h3"><b id="percent" class="me-2 nk-ground-truth-count">0</b></span><span class="ms-2 h5 opacity-50">Matched truth annotations with image</span>
+                                </div>
+                                <div class="container" id="non-koi-pred-base" style="display: none;">
+                                    <span class="h3"><b id="percent" class="me-2 nk-predictions-count">0</b></span><span class="ms-2 h5 opacity-50">Matched predictions annotations with image</span>
+                                </div>
+                                <div class="container" id="loading-base" style="display: none;">
                                     <div class="row">
-                                        <div class="col-6">
-                                            Pred.
+                                        <div class="col-2 offset-1 pe-0 me-3 ps-0">
+                                            <img src="img/cloud icon.svg" alt="">
                                         </div>
-                                        <div class="cont-outer col-5" id="small-predictions-count">
-                                            0
+                                        <div class="col-8 text-start ms-0 ps-0 pe-3">
+                                            <span class="h3"><b id="percent-num">50%</b></span><span class="ms-2 h5 opacity-50">Detecting objects...</span>
+    
+                                            <div class="progress mt-2">
+                                                <div class="progress-bar" id="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-3 p-3 pt-0 pb-2 offset-1" id="koi-data-container">
-                            <div class="row">
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            Images
-                                        </div>
-                                        <div class="cont-outer col-5" id="medium-images-count">
-                                            0
+                            <div class="col-8 header mt-0 pt-0 mb-0 move" id="data" style="margin: auto; display: none;">
+                                <div class="tab-content" id="myTabContent">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                          <button class="nav-link active links" id="anova-tab" data-bs-toggle="tab" data-bs-target="#anova" type="button" role="tab" aria-controls="anova" aria-selected="true">ANOVA</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button class="nav-link links" id="data-tab" data-bs-toggle="tab" data-bs-target="#datasum" type="button" role="tab" aria-controls="data" aria-selected="false">DATA</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                          <button class="nav-link links" id="matrix-tab" data-bs-toggle="tab" data-bs-target="#matrix" type="button" role="tab" aria-controls="matrix" aria-selected="false">MATRIX</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link links" id="matrix-img-tab" data-bs-toggle="tab" data-bs-target="#matrix-img" type="button" role="tab" aria-controls="matrix-img" aria-selected="false">IMAGES</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link links" id="table-tab" data-bs-toggle="tab" data-bs-target="#table" type="button" role="tab" aria-controls="table" aria-selected="false">TABLE</button>
+                                          </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link links" id="koi-tab" data-bs-toggle="tab" data-bs-target="#koi" type="button" role="tab" aria-controls="koi" aria-selected="false">KOI</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                        <button class="nav-link links" id="non-koi-tab" data-bs-toggle="tab" data-bs-target="#non-koi" type="button" role="tab" aria-controls="non-koi" aria-selected="false">NON-KOI</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                        <button class="nav-link links" id="export-tab" data-bs-toggle="tab" data-bs-target="#export" type="button" role="tab" aria-controls="export" aria-selected="false">EXPORT</button>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-pane fade show active" id="anova" role="tabpanel" aria-labelledby="anova-tab">
+                                        <div class="results" id="anova-one">
+                                            <!--  -->
+                                            <!--  -->
                                         </div>
                                     </div>
-                                </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            Gr. Tr.
-                                        </div>
-                                        <div class="cont-outer col-5" id="medium-ground-truth-count">
-                                            0
+                                    <div class="tab-pane fade" id="datasum" role="tabpanel" aria-labelledby="data-tab">
+                                        <div id="data-one">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            Pred.
-                                        </div>
-                                        <div class="cont-outer col-5" id="medium-predictions-count">
-                                            0
+                                    <div class="tab-pane fade" id="matrix" role="tabpanel" aria-labelledby="matrix-tab">
+                                        <div class="results" id="one-confusion-matrix">
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="tab-pane fade" id="matrix-img" role="tabpanel" aria-labelledby="matrix-img-tab">
+                                        <!-- <div class="matrix-images">
+                                            <div class="row" id="matrix-images-row">
+                                                <div class="col-12" id="matrix-images-container">
+                                                    <canvas id="matrix-images"></canvas>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div>
+                                                    <div class="row">
+                                                        <div class="col-8 offset-2 d-grid mx-auto" id="matrix-img-list">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
+                                        <div class="col-12" id="hypothesis-one-graph-container">
+                                            <canvas id="hypothesis-one-graph"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="koi" role="tabpanel" aria-labelledby="koi-tab">
+                                        <div class="results" id="koi-table">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Image</th>
+                                                        <th>Precision</th>
+                                                        <th>Recall</th>
+                                                        <th>F1 Score</th>
+                                                        <th>Category</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="koi-metric">
+                                                        
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="non-koi" role="tabpanel" aria-labelledby="non-koi-tab">
+                                        <div class="results" id="non-koi-table">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Image</th>
+                                                        <th>Precision</th>
+                                                        <th>Recall</th>
+                                                        <th>F1 Score</th>
+                                                        <th>Category</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="non-koi-metric">
+                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade justify-content-center" id="export" role="tabpanel" aria-labelledby="export-tab">
+                                        <div class="row">
+                                            <div class="col-12 my-auto mx-auto d-grid mt-5 mb-5">
+                                                <button class="cont-inner mt-5 mb-5 btn btn-success btn-lg border border-3 border-dark showTable" id="export-button-one" type="button" onclick="generateExcelForHypothesis()"><b>Export Results Data</b></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>   
                             </div>
-                        </div>
-                        <div class="col-3 p-3 pt-0 pb-2 offset-1" id="koi-data-container">
-                            <div class="row">
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            Images
-                                        </div>
-                                        <div class="cont-outer col-5" id="large-images-count">
-                                            0
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            Gr. Tr.
-                                        </div>
-                                        <div class="cont-outer col-5" id="large-ground-truth-count">
-                                            0
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="cont-inner col-4 border border-3 border-dark pt-2 pb-2 title">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            Pred.
-                                        </div>
-                                        <div class="cont-outer col-5" id="large-predictions-count">
-                                            0
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-7 m-auto mt-0 pt-0">
+                                <div class="d-grid mx-auto text p-0 m-0">
+                                    <button type="button" id="progress-next" class="btn btn-lg toggle-button"><img src="img/proceed icon.svg" class="me-2">Proceed</button>
+                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="cont-inner col-3 ms-5 border border-3 border-dark img-container" id="small-image-container">
-                            <div class="row image-container" id="small-image-container">
-                                <!-- Image Uploads Container -->
-                            </div>
-                        </div>
-                        <div class="cont-inner col-3 offset-1 border border-3 border-dark img-container" id="medium-image-container">
-                            <div class="row image-container" id="medium-image-container">
-                                <!-- Image Uploads Container -->
-                            </div>
-                        </div>
-                        <div class="cont-inner col-3 offset-1 border border-3 border-dark img-container" id="large-image-container">
-                            <div class="row image-container" id="large-image-container">
-                                <!-- Image Uploads Container -->
+                            <div class="col-8 offset-2 mt-0 pt-2">
+                                <div id="progress">
+                                    <div id="progress-bar1"></div>
+                                    <ul id="progress-num">
+                                      <li class="step active">1</li>
+                                      <!-- k-img -->
+                                      <li class="step">2</li>
+                                      <!-- k-tr -->
+                                      <li class="step">3</li>
+                                      <!-- k-pr -->
+                                      <li class="step">4</li>
+                                      <!-- nk-img -->
+                                      <li class="step">5</li>
+                                      <!-- nk-tr -->
+                                      <li class="step">6</li>
+                                      <!-- nk-pr -->
+                                      <li class="step">7</li>
+                                      <!-- annotate -->
+                                      <li class="step">8</li>
+                                      <!-- data  -->
+                                      <li class="step">9</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Hypothesis #2 -->
-                <!-- Start -->
-                <div class="row">
-                    <div class="cont-inner col-6 offset-3 p-2 mt-3 mx-auto d-grid">
-                        <button type="button" class="btn btn-success btn-lg border border-3 border-dark start-button" id="start-button" onclick="evaluateImages()" style="font-size: 13px !important;"><b>Start</b></button>
-                    </div>
-                </div>
-                <!-- Start -->
-            </div>
-            <!-- Division 1 - Left -->
+             </div>
         </div>
-     </div>
-    <!-- Content # End -->
-    <!-- Modal #Hypothesis One -->
-    <div class="modal fade" id="hypOneModal" tabindex="-1" aria-labelledby="hypOneModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="cont-outer modal-content">
+        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal" >Open modal for @mdo</button> -->
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+              <div class="modal-content">
                 <div class="modal-header">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link active links" id="anova-tab" data-bs-toggle="tab" data-bs-target="#anova" type="button" role="tab" aria-controls="anova" aria-selected="true">ANOVA</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link links" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button" role="tab" aria-controls="data" aria-selected="false">DATA</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link links" id="matrix-tab" data-bs-toggle="tab" data-bs-target="#matrix" type="button" role="tab" aria-controls="matrix" aria-selected="false">MATRIX</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="table-tab" data-bs-toggle="tab" data-bs-target="#table" type="button" role="tab" aria-controls="table" aria-selected="false">TABLE</button>
-                          </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="koi-tab" data-bs-toggle="tab" data-bs-target="#koi" type="button" role="tab" aria-controls="koi" aria-selected="false">KOI</button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="non-koi-tab" data-bs-toggle="tab" data-bs-target="#non-koi" type="button" role="tab" aria-controls="non-koi" aria-selected="false">NON-KOI</button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="export-tab" data-bs-toggle="tab" data-bs-target="#export" type="button" role="tab" aria-controls="export" aria-selected="false">EXPORT</button>
-                          </li>
-                    </ul>             
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="imageModalLabel">Confusion Image</h5>   
                 </div>
                 <div class="modal-body">
-                    <div class="col-12">
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="anova" role="tabpanel" aria-labelledby="anova-tab">
-                                <div class="results" id="anova-one">
-                                    <!--  -->
-                                    
-                                    <!--  -->
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="data" role="tabpanel" aria-labelledby="data-tab">
-                                <div class="results" id="data-one">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="matrix" role="tabpanel" aria-labelledby="matrix-tab">
-                                <div class="results" id="one-confusion-matrix">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
-                                <div class="cont-inner col-12" id="hypothesis-one-graph-container">
-                                    <canvas id="hypothesis-one-graph"></canvas>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="koi" role="tabpanel" aria-labelledby="koi-tab">
-                                <div class="results" id="koi-table">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Image</th>
-                                                <th>Precision</th>
-                                                <th>Recall</th>
-                                                <th>F1 Score</th>
-                                                <th>Category</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="koi-metric">
-                                                
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="non-koi" role="tabpanel" aria-labelledby="non-koi-tab">
-                                <div class="results" id="non-koi-table">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Image</th>
-                                                <th>Precision</th>
-                                                <th>Recall</th>
-                                                <th>F1 Score</th>
-                                                <th>Category</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="non-koi-metric">
-                            
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade justify-content-center" id="export" role="tabpanel" aria-labelledby="export-tab">
-                                <div class="row">
-                                    <div class="col-12 my-auto mx-auto d-grid mt-5 mb-5">
-                                        <button class="cont-inner mt-5 mb-5 btn btn-success btn-lg border border-3 border-dark showTable" id="export-button-one" type="button" onclick="generateExcelForHypothesis()"><b>Export Results Data</b></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>   
+                    <div class="row">
+                        <div class="col-12">
+                            <canvas id="confusion-image"></canvas>
+                        </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
             </div>
         </div>
-    </div>
-    <!-- Modal #Hypothesis One -->
-    <!-- Modal #Hypothesis Two -->
-    <div class="modal fade" id="hypTwoModal" tabindex="-1" aria-labelledby="hypTwoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="cont-outer modal-content">
-                <div class="modal-header">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link links active" id="anova-tab" data-bs-toggle="tab" data-bs-target="#anova2" type="button" role="tab" aria-controls="anova" aria-selected="true">ANOVA</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="pairwise-tab" data-bs-toggle="tab" data-bs-target="#pairwise" type="button" role="tab" aria-controls="pairwise" aria-selected="true">PAIRWISE</button>
-                          </li>
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link links" id="data-tab" data-bs-toggle="tab" data-bs-target="#data2" type="button" role="tab" aria-controls="data" aria-selected="false">DATA</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link links" id="matrix-tab" data-bs-toggle="tab" data-bs-target="#matrix2" type="button" role="tab" aria-controls="matrix" aria-selected="false">MATRIX</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="table-tab" data-bs-toggle="tab" data-bs-target="#table2" type="button" role="tab" aria-controls="table" aria-selected="false">TABLE</button>
-                          </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="small-tab" data-bs-toggle="tab" data-bs-target="#small" type="button" role="tab" aria-controls="small" aria-selected="false">SMALL</button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="medium-tab" data-bs-toggle="tab" data-bs-target="#medium" type="button" role="tab" aria-controls="medium" aria-selected="false">MEDIUM</button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="large-tab" data-bs-toggle="tab" data-bs-target="#large" type="button" role="tab" aria-controls="large" aria-selected="false">LARGE</button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button class="nav-link links" id="export-tab" data-bs-toggle="tab" data-bs-target="#export2" type="button" role="tab" aria-controls="export" aria-selected="false">EXPORT</button>
-                          </li>
-                    </ul>             
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-12">
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="anova2" role="tabpanel" aria-labelledby="anova-tab">
-                                <div class="results" id="anova-two">
-                                    <!--  -->
-                                    
-                                    <!--  -->
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="pairwise" role="tabpanel" aria-labelledby="pairwise-tab">
-                                <div class="results" id="pairwise-anova">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="data2" role="tabpanel" aria-labelledby="data-tab">
-                                <div class="results" id="data-two">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="matrix2" role="tabpanel" aria-labelledby="matrix-tab">
-                                <div class="results" id="two-confusion-matrix">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="table2" role="tabpanel" aria-labelledby="table-tab">
-                                <div class="cont-inner col-12" id="hypothesis-two-graph-container">
-                                    <canvas id="hypothesis-two-graph"></canvas>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="small" role="tabpanel" aria-labelledby="small-tab">
-                                <div class="results" id="small-table">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Image</th>
-                                                <th>Precision</th>
-                                                <th>Recall</th>
-                                                <th>F1 Score</th>
-                                                <th>Category</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="small-metric">
-                                                
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="medium" role="tabpanel" aria-labelledby="medium-tab">
-                                <div class="results" id="medium-table">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Image</th>
-                                                <th>Precision</th>
-                                                <th>Recall</th>
-                                                <th>F1 Score</th>
-                                                <th>Category</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="medium-metric">
-                            
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="large" role="tabpanel" aria-labelledby="large-tab">
-                                <div class="results" id="large-table">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Image</th>
-                                                <th>Precision</th>
-                                                <th>Recall</th>
-                                                <th>F1 Score</th>
-                                                <th>Category</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="large-metric">
-                            
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade justify-content-center" id="export2" role="tabpanel" aria-labelledby="export-tab">
-                                <div class="row">
-                                    <div class="col-12 my-auto mx-auto d-grid mt-5 mb-5">
-                                        <button class="cont-inner mt-5 mb-5 btn btn-success btn-lg border border-3 border-dark showTable" id="export-button-two" type="button" onclick="generateExcelForHypothesis()"><b>Export Results Data</b></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal #Hypothesis Two -->
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/stdlib-js/stats-anova1@umd/browser.js"></script>
-    <!-- Components -->
-    <script src="js/experiment-modules/changeInputs.js"></script>
-    <script src="js/experiment-modules/uploadFiles.js"></script>
-    <script src="js/experiment-modules/uploadGT.js"></script>
-    <script src="js/experiment-modules/uploadPB.js"></script>
-    <script src="js/user-testing-modules/progress-bar.js"></script>
-    <script src="js/experiment-modules/main.js"></script>
-    <script src="js/experiment-modules/export.js"></script>
-</body>
+       
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/stdlib-js/stats-anova1@umd/browser.js"></script>
+        <!-- Components -->
+        <script src="js/tool-modules/delete.js"></script>
+        <script src="js/experiment-modules/uploadFiles.js"></script>
+        <script src="js/experiment-modules/uploadGT.js"></script>
+        <script src="js/experiment-modules/uploadPB.js"></script>
+        <script src="js/user-testing-modules/step-bar.js"></script>
+        <script src="js/experiment-modules/main.js"></script>
+        <script src="js/experiment-modules/export.js"></script>
+        <script src="js/user-testing-modules/progress-bar.js"></script>
+    </body>
 </html>

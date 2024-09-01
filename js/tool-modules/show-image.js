@@ -200,16 +200,43 @@ async function showImageAnnotation(filename) {
 
                 const rectX = adjustedX - adjustedWidth / 2;
                 const rectY = adjustedY - adjustedHeight / 2;
-
+                let color = 'yellow';
+                // Assign unique colors and stroke styles for each label
+                if (annotation.label === "Asagi") {
+                    color = 'red';
+                } else if (annotation.label === "Bekko") {
+                    color = 'blue';
+                } else if (annotation.label === "Goldfish") {
+                    color = 'green';
+                } else if (annotation.label === "Hand") {
+                    color = 'orange';
+                } else if (annotation.label === "Hikarimono") {
+                    color = 'purple';
+                } else if (annotation.label === "Kohaku") {
+                    color = 'pink';
+                } else if (annotation.label === "Lilies") {
+                    color = 'brown';
+                } else if (annotation.label === "People") {
+                    color = 'gray';
+                } else if (annotation.label === "Rocks") {
+                    color = 'cyan';
+                } else if (annotation.label === "Sanke") {
+                    color = 'magenta';
+                } else if (annotation.label === "Showa") {
+                    color = 'lime';
+                }
                 ctx.beginPath();
                 ctx.rect(rectX, rectY, adjustedWidth, adjustedHeight);
                 ctx.lineWidth = Math.min(canvasWidth, canvasHeight) / 100;
-                ctx.strokeStyle = annotation.label !== "Unknown" ? 'white' : 'yellow';
+                ctx.strokeStyle = color;
                 ctx.stroke();
 
                 ctx.font = `${Math.min(canvasWidth, canvasHeight) / 30}px Arial`;
-                ctx.fillStyle = annotation.label !== "Unknown" ? 'white' : 'yellow';
+                ctx.fillStyle = color;
+
+                
                 ctx.fillText(`${annotation.label} (${(annotation.confidence * 100).toFixed(2)}%)`, rectX, rectY > 10 ? rectY - 5 : rectY + 15);
+            
             });
         }
 

@@ -74,7 +74,7 @@ function convertElementsToBook(elements, sheetTitles) {
 }
 
 function generateExcelForHypothesis() {
-    const hypothesis = document.getElementById('hypothesis').value;
+    const hypothesis = document.getElementById("hypothesis1").checked === true ? '1' : '2';
     const { elements, sheetTitles } = collectElementsForHypothesis(hypothesis);
     const workbook = convertElementsToBook(elements, sheetTitles);
 
