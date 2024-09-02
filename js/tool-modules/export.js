@@ -1,12 +1,6 @@
 // Function to open the modal
 function openExportModal() {
     populateClassTable(); // Populate the table with class names and checkboxes
-    $('#export-modal').modal('show'); // Show the modal using Bootstrap's jQuery method
-}
-
-// Function to close the modal
-function closeModal() {
-    $('#export-modal').modal('hide'); // Hide the modal using Bootstrap's jQuery method
 }
 
 // Function to populate the class table in the modal
@@ -30,7 +24,7 @@ function populateClassTable() {
     Object.keys(globalLabelCounts).forEach(label => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td class="text-center"><input type="checkbox" class="class-checkbox" value="${label}" /></td>
+            <td class="text-center"><input type="checkbox" class="class-checkbox" value="${label}" checked /></td>
             <td>${label}</td>
         `;
         table.querySelector('tbody').appendChild(row);
@@ -56,8 +50,6 @@ function confirmExport() {
 
     const filteredData = filterDataBySelectedClasses(selectedClasses, includeUnannotated);
     exportData(filteredData, exportType);
-
-    closeModal(); // Close the modal after export
 }
 
 // Function to filter data by selected classes
@@ -133,7 +125,7 @@ async function exportData(data, exportType = 'default') {
 
     const a = document.createElement('a');
     a.href = zipUrl;
-    a.download = 'annotations.zip';
+    a.download = 'Dataset.zip';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

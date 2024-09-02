@@ -4,15 +4,15 @@
     scrollbar-width: none;
 }
 
-h6{
+input{
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+span{
     font-size: 13px;
 }
 
-button{
-    max-height: 50px;
-}
-
-input{
-    border-radius: 10px;
-    font-size: 13.5px;
+#maxed-class{
+    background-color: rgb(0, 97, 37) !important;
 }

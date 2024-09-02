@@ -43,7 +43,7 @@ function loadJson() {
             console.log("Existing Files:", existingFiles);
             console.log("Exempted Files:", exemptedFiles);
 
-            const annotationCount = document.getElementById('annotated-count');
+            const annotationCount = document.querySelector('.annotated-count');
             if (annotationCount) {
                 annotationCount.innerText = exemptedFiles.size;
             }
