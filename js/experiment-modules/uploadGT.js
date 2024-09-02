@@ -67,7 +67,7 @@ function parseGroundTruth(event, category) {
                     }
                 }
             });
-
+            console.log(groundTruthSet.size);
             // Update the count element
             countElement.innerText = groundTruthSet.size;
 
