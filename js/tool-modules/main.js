@@ -65,21 +65,20 @@ async function startAnnotation() {
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
     console.log("Image Files To Process: ", imageFiles);
     // Dynamic Elements
-    let pendingImagesCount = parseInt(imageFiles.length);
     let predictionCount = 0;
 
     // Status Actions
-    processStatus.innerText = "Running...";
-    pendingImages.innerText = pendingImagesCount;
+    // processStatus.innerText = "Running...";
+    // pendingImages.innerText = pendingImagesCount;
 
     // Initial Processing
-    reset(processStatus.innerText, pendingImages.innerText, annotatedImages.innerText, previousImage.innerText, classContainer, itemListContainer); // Reset all status in the output
-    processInitialData(currentJsonData, annotatedImages, classContainer, classLimit);
-    let annotatedImagesCount = parseInt(annotatedCount.innerText);
-    startButton.disabled = true; // Disable start button
+    // reset(processStatus.innerText, pendingImages.innerText, annotatedImages.innerText, previousImage.innerText, classContainer, itemListContainer); // Reset all status in the output
+    processInitialData(currentJsonData, classContainer, classLimit);
+    let annotatedImagesCount = exemptedFiles.size;
+    // startButton.disabled = true;
 
     const processImage = async (imageFile) => {
-        currentImage.innerText = imageFile.name; // Set image name
+        // currentImage.innerText = imageFile.name; 
 
         const reader = new FileReader();
         return new Promise((resolve, reject) => {
@@ -88,12 +87,12 @@ async function startAnnotation() {
                 const imageName = imageFile.name;
                 // console.log("Base 64: ", event.target.result.split(',')[1]);
                 // Display Image
-                const img = `
-                    <div class="col-12">
-                        <img src="${event.target.result}" alt="Current Image" id="processing-image">
-                    </div>
-                `;
-                processingContainer.innerHTML = img;
+                // const img = `
+                //     <div class="col-12">
+                //         <img src="${event.target.result}" alt="Current Image" id="processing-image">
+                //     </div>
+                // `;
+                // processingContainer.innerHTML = img;
                 
                 try {
                     const response = await axios({
@@ -101,7 +100,6 @@ async function startAnnotation() {
                         url: `https://detect.roboflow.com/${model}`,
                         params: {
                             api_key: apiKey,
-                            // confidence: 0.10
                         },
                         data: base64Image,
                         headers: {
@@ -145,64 +143,67 @@ async function startAnnotation() {
                 } catch (error) {
                     console.error(error.message);
                     reject(error);
-                    startButton.disabled = false; // Enable start button
+                    // startButton.disabled = false;
                     alert("Please input the model & version, or the API Key.");
+                    active--;
+                    updateProgress();
+                    pageLoad();
                     // Complete the progress bar
-                    completeProgressBar();
                     // Optionally hide the overlay after processing is complete
-                    document.getElementById('overlay').style.display = 'none';
                 }
             };
             reader.readAsDataURL(imageFile);
         });
     };
-    initializeProgressBar(imageFiles.length);
+    initialize1(existingFiles.size);
     let processedImages = 0;
     // Start of the annotation process
     for (const imageFile of imageFiles) {
         await processImage(imageFile);
-        processedImages++;
-        updateProgress(processedImages);
-        pendingImagesCount -= 1;
-        annotatedImagesCount++;
-        pendingImages.innerText = pendingImagesCount;
-        annotatedImages.innerText = annotatedImagesCount;
-        currentImage.innerText = "-";
-        processingContainer.innerHTML = "";
-        previousImage.innerText = imageFile.name;
+        updateProgress1(++processedImages);
+        // pendingImagesCount -= 1;
+        // annotatedImagesCount++;
+        // pendingImages.innerText = pendingImagesCount;
+        // annotatedImages.innerText = annotatedImagesCount;
+        // currentImage.innerText = "-";
+        // processingContainer.innerHTML = "";
+        // previousImage.innerText = imageFile.name;
     }
-    processStatus.innerText = "Completed";
-    startButton.disabled = false; // Enable start button
+    // processStatus.innerText = "Completed";
+    // startButton.disabled = false;
     // Complete the progress bar
-    completeProgressBar();
+    // completeProgressBar();
+    active++;
+    updateProgress();
+    pageLoad();
     // Optionally hide the overlay after processing is complete
-    document.getElementById('overlay').style.display = 'none';
+    // document.getElementById('overlay').style.display = 'none';
 }
 
 // Append item to item list container
-function appendItem(itemNumber, filename, container, objects, classes){
-    // Add the processed image information to the item list
-    const id = formatLabel(filename);
-    document.getElementById("number-of-objects").innerText = objects;
-    document.getElementById("number-of-classes").innerText = classes;
-    const itemHTML = `
-    <div class="cont-outer row p-1 mt-2 ${id}" id="${id}" onclick="showImageModal('${filename}')">
-        <div class="col-1">
-            <h6 class="m-0">${itemNumber}</h6>
-        </div>
-        <div class="col-6" id="filename-item">
-            <h6 class="m-0">${filename}</h6>
-        </div>
-        <div class="col-2">
-            <h6 class="m-0">${objects}</h6>
-        </div>
-        <div class="col-2">
-            <h6 class="m-0">${classes}</h6>
-        </div>
-    </div>
-    `;
-    container.innerHTML += itemHTML;
-}
+// function appendItem(itemNumber, filename, container, objects, classes){
+//     // Add the processed image information to the item list
+//     const id = formatLabel(filename);
+//     // document.getElementById("number-of-objects").innerText = objects;
+//     // document.getElementById("number-of-classes").innerText = classes;
+//     const itemHTML = `
+//     <div class="cont-outer row p-1 mt-2 ${id}" id="${id}" onclick="showImageModal('${filename}')">
+//         <div class="col-1">
+//             <h6 class="m-0">${itemNumber}</h6>
+//         </div>
+//         <div class="col-6" id="filename-item">
+//             <h6 class="m-0">${filename}</h6>
+//         </div>
+//         <div class="col-2">
+//             <h6 class="m-0">${objects}</h6>
+//         </div>
+//         <div class="col-2">
+//             <h6 class="m-0">${classes}</h6>
+//         </div>
+//     </div>
+//     `;
+//     container.innerHTML += itemHTML;
+// }
 
 // Set all output group to default
 function reset(status, pending, annotated, previousImage, classes, items){
@@ -215,9 +216,9 @@ function reset(status, pending, annotated, previousImage, classes, items){
 }
 
 // Process initial Data
-function processInitialData(currentJsonData, annotatedImages, classContainer, classLimit) {
-    console.log("")
-
+function processInitialData(currentJsonData, classContainer, classLimit) {
+    console.log("");
+    console.log("currentJsonData: ", currentJsonData);
     currentJsonData.forEach(item => {
         const filteredAnnotations = [];
         const labelOccurrences = {};
@@ -273,31 +274,34 @@ function processInitialData(currentJsonData, annotatedImages, classContainer, cl
             filteredData.push({ image: item.image, annotations: filteredAnnotations });
         }
     });
-
     // Step 2: Update the class interface with the current labels and their counts
     classContainer.innerHTML = '';
     Object.entries(globalLabelCounts).forEach(([label, counts]) => {
         const isMaxedClass = counts[3] >= classLimit;
         const item = `
-            <div class="cont-outer p-1 mt-2 row" ${isMaxedClass ? 'id="maxed-class"' : ''}>
-                <div class="col-3" id="filename-class"><h6 class="m-0">${label}</h6></div>
-                <div class="col-7">
+            <div class="row" ${isMaxedClass ? 'id="maxed-class"' : ''}>
+                <div class="col-3 border" id="filename-class">
+                    <span class="m-0">${label}</span>
+                </div>
+                <div class="col-6">
                     <div class="row">
-                        <div class="col-3">
-                            <h6 class="m-0">${counts[0]}</h6>
-                        </div>
-                        <div class="col-3">
-                            <h6 class="m-0">${counts[1]}</h6>
-                        </div>
-                        <div class="col-3">
-                            <h6 class="m-0">${counts[2]}</h6>
-                        </div>
-                        <div class="col-3">
-                            <h6 class="m-0">${counts[3]}</h6>
-                        </div>
+                    <div class="col-3 border">
+                        <span class="m-0">${counts[0]}</span>
+                    </div>
+                    <div class="col-3 border">
+                        <span class="m-0">${counts[1]}</span>
+                    </div>
+                    <div class="col-3 border">
+                        <span class="m-0">${counts[2]}</span>
+                    </div>
+                    <div class="col-3 border">
+                        <span class="m-0">${counts[3]}</span>
+                    </div>
                     </div>
                 </div>
-                <div class="col-2"><h6 class="m-0">${counts[4]}</h6></div>
+                <div class="col-3 border">
+                    <span class="m-0">${counts[4]}</span>
+                </div>
             </div>
         `;
         classContainer.innerHTML += item;
@@ -305,35 +309,35 @@ function processInitialData(currentJsonData, annotatedImages, classContainer, cl
 
     
     // Step 3: Post the processed items in the itemListContainer
-    const itemListContainer = document.getElementById('itemlist-container');
-    itemListContainer.innerHTML = '';
+    // const itemListContainer = document.getElementById('itemlist-container');
+    // itemListContainer.innerHTML = '';
 
-    filteredData.forEach((item, index) => {
-        const imageName = item.image;
-        const annotations = item.annotations;
+    // filteredData.forEach((item, index) => {
+    //     const imageName = item.image;
+    //     const annotations = item.annotations;
     
-        const uniqueLabels = [...new Set(annotations.map(annotation => annotation.label))];
+    //     const uniqueLabels = [...new Set(annotations.map(annotation => annotation.label))];
     
-        htmlContent = `
-            <div class="cont-outer row p-1 mt-2" onclick="showImageModal('${imageName}')">
-                <div class="col-1">
-                    <h6 class="m-0">${index + 1}</h6>
-                </div>
-                <div class="col-6" id="${formatLabel(imageName)}" style="white-space: nowrap; overflow-y: auto; scrollbar-width: none;">
-                    <h6 class="m-0">${imageName}</h6>
-                </div>
-                <div class="col-2">
-                    <h6 class="m-0">${annotations.length}</h6>
-                </div>
-                <div class="col-2">
-                    <h6 class="m-0">${uniqueLabels.length}</h6>
-                </div>
-            </div>
-        `;
+    //     htmlContent = `
+    //         <div class="cont-outer row p-1 mt-2" onclick="showImageModal('${imageName}')">
+    //             <div class="col-1">
+    //                 <h6 class="m-0">${index + 1}</h6>
+    //             </div>
+    //             <div class="col-6" id="${formatLabel(imageName)}" style="white-space: nowrap; overflow-y: auto; scrollbar-width: none;">
+    //                 <h6 class="m-0">${imageName}</h6>
+    //             </div>
+    //             <div class="col-2">
+    //                 <h6 class="m-0">${annotations.length}</h6>
+    //             </div>
+    //             <div class="col-2">
+    //                 <h6 class="m-0">${uniqueLabels.length}</h6>
+    //             </div>
+    //         </div>
+    //     `;
     
-        annotatedImages.innerText = (index + 1);
-        itemListContainer.innerHTML += htmlContent;
-    });
+    //     annotatedImages.innerText = (index + 1);
+    //     itemListContainer.innerHTML += htmlContent;
+    // });
 
     console.log('Filtered Data:', filteredData);
     console.log('Updated globalLabelCounts:', globalLabelCounts);
@@ -404,7 +408,7 @@ function processPrediction(prediction, container, count, filename, itemListConta
         labelCounts[4] += count;
     });
 
-    appendItem(count, filename, itemListContainer, objectCount, numLabels);
+    // appendItem(count, filename, itemListContainer, objectCount, numLabels);
     updateClassInterface(container, classLimit);
     console.log('Updated globalLabelCounts:', globalLabelCounts);
 }
@@ -423,25 +427,29 @@ function updateClassInterface(container, classLimit) {
         const isMaxedClass = globalLabelCounts[label][3] === classLimit;
     
         const item = `
-            <div class="cont-outer p-1 mt-2 row" ${isMaxedClass ? 'id="maxed-class"' : ''}>
-                <div class="col-3" id="filename-class"><h6 class="m-0">${label}</h6></div>
-                <div class="col-7">
+            <div class="row" ${isMaxedClass ? 'id="maxed-class"' : ''}>
+                <div class="col-3 border" id="filename-class">
+                    <span class="m-0">${label}</span>
+                </div>
+                <div class="col-6">
                     <div class="row">
-                        <div class="col-3">
-                            <h6 class="m-0">${counts[0]}</h6>
-                        </div>
-                        <div class="col-3">
-                            <h6 class="m-0">${counts[1]}</h6>
-                        </div>
-                        <div class="col-3">
-                            <h6 class="m-0">${counts[2]}</h6>
-                        </div>
-                        <div class="col-3">
-                            <h6 class="m-0">${counts[3]}</h6>
-                        </div>
+                    <div class="col-3 border">
+                        <span class="m-0">${counts[0]}</span>
+                    </div>
+                    <div class="col-3 border">
+                        <span class="m-0">${counts[1]}</span>
+                    </div>
+                    <div class="col-3 border">
+                        <span class="m-0">${counts[2]}</span>
+                    </div>
+                    <div class="col-3 border">
+                        <span class="m-0">${counts[3]}</span>
+                    </div>
                     </div>
                 </div>
-                <div class="col-2"><h6 class="m-0">${counts[4]}</h6></div>
+                <div class="col-3 border">
+                    <span class="m-0">${counts[4]}</span>
+                </div>
             </div>
         `;
     

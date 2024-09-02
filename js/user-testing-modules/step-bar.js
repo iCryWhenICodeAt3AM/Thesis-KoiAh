@@ -76,7 +76,7 @@ function pageLoad() {
             document.getElementById("main").classList.remove("col-7");
             document.getElementById("main").classList.add("col-9");
         }
-    } else {
+    } else if (window.location.pathname.includes("experiment.html")) {
         if (active === 1) {
             document.querySelector(".head").innerHTML = "Get Started!";
             document.querySelector(".sub-header").innerHTML = "Start by selecting the hypothesis to test.";
@@ -238,6 +238,57 @@ function pageLoad() {
             document.getElementById("main").style.display = "none";
             document.getElementById("progress-next").style.display = "none";
             document.getElementById("data-2").style.display = "block";
+        }
+    } else {
+        if (active === 1) {
+            document.querySelector(".head").innerHTML = "Get Started!";
+            document.querySelector(".sub-header").innerHTML = "Start by uploading your images.";
+        } else if (active === 2) {
+            document.querySelector(".head").innerHTML = "Optional JSON Annotation";
+            document.querySelector(".sub-header").innerHTML = "Upload your JSON from Roboflow.";
+            document.getElementById("input-file").style.display = "none";
+            document.getElementById("input-folder").style.display = "none";
+            document.getElementById("image-container").style.display = "none";
+            document.getElementById("json-input").style.display = "block";
+            document.getElementById("annotations-base").style.display = "block";
+        } else if (active === 3) {
+            document.querySelector(".head").innerHTML = "Configurations";
+            document.querySelector(".sub-header").innerHTML = "Fill-up the required configurations to proceed.";
+            document.getElementById("json-input").style.display = "none";
+            document.getElementById("annotations-base").style.display = "none";
+            document.getElementById("loading-base").style.display = "none";
+            document.getElementById("configurations").style.display = "block";
+            document.getElementById("progress-next").style.display = "block";
+        } else if (active === 4) {
+            document.querySelector(".head").innerHTML = "Processing your images...";
+            document.querySelector(".sub-header").innerHTML = "Hold on, we’re working on it!";
+            document.getElementById("configurations").style.display = "none";
+            document.getElementById("progress-next").style.display = "none";
+            document.getElementById("loading-base").style.display = "block";
+            startAnnotation();
+        } else if (active === 5) {
+            document.querySelector(".head").innerHTML = "Results Ready!";
+            document.querySelector(".sub-header").innerHTML = "Here are your classes and image counts results.";
+            document.getElementById("loading-base").style.display = "none";
+            document.getElementById("progress-next").style.display = "block";
+            document.getElementById("classlist-base").style.display = "block";
+        } else {
+            document.querySelector(".head").innerHTML = "Assess and Export!";
+            document.querySelector(".sub-header").innerHTML = "Here are your images, you can also export the data.";
+            document.getElementById("main").style.height = "350px";
+            document.getElementById("secondary").style.height = "350px";
+            document.getElementById("main").classList.remove("col-7");
+            document.getElementById("main").classList.add("col-8");
+            document.getElementById("classlist-base").style.display = "none";
+            document.getElementById("progress-next").style.display = "none";
+            document.getElementById("final").style.display = "flex";
+            document.getElementById("secondary").style.display = "flex";
+            document.getElementById("export-button").style.display = "block";
+            if (filteredData.length > 0) {
+                showImageAnnotation(filteredData[0].image);
+            } else {
+                showImageAnnotation(resultJsonData[0].image);
+            }
         }
     }
 }

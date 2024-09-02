@@ -59,7 +59,7 @@ function displayImage() {
                     `;
                     imageContainer.innerHTML += htmlContent;
                     // Check if the webpage is user-testing.html
-                    if (window.location.pathname.includes("user%20testing.html")) {
+                    if (window.location.pathname.includes("user%20testing.html") || window.location.pathname.includes("tool.html")) {
                         htmlContentExtra += `
                         <div class="image-wrapper col-12 ${imageIndex}" id="${imageIndex}1" onclick="showImageAnnotation('${theImage.name}')">
                             <div class="row d-flex justify-content-center">
@@ -78,7 +78,9 @@ function displayImage() {
                     });
                     uploadedImagesData.push(theImage);
                     // imageCount.innerText = uploadedImages.length;
-                    // classLimit.value = uploadedImages.length;
+                    if (window.location.pathname.includes("tool.html")) {
+                        classLimit.value = uploadedImages.length;
+                    }
                 };
             })(image);
             reader.onerror = function(error) {

@@ -90,7 +90,11 @@ function generateItemList(annotations, renderAnnotations) {
 
         // Create the label cell
         const labelCell = document.createElement('td');
-        labelCell.textContent = `${annotation.label} (${(annotation.confidence * 100).toFixed(2)}%)`;
+        if (window.location.pathname.includes("user%20testing.html")) {
+            labelCell.textContent = `${annotation.label} (${(annotation.confidence * 100).toFixed(2)}%)`;
+        } else {
+            labelCell.textContent = `${annotation.label}`;
+        }
         labelCell.style.cursor = 'pointer';
         labelCell.dataset.index = index;
 
@@ -122,7 +126,8 @@ function generateItemList(annotations, renderAnnotations) {
 let locked = false;
 async function showImageAnnotation(filename) {
     console.log(filename);
-    console.log(filteredData, resultJsonData);
+    console.log(filteredData);
+    console.log(resultJsonData);
 
     const jsonData = [...filteredData, ...resultJsonData];
     const data = jsonData.find(item => item.image === filename || item[0] === filename);
@@ -234,9 +239,11 @@ async function showImageAnnotation(filename) {
                 ctx.font = `${Math.min(canvasWidth, canvasHeight) / 30}px Arial`;
                 ctx.fillStyle = color;
 
-                
+                if (window.location.pathname.includes("user%20testing.html")) {
                 ctx.fillText(`${annotation.label} (${(annotation.confidence * 100).toFixed(2)}%)`, rectX, rectY > 10 ? rectY - 5 : rectY + 15);
-            
+                } else {
+                    ctx.fillText(`${annotation.label}`, rectX, rectY > 10 ? rectY - 5 : rectY + 15);
+                }
             });
         }
 
@@ -246,9 +253,14 @@ async function showImageAnnotation(filename) {
 
         // Initial rendering of annotations
         renderAnnotations();
-
-        canvas.style.maxWidth = '450px';
-        canvas.style.maxHeight = '450px';
+        if (window.location.pathname.includes("user%20testing.html")) {
+            canvas.style.maxWidth = '450px';
+            canvas.style.maxHeight = '450px';            
+        } else {
+            canvas.style.maxWidth = '350px';
+            canvas.style.maxHeight = '350px';
+        }
+        
     };
 
     img.onerror = function() {
