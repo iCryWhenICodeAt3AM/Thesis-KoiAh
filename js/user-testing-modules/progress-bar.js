@@ -1,17 +1,4 @@
 let images = 0;
-// Initialize progress bar
-function initialize() {
-    const progressText = document.getElementById('percent');
-    const progressBar1 = document.getElementById('progress-bar');
-    if (progressBar1) {
-        progressText.innerHTML = '0%';
-        progressBar1.style.width = '0%';
-    }
-
-    // Get the number of items
-    images = existingFiles.size;
-    console.log(images," Images");
-}
 
 function initialize1(unprocessed){
     const progressText = document.getElementById('percent-num');

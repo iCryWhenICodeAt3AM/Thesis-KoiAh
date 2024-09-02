@@ -16,7 +16,6 @@ function checkWhichRadioIsChecked() {
 
 async function startCounting() {
     if (existingFiles.size != 0) {
-        initialize();
         await predict();
         active++;
         updateProgress();
@@ -39,7 +38,7 @@ async function predict() {
             pending++;
         }
     }
-
+    initialize1(pending);
     let processedImages = 0;
 
     for (let index = 0; index < totalImages; index++) {

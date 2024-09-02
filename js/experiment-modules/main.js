@@ -322,15 +322,15 @@ async function evaluateImages() {
         }
         // Initialize progress bar
         // initializeProgressBar(unprocessed);
+        initialize1(unprocessed);
 
         // Process Small images
         for (const img of images.small) {
             if (!predictions.small.find(pred => pred.image === img.name)) {
                 const imageData = img.data; // Prepare imageData according to your needs
-                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
+                const preds = await getRoboflowPrediction(imageData, 'thesis-koiah', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
                 predictions.small.push({ image: img.name, annotations: preds });
                 smallPB.add({ image: img.name, annotations: preds });
-                document.getElementById('small-predictions-count').innerText = predictions.small.length;
                 updateProgress1(++processed); // Update progress
             }
         }
@@ -339,10 +339,9 @@ async function evaluateImages() {
         for (const img of images.medium) {
             if (!predictions.medium.find(pred => pred.image === img.name)) {
                 const imageData = img.data; // Prepare imageData according to your needs
-                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
+                const preds = await getRoboflowPrediction(imageData, 'thesis-koiah', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
                 predictions.medium.push({ image: img.name, annotations: preds });
                 mediumPB.add({ image: img.name, annotations: preds });
-                document.getElementById('medium-predictions-count').innerText = predictions.medium.length;
                 updateProgress1(++processed); // Update progress
             }
         }
@@ -351,10 +350,9 @@ async function evaluateImages() {
         for (const img of images.large) {
             if (!predictions.large.find(pred => pred.image === img.name)) {
                 const imageData = img.data; // Prepare imageData according to your needs
-                const preds = await getRoboflowPrediction(imageData, 'koiah-version-controls', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
+                const preds = await getRoboflowPrediction(imageData, 'thesis-koiah', TWO_MODEL_VERSION, ROBOFLOW_API_KEY);
                 predictions.large.push({ image: img.name, annotations: preds });
                 largePB.add({ image: img.name, annotations: preds });
-                document.getElementById('large-predictions-count').innerText = predictions.large.length;
                 updateProgress1(++processed); // Update progress
             }
         }
@@ -1094,20 +1092,26 @@ function calculateConfusionMatrix(groundTruth, predictions, threshold = 0.5) {
 
 // Function to display images with confusions
 function displayConfusionImages(confusionFiles, groundTruth, predictions) {
-    const container = document.getElementById('matrix-img-list');
+    let container;
     let images;
-    container.innerHTML = ''; // Clear any existing content
     console.log("Confusion Files: ", confusionFiles);
     console.log("Ground Truth: ", groundTruth);
     console.log("Predictions: ", predictions);
     const selectorValue = document.getElementById("hypothesis1").checked === true ? '1' : '2';
     if (selectorValue === '1') {
         images = koiImageUploads.concat(nonKoiImageUploads);
+        container = document.getElementById('matrix-img-list1');
+    } else {
+        images = smallImageUploads.concat(mediumImageUploads.concat(largeImageUploads));
+        container = document.getElementById('matrix-img-list2');
     }
     console.log("Images: ", images);
     confusionFiles.forEach(file => {
+        const tableRow = document.createElement('tr');
+        const fileNameCell = document.createElement('td');
+        const buttonCell = document.createElement('td');
         const button = document.createElement('button');
-        button.textContent = file; // Assuming file contains the filename
+        button.textContent = 'View';
         button.setAttribute('type', 'button');
         button.setAttribute('class', 'btn btn-primary m-2');
         button.setAttribute('data-bs-toggle', 'modal');
@@ -1118,77 +1122,81 @@ function displayConfusionImages(confusionFiles, groundTruth, predictions) {
             const image = new Image();
             const matchedImage = images.find(img => img.name === file);
             if (matchedImage) {
-                const fileExtension = file.split('.').pop().toLowerCase();
-                let mimeType = 'image/jpeg';
-                switch (fileExtension) {
-                    case 'png':
-                        mimeType = 'image/png';
-                        break;
-                    case 'gif':
-                        mimeType = 'image/gif';
-                        break;
-                    case 'webp':
-                        mimeType = 'image/webp';
-                        break;
-                }
-                const imageData = matchedImage.data;
-                image.src = `data:${mimeType};base64,${imageData}`;
+            const fileExtension = file.split('.').pop().toLowerCase();
+            let mimeType = 'image/jpeg';
+            switch (fileExtension) {
+                case 'png':
+                mimeType = 'image/png';
+                break;
+                case 'gif':
+                mimeType = 'image/gif';
+                break;
+                case 'webp':
+                mimeType = 'image/webp';
+                break;
+            }
+            const imageData = matchedImage.data;
+            image.src = `data:${mimeType};base64,${imageData}`;
             }
             
             image.onload = () => {
-                const maxWidth = image.width;
-                const maxHeight = image.height;
-                console.log("Max Width:", maxWidth);
-                console.log("Max Height:", maxHeight);
-                canvas.width = maxWidth;
-                canvas.height = maxHeight;
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-                canvas.style.width = `${maxWidth}px`;
-                canvas.style.height = `${maxHeight}px`;
-                ctx.drawImage(image, 0, 0, maxWidth, maxHeight);
+            const maxWidth = image.width;
+            const maxHeight = image.height;
+            console.log("Max Width:", maxWidth);
+            console.log("Max Height:", maxHeight);
+            canvas.width = maxWidth;
+            canvas.height = maxHeight;
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            canvas.style.width = `${maxWidth}px`;
+            canvas.style.height = `${maxHeight}px`;
+            ctx.drawImage(image, 0, 0, maxWidth, maxHeight);
 
-                // Find ground truth annotations for the current file
-                const groundTruthAnnotations = groundTruth.find(gt => gt.image === file)?.annotations || [];
-                console.log("Ground Truth Annotations: ", groundTruthAnnotations);
-                // Draw ground truth annotations
-                if (groundTruthAnnotations) {
-                    groundTruthAnnotations.forEach(annotation => {
-                        ctx.beginPath();
-                        ctx.rect(annotation.bbox[0] * (maxWidth / image.width), annotation.bbox[1] * (maxHeight / image.height), annotation.bbox[2] * (maxWidth / image.width), annotation.bbox[3] * (maxHeight / image.height));
-                        ctx.lineWidth = Math.min(maxWidth, maxHeight) / 100;
-                        ctx.strokeStyle = 'green';
-                        ctx.stroke();
+            // Find ground truth annotations for the current file
+            const groundTruthAnnotations = groundTruth.find(gt => gt.image === file)?.annotations || [];
+            console.log("Ground Truth Annotations: ", groundTruthAnnotations);
+            // Draw ground truth annotations
+            if (groundTruthAnnotations) {
+                groundTruthAnnotations.forEach(annotation => {
+                ctx.beginPath();
+                ctx.rect(annotation.bbox[0] * (maxWidth / image.width), annotation.bbox[1] * (maxHeight / image.height), annotation.bbox[2] * (maxWidth / image.width), annotation.bbox[3] * (maxHeight / image.height));
+                ctx.lineWidth = Math.min(maxWidth, maxHeight) / 100;
+                ctx.strokeStyle = 'green';
+                ctx.stroke();
 
-                        ctx.font = `${Math.min(maxWidth, maxHeight) / 30}px Arial`;
-                        ctx.fillStyle = 'green';
+                ctx.font = `${Math.min(maxWidth, maxHeight) / 30}px Arial`;
+                ctx.fillStyle = 'green';
 
-                        ctx.fillText(`${annotation.label}`, annotation.bbox[0] * (maxWidth / image.width), annotation.bbox[1] * (maxHeight / image.height) > 10 ? annotation.bbox[1] * (maxHeight / image.height) - 5 : annotation.bbox[1] * (maxHeight / image.height) + 15);
-                    
-                    });
-                }
+                ctx.fillText(`${annotation.label}`, annotation.bbox[0] * (maxWidth / image.width), annotation.bbox[1] * (maxHeight / image.height) > 10 ? annotation.bbox[1] * (maxHeight / image.height) - 5 : annotation.bbox[1] * (maxHeight / image.height) + 15);
                 
-                // Find prediction annotations for the current file
-                const predictionAnnotations = predictions.find(pred => pred.image === file)?.annotations || [];
-                console.log("Prediction Annotations: ", predictionAnnotations);
-                // Draw prediction annotations
-                if (predictionAnnotations) {
-                    predictionAnnotations.forEach(annotation => {
-                        ctx.beginPath();
-                        ctx.rect(annotation.bbox[0] * (maxWidth / image.width), annotation.bbox[1] * (maxHeight / image.height), annotation.bbox[2] * (maxWidth / image.width), annotation.bbox[3] * (maxHeight / image.height));
-                        ctx.lineWidth = Math.min(maxWidth, maxHeight) / 100;
-                        ctx.strokeStyle = 'purple';
-                        ctx.stroke();
+                });
+            }
+            
+            // Find prediction annotations for the current file
+            const predictionAnnotations = predictions.find(pred => pred.image === file)?.annotations || [];
+            console.log("Prediction Annotations: ", predictionAnnotations);
+            // Draw prediction annotations
+            if (predictionAnnotations) {
+                predictionAnnotations.forEach(annotation => {
+                ctx.beginPath();
+                ctx.rect(annotation.bbox[0] * (maxWidth / image.width), annotation.bbox[1] * (maxHeight / image.height), annotation.bbox[2] * (maxWidth / image.width), annotation.bbox[3] * (maxHeight / image.height));
+                ctx.lineWidth = Math.min(maxWidth, maxHeight) / 100;
+                ctx.strokeStyle = 'purple';
+                ctx.stroke();
 
-                        ctx.font = `${Math.min(maxWidth, maxHeight) / 30}px Arial`;
-                        ctx.fillStyle = 'purple';
+                ctx.font = `${Math.min(maxWidth, maxHeight) / 30}px Arial`;
+                ctx.fillStyle = 'purple';
 
-                        ctx.fillText(`${annotation.label}`, annotation.bbox[0] * (maxWidth / image.width), annotation.bbox[1] * (maxHeight / image.height) > 10 ? annotation.bbox[1] * (maxHeight / image.height) - 5 : annotation.bbox[1] * (maxHeight / image.height) + 15);
-                    });
-                }
+                ctx.fillText(`${annotation.label}`, annotation.bbox[0] * (maxWidth / image.width), annotation.bbox[1] * (maxHeight / image.height) > 10 ? annotation.bbox[1] * (maxHeight / image.height) - 5 : annotation.bbox[1] * (maxHeight / image.height) + 15);
+                });
+            }
             };
         });
 
-        container.appendChild(button);
+        fileNameCell.textContent = file;
+        buttonCell.appendChild(button);
+        tableRow.appendChild(fileNameCell);
+        tableRow.appendChild(buttonCell);
+        container.appendChild(tableRow);
     });
 }
 

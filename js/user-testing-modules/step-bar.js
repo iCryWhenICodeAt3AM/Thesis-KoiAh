@@ -1,7 +1,7 @@
 const progressBar = document.getElementById("progress-bar1");
 const progressNext = document.getElementById("progress-next");
 const progressPrev = document.getElementById("progress-prev");
-const steps = document.querySelectorAll(".step");
+let steps = document.querySelectorAll(".step");
 let active = 1;
 
 progressNext.addEventListener("click", () => {
@@ -18,6 +18,8 @@ progressNext.addEventListener("click", () => {
 
 
 const updateProgress = async () => {
+    steps = document.querySelectorAll(".step");
+
     // toggle active class on list items
     steps.forEach((step, i) => {
         if (i < active) {
@@ -69,8 +71,10 @@ function pageLoad() {
             document.querySelector(".sub-header").innerHTML = "Your images have been processed. ";
             // document.querySelectorAll(".move").style.height = "400px";
             showImageAnnotation(resultJsonData[0][0]);
-            document.getElementById("main").style.height = "350px";
-            document.getElementById("secondary").style.height = "350px";
+            document.getElementById("main").style.height = "450px";
+            document.getElementById("secondary").style.height = "450px";
+            document.getElementById("main").classList.remove("col-7");
+            document.getElementById("main").classList.add("col-9");
         }
     } else {
         if (active === 1) {
@@ -87,12 +91,16 @@ function pageLoad() {
                 // Code to execute when hypothesis 1 is not selected
                 document.querySelector(".head").innerHTML = "Small Koi Image Hypothesis Testing";
                 document.querySelector(".sub-header").innerHTML = "Upload Your Small Koi Images for Analysis";
+                document.getElementById("small-img-base").style.display = "block";
+                document.getElementById("small-img-btn").style.display = "block";
                 const progressNum = document.getElementById("progress-num");
-                for (let i = 10; i < 13; i++) {
-                    const li1 = document.createElement("li");
-                    li1.classList.add("step");
-                    li1.textContent = i;
-                    progressNum.appendChild(li1);
+                if (progressNum.childElementCount < 13) {
+                    for (let i = progressNum.childElementCount + 1; i <= 12; i++) {
+                        const li1 = document.createElement("li");
+                        li1.classList.add("step");
+                        li1.textContent = i;
+                        progressNum.appendChild(li1);
+                    }
                 }
             }
             document.getElementById("hypothesis-select").style.display = "none";
@@ -105,7 +113,12 @@ function pageLoad() {
                 document.getElementById("koi-gt-base").style.display = "block";
                 document.getElementById("koi-gt-btn").style.display = "block";
             } else {
-                
+                document.querySelector(".head").innerHTML = "Small Koi Truth JSON Annotation";
+                document.querySelector(".sub-header").innerHTML = "Upload your ground truth JSON.";
+                document.getElementById("small-img-base").style.display = "none";
+                document.getElementById("small-img-btn").style.display = "none";
+                document.getElementById("small-gt-base").style.display = "block";
+                document.getElementById("small-gt-btn").style.display = "block";
             }
         } else if (active === 4) {
             if (document.getElementById("hypothesis1").checked) {
@@ -116,7 +129,12 @@ function pageLoad() {
                 document.getElementById("koi-pred-base").style.display = "block";
                 document.getElementById("koi-pred-btn").style.display = "block";
             } else {
-                
+                document.querySelector(".head").innerHTML = "Small Koi Predictions JSON Annotation";
+                document.querySelector(".sub-header").innerHTML = "Upload your predictions JSON.";
+                document.getElementById("small-gt-base").style.display = "none";
+                document.getElementById("small-gt-btn").style.display = "none";
+                document.getElementById("small-pred-base").style.display = "block";
+                document.getElementById("small-pred-btn").style.display = "block";
             }
         } else if (active === 5) {
             if (document.getElementById("hypothesis1").checked) {
@@ -127,7 +145,12 @@ function pageLoad() {
                 document.getElementById("non-koi-img-base").style.display = "block";
                 document.getElementById("non-koi-img-btn").style.display = "block";
             } else {
-                
+                document.querySelector(".head").innerHTML = "Medium Koi Image Hypothesis Testing";
+                document.querySelector(".sub-header").innerHTML = "Upload Your Medium Koi Images for Analysis.";
+                document.getElementById("small-pred-base").style.display = "none";
+                document.getElementById("small-pred-btn").style.display = "none";
+                document.getElementById("medium-img-base").style.display = "block";
+                document.getElementById("medium-img-btn").style.display = "block";
             }
         } else if (active === 6) {
             if (document.getElementById("hypothesis1").checked) {
@@ -138,7 +161,12 @@ function pageLoad() {
                 document.getElementById("non-koi-gt-base").style.display = "block";
                 document.getElementById("non-koi-gt-btn").style.display = "block";
             } else {
-                
+                document.querySelector(".head").innerHTML = "Medium Koi Truth JSON Annotation";
+                document.querySelector(".sub-header").innerHTML = "Upload your ground truth JSON.";
+                document.getElementById("medium-img-base").style.display = "none";
+                document.getElementById("medium-img-btn").style.display = "none";
+                document.getElementById("medium-gt-base").style.display = "block";
+                document.getElementById("medium-gt-btn").style.display = "block";
             }
         } else if (active === 7) {
             if (document.getElementById("hypothesis1").checked) {
@@ -150,7 +178,12 @@ function pageLoad() {
                 document.getElementById("non-koi-pred-btn").style.display = "block";
                 document.getElementById("loading-base").style.display = "none";
             } else {
-                
+                document.querySelector(".head").innerHTML = "Medium Koi Predictions JSON Annotation";
+                document.querySelector(".sub-header").innerHTML = "Upload your predictions JSON.";
+                document.getElementById("medium-gt-base").style.display = "none";
+                document.getElementById("medium-gt-btn").style.display = "none";
+                document.getElementById("medium-pred-base").style.display = "block";
+                document.getElementById("medium-pred-btn").style.display = "block";
             }
         } else if (active === 8) {
             if (document.getElementById("hypothesis1").checked) {
@@ -161,19 +194,50 @@ function pageLoad() {
                 document.getElementById("loading-base").style.display = "block";
                 evaluateImages();
             } else {
-                
+                document.querySelector(".head").innerHTML = "Large Koi Image Hypothesis Testing";
+                document.querySelector(".sub-header").innerHTML = "Upload Your Large Koi Images for Analysis.";
+                document.getElementById("medium-pred-base").style.display = "none";
+                document.getElementById("medium-pred-btn").style.display = "none";
+                document.getElementById("large-img-base").style.display = "block";
+                document.getElementById("large-img-btn").style.display = "block";
             }
         } else if (active === 9) {
             if (document.getElementById("hypothesis1").checked) {
                 document.querySelector(".head").innerHTML = "Results Ready!";
-                document.querySelector(".sub-header").innerHTML = "Here are your results. You can export it as CSV at the export section.";
+                document.querySelector(".sub-header").innerHTML = "Here are your results.";
                 document.getElementById("loading-base").style.display = "none";
                 document.getElementById("main").style.display = "none";
                 document.getElementById("progress-next").style.display = "none";
-                document.getElementById("data").style.display = "block";
+                document.getElementById("data-1").style.display = "block";
             } else {
-                
+                document.querySelector(".head").innerHTML = "Large Koi Truth JSON Annotation";
+                document.querySelector(".sub-header").innerHTML = "Upload your ground truth JSON.";
+                document.getElementById("large-img-base").style.display = "none";
+                document.getElementById("large-img-btn").style.display = "none";
+                document.getElementById("large-gt-base").style.display = "block";
+                document.getElementById("large-gt-btn").style.display = "block";
             }
+        } else if (active == 10) {
+            document.querySelector(".head").innerHTML = "Large Koi Predictions JSON Annotation";
+            document.querySelector(".sub-header").innerHTML = "Upload your predictions JSON.";
+            document.getElementById("large-gt-base").style.display = "none";
+            document.getElementById("large-gt-btn").style.display = "none";
+            document.getElementById("large-pred-base").style.display = "block";
+            document.getElementById("large-pred-btn").style.display = "block";
+        } else if (active == 11) {
+            document.querySelector(".head").innerHTML = "Processing your images...";
+            document.querySelector(".sub-header").innerHTML = "Hold on, we’re working on it!";
+            document.getElementById("large-pred-base").style.display = "none";
+            document.getElementById("large-pred-btn").style.display = "none";
+            document.getElementById("loading-base").style.display = "block";
+            evaluateImages();
+        } else if (active == 12) {
+            document.querySelector(".head").innerHTML = "Results Ready!";
+            document.querySelector(".sub-header").innerHTML = "Here are your results.";
+            document.getElementById("loading-base").style.display = "none";
+            document.getElementById("main").style.display = "none";
+            document.getElementById("progress-next").style.display = "none";
+            document.getElementById("data-2").style.display = "block";
         }
     }
 }

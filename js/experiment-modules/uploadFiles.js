@@ -36,15 +36,15 @@ const koiImageContainer = document.querySelector(".k-image-container");
 const nonKoiImageContainer = document.querySelector(".nk-image-container");
 
 // Hypothesis Two Components
-const smallImageCount = document.getElementById("small-images-count");
-const mediumImageCount = document.getElementById("medium-images-count");
-const largeImageCount = document.getElementById("large-images-count");
-const smallGroundTruthCount = document.getElementById("small-ground-truth-count");
-const mediumGroundTruthCount = document.getElementById("medium-ground-truth-count");
-const largeGroundTruthCount = document.getElementById("large-ground-truth-count");
-const smallPredictionsCount = document.getElementById("small-predictions-count");
-const mediumPredictionsCount = document.getElementById("medium-predictions-count");
-const largePredictionsCount = document.getElementById("large-predictions-count");
+const smallImageCount = document.querySelector(".small-images-count");
+const mediumImageCount = document.querySelector(".medium-images-count");
+const largeImageCount = document.querySelector(".large-images-count");
+const smallGroundTruthCount = document.querySelector(".small-ground-truth-count");
+const mediumGroundTruthCount = document.querySelector(".medium-ground-truth-count");
+const largeGroundTruthCount = document.querySelector(".large-ground-truth-count");
+const smallPredictionsCount = document.querySelector(".small-predictions-count");
+const mediumPredictionsCount = document.querySelector(".medium-predictions-count");
+const largePredictionsCount = document.querySelector(".large-predictions-count");
 
 // Storing and Displaying Images
 function displayImage(event) {
@@ -116,7 +116,7 @@ function displayImage(event) {
             //         </div>
             //     </div>
             // `;
-            countElement.innerText = koiImageUploads.length;
+            countElement.innerText = uploadedImages.length;
             // Update the image count after each image is read
             // countElement.innerText = uploadedImages.length;
 
