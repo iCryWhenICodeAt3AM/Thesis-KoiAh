@@ -26,6 +26,7 @@ async function startCounting() {
         updateProgress();
         pageLoad();
     }
+    
 }
 
 // Predict function

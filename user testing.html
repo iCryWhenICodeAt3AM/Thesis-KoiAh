@@ -72,7 +72,7 @@
                                 </h3>
                                 <h5 class="sub-header m-0">
                                     Start by uploading your koi images.
-                                </h5>                                 
+                                </h5>
                             </div>
 
                             <div class="col-12 m-auto mt-0 pt-0">
@@ -84,11 +84,11 @@
                                     <button type="button" class="btn btn-success btn-lg text-white toggle-button me-2" onclick="document.getElementById('folder').click();" style="width: 250px !important; height: auto;"><img src="img/folder upload.svg" class="me-2" >Select a folder</button>
                                 </div>
                             </div>
-                            <div class="col-7 header mt-0 pt-0 mb-0 move" id="main" style="height: 250px; margin: auto;">
+                            <div class="col-7 header mt-2 pt-0 mb-2 move" id="main" style="height: 250px; margin: auto;">
                                 <div class="row image-container text-center p-3 toggle-button" id="image-container" style="display:flex;"> 
                                     <!-- Image Uploads Container -->
                                 </div>
-                                <div class="col-12 m-auto toggle-progress" style="display:none;">
+                                <div class="col-12 m-auto toggle-progress" style="display:none;">   
                                     <div class="row">
                                         <div class="col-2 offset-1 pe-0 me-3 ps-0">
                                             <img src="img/cloud icon.svg" alt="">
@@ -121,6 +121,85 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row" id="pond-input" style="display: none;">
+                                    <div class="col-12 mb-1 p-2">
+                                        <h6><b>Number of Koi Fish</b></h6>
+                                        <input type="number" class="form-control text-center" id="numberOfKoiFish" value="1" min=1>
+                                    </div>
+                                    <div class="col-12 p-2 mt-2">
+                                        <div class="col-10 offset-1">
+                                            <h6>Harvest Koi Size</h6>
+                                        </div>
+                                        <div class="offset-1 col-10 mx-auto d-grid annotated-count">
+                                            <select class="text-center" name="koi-size" id="koi-size">
+                                                <option value="small">Small</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="large">Large</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row p-3" id="pond-recommendation" style="display: none;">
+                                    <div class="col-12 border border-3 border-dark mb-2 pt-2">
+                                        <h6><b>Rule to be Applied</b></h6>
+                                        <div class="row">
+                                            <div class="col-4 offset-1 pt-2 pb-2 mb-2">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <h6>Rule 1</h6>
+                                                    </div>
+                                                    <div class="col-12 form-check d-flex justify-content-center ms-2">
+                                                        <input class="form-check-input" type="radio" name="rule" id="rule1" value="rule1" onclick="recommendPondDimensions(1)" checked>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 offset-2 pt-2 pb-2 mb-2">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <h6>Rule 2</h6>
+                                                    </div>
+                                                    <div class="col-12 form-check d-flex justify-content-center ms-2">  
+                                                        <input class="form-check-input" type="radio" name="rule" id="rule2" value="rule2" onclick="recommendPondDimensions(2)">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-1 p-2 border border-3 border-dark">
+                                        <h6>Recommended Total Volume of Water (Gallons)</h6>
+                                        <div class="container mt-2" id="ruleFormula">
+                                            
+                                        </div>
+                                        <div class="container mt-2" id="ruleOutput">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-2 text-center border border-3 border-dark">
+                                        <div class="row p-2">
+                                            <div class="col-4">Length</div>
+                                            <div class="col-4">Width</div>
+                                            <div class="col-4">Depth</div>
+                                            <div class="col-4" id="length">0 ft</div>
+                                            <div class="col-4" id="width">0 ft</div>
+                                            <div class="col-4" id="depth">3 ft</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-2 text-center border border-3 border-dark">
+                                        <div class="row p-2">
+                                            <div class="col-12">
+                                                <h6>Actual Total Volume of Water</h6>
+                                                <h6>(Cubic Feet & Gallons)</h6>
+                                            </div>
+                                            <div class="col-5" id="cubicFeet">
+                                                0 ft<sup>3</sup>
+                                            </div>
+                                            <div class="col-2"><h6>=</h6></div>
+                                            <div class="col-5" id="gallons">
+                                                0 gal
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-2 header m-0 ms-0 me-3 toggle-final move" id="secondary" style="display: none;">
                                 <div class="row image-container text-center p-3" id="image-container-extra" style="display:flex;"> 
@@ -139,6 +218,8 @@
                                       <li class="step active">1</li>
                                       <li class="step">2</li>
                                       <li class="step">3</li>
+                                      <li class="step">4</li>
+                                      <li class="step">5</li>
                                     </ul>
                                 </div>
                             </div>
@@ -158,5 +239,6 @@
         <script src="js/user-testing-modules/progress-bar.js"></script>
         <script src="js/user-testing-modules/main.js"></script>
         <script src="js/tool-modules/show-image.js"></script>
+        <script src="js/user-testing-modules/pondformula.js"></script>
     </body>
 </html>

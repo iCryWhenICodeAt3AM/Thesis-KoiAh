@@ -170,8 +170,8 @@ async function showImageAnnotation(filename) {
         const ctx = canvas.getContext('2d');
 
         // Calculate scaling factors to maintain aspect ratio and enforce maximum dimensions
-        const maxWidth = 450;
-        const maxHeight = 450;
+        const maxWidth = 400;
+        const maxHeight = 400;
         let canvasWidth = img.width;
         let canvasHeight = img.height;
 
@@ -254,8 +254,8 @@ async function showImageAnnotation(filename) {
         // Initial rendering of annotations
         renderAnnotations();
         if (window.location.pathname.includes("user%20testing.html")) {
-            canvas.style.maxWidth = '450px';
-            canvas.style.maxHeight = '450px';            
+            canvas.style.maxWidth = '400px';
+            canvas.style.maxHeight = '400px';
         } else {
             canvas.style.maxWidth = '350px';
             canvas.style.maxHeight = '350px';

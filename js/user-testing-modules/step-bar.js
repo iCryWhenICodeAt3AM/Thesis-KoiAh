@@ -10,7 +10,7 @@ progressNext.addEventListener("click", () => {
       active = steps.length;
     }
     updateProgress();
-    if (window.location.pathname.includes("user%20testing.html")) {
+    if (window.location.pathname.includes("user%20testing.html") && active === 2) {
         startCounting();
     }
     pageLoad();
@@ -57,7 +57,7 @@ function pageLoad() {
             });
             document.querySelector(".head").innerHTML = "Processing your images...";
             document.querySelector(".sub-header").innerHTML = "Hold on, we’re working on it!";
-        } else {
+        } else if (active === 3) {
             document.querySelectorAll(".toggle-button").forEach(button => {
                 button.style.display = "none";
             });
@@ -71,10 +71,37 @@ function pageLoad() {
             document.querySelector(".sub-header").innerHTML = "Your images have been processed. ";
             // document.querySelectorAll(".move").style.height = "400px";
             showImageAnnotation(resultJsonData[0][0]);
-            document.getElementById("main").style.height = "450px";
-            document.getElementById("secondary").style.height = "450px";
+            document.getElementById("main").style.height = "400px";
+            document.getElementById("secondary").style.height = "400px";
             document.getElementById("main").classList.remove("col-7");
             document.getElementById("main").classList.add("col-9");
+            document.getElementById("progress-next").style.display = "block";
+        } else if (active == 4) {
+            document.querySelector(".head").innerHTML = "Configure Recommendation Input";
+            document.querySelector(".sub-header").innerHTML = "Kindly fill up the form.";
+            document.getElementById("pond-input").style.display = "block";
+            document.querySelectorAll(".toggle-final").forEach(button => {
+                button.style.display = "none";
+            });
+            document.getElementById("main").style.height = "350px";
+            document.getElementById("secondary").style.display = "none";
+            let count = 0;
+            resultJsonData.forEach((data) => {
+                const annotations = data[1];
+                annotations.forEach((annotation) => {
+                    if (["Sanke", "Showa", "Kohaku", "Asagi", "Bekko", "Hikarimono"].includes(annotation.label)) {
+                        count++;
+                    }
+                });
+            });
+            document.getElementById("numberOfKoiFish").value = count;
+        } else {
+            recommendPondDimensions(1);
+            document.querySelector(".head").innerHTML = "Recommendation!";
+            document.querySelector(".sub-header").innerHTML = "Pond size recommendation.";
+            document.getElementById("progress-next").style.display = "none";
+            document.getElementById("pond-recommendation").style.display = "block";
+            document.getElementById("pond-input").style.display = "none";
         }
     } else if (window.location.pathname.includes("experiment.html")) {
         if (active === 1) {

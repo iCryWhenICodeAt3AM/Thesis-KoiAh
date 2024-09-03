@@ -9,7 +9,20 @@ function calculateDimensions(volumeCubicFeet, depth) {
 function recommendPondDimensions(rule) {
     const depth = 3;
     const averageKoiLength = document.getElementById("koi-size").value;
-    const numKoi = (document.getElementById("numberOfKoiFish").value) ? document.getElementById("numberOfKoiFish").value : null;
+    let count = 0;
+
+    resultJsonData.forEach((data) => {
+        const annotations = data[1];
+        annotations.forEach((annotation) => {
+            if (["Sanke", "Showa", "Kohaku", "Asagi", "Bekko", "Hikarimono"].includes(annotation.label)) {
+                count++;
+            }
+        });
+    });
+
+    console.log(count);
+    const numKoi = count;
+    // const numKoi = (document.getElementById("numberOfKoiFish").value) ? document.getElementById("numberOfKoiFish").value : null;
     const formulaCont = document.getElementById("ruleFormula");
     const outputCont = document.getElementById("ruleOutput");
     const lengthCont = document.getElementById("length");
