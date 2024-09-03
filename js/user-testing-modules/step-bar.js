@@ -107,14 +107,17 @@ function pageLoad() {
         if (active === 1) {
             document.querySelector(".head").innerHTML = "Get Started!";
             document.querySelector(".sub-header").innerHTML = "Start by selecting the hypothesis to test.";
+            document.getElementById("buttons-base").style.display = "none";
         } else if (active === 2) {
             if (document.getElementById("hypothesis1").checked) {
+                document.getElementById("buttons-base").style.display = "block";
                 // Code to execute when hypothesis 1 is selected
                 document.querySelector(".head").innerHTML = "Koi Image Hypothesis Testing";
                 document.querySelector(".sub-header").innerHTML = "Upload Your Koi Images for Analysis.";
                 document.getElementById("koi-img-base").style.display = "block";
                 document.getElementById("koi-img-btn").style.display = "block";
             } else {
+                document.getElementById("buttons-base").style.display = "block";
                 // Code to execute when hypothesis 1 is not selected
                 document.querySelector(".head").innerHTML = "Small Koi Image Hypothesis Testing";
                 document.querySelector(".sub-header").innerHTML = "Upload Your Small Koi Images for Analysis";
@@ -214,6 +217,7 @@ function pageLoad() {
             }
         } else if (active === 8) {
             if (document.getElementById("hypothesis1").checked) {
+                document.getElementById("buttons-base").style.display = "none";
                 document.querySelector(".head").innerHTML = "Processing your images...";
                 document.querySelector(".sub-header").innerHTML = "Hold on, we’re working on it!";
                 document.getElementById("non-koi-pred-base").style.display = "none";
@@ -252,6 +256,7 @@ function pageLoad() {
             document.getElementById("large-pred-base").style.display = "block";
             document.getElementById("large-pred-btn").style.display = "block";
         } else if (active == 11) {
+            document.getElementById("buttons-base").style.display = "none";
             document.querySelector(".head").innerHTML = "Processing your images...";
             document.querySelector(".sub-header").innerHTML = "Hold on, we’re working on it!";
             document.getElementById("large-pred-base").style.display = "none";

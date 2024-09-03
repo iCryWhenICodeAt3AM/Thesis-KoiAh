@@ -1113,7 +1113,7 @@ function displayConfusionImages(confusionFiles, groundTruth, predictions) {
         const button = document.createElement('button');
         button.textContent = 'View';
         button.setAttribute('type', 'button');
-        button.setAttribute('class', 'btn btn-primary m-2');
+        button.setAttribute('class', 'btn btn-primary btn-sm');
         button.setAttribute('data-bs-toggle', 'modal');
         button.setAttribute('data-bs-target', '#imageModal');
         button.addEventListener('click', () => {

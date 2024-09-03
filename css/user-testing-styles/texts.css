@@ -43,6 +43,19 @@ button {
     /* color: #88BDBC;
     background-color: #254E58; */
     max-width: 150px;
+    font-size: 10px;
+    width: 150px;
+    overflow-y: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+
+.table th {
+    text-align: center;
+    /* color: #88BDBC;
+    background-color: #254E58; */
+    max-width: 150px;
+    font-size: 10px;
     width: 150px;
     overflow-y: auto;
     white-space: nowrap;
