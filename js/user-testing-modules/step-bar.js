@@ -57,6 +57,8 @@ function pageLoad() {
             });
             document.querySelector(".head").innerHTML = "Processing your images...";
             document.querySelector(".sub-header").innerHTML = "Hold on, we’re working on it!";
+            document.getElementById("input-container").style.display = "none";
+
         } else if (active === 3) {
             document.querySelectorAll(".toggle-button").forEach(button => {
                 button.style.display = "none";
@@ -102,6 +104,7 @@ function pageLoad() {
             document.getElementById("progress-next").style.display = "none";
             document.getElementById("pond-recommendation").style.display = "block";
             document.getElementById("pond-input").style.display = "none";
+            document.getElementById("progress-container").style.display = "none";
         }
     } else if (window.location.pathname.includes("experiment.html")) {
         if (active === 1) {
@@ -240,6 +243,8 @@ function pageLoad() {
                 document.getElementById("main").style.display = "none";
                 document.getElementById("progress-next").style.display = "none";
                 document.getElementById("data-1").style.display = "block";
+                document.getElementById("progress-container").style.display = "none";
+                document.getElementById("export-button-one").style.display = "block";
             } else {
                 document.querySelector(".head").innerHTML = "Large Koi Truth JSON Annotation";
                 document.querySelector(".sub-header").innerHTML = "Upload your ground truth JSON.";
@@ -270,6 +275,8 @@ function pageLoad() {
             document.getElementById("main").style.display = "none";
             document.getElementById("progress-next").style.display = "none";
             document.getElementById("data-2").style.display = "block";
+            document.getElementById("progress-container").style.display = "none";
+            document.getElementById("export-button-two").style.display = "block";
         }
     } else {
         if (active === 1) {
@@ -307,8 +314,8 @@ function pageLoad() {
         } else {
             document.querySelector(".head").innerHTML = "Assess and Export!";
             document.querySelector(".sub-header").innerHTML = "Here are your images, you can also export the data.";
-            document.getElementById("main").style.height = "350px";
-            document.getElementById("secondary").style.height = "350px";
+            document.getElementById("main").style.height = "500px";
+            document.getElementById("secondary").style.height = "500px";
             document.getElementById("main").classList.remove("col-7");
             document.getElementById("main").classList.add("col-8");
             document.getElementById("classlist-base").style.display = "none";
@@ -316,6 +323,7 @@ function pageLoad() {
             document.getElementById("final").style.display = "flex";
             document.getElementById("secondary").style.display = "flex";
             document.getElementById("export-button").style.display = "block";
+            document.getElementById("progress-container").style.display = "none";
             if (filteredData.length > 0) {
                 showImageAnnotation(filteredData[0].image);
             } else {

@@ -1,5 +1,11 @@
-#data-1, #data-2, #pond-recommendation {
-    max-height: 350px;
+/* #data-1, #data-2{
+    max-height: 500px;
+    height: 500px;
+    overflow-y: auto;
+} */
+
+#pond-recommendation {
+    max-height: 500px;
     overflow-y: auto;
 }
 
@@ -40,7 +46,7 @@ button {
 
 #image-container, #classList {
     overflow-y: auto;
-    max-height: 250px;
+    max-height: 400px;
 }
 
 #image-container-extra{
@@ -91,3 +97,9 @@ button.active {
     overflow-y: auto;
 }
 
+#anova-one, #data-one, #one-confusion-matrix, #matrix-img, #hypothesis-one-graph-container, #table, #koi, #non-koi, #export, #anova2, #pairwise, #data2, #matrix2, #matrix-img2, #table2, #small, #medium, #large, #export2 {
+    max-height: 450px;
+    height: 450px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

@@ -66,15 +66,27 @@
                 <div class="col-10 text-center d-block">
                     <div class="col-12 d-flex contents" id="pageOne">
                         <div class="row" style="width:100%; margin: 0px; padding: 0px;">
-                            <div class="col-8 offset-2 text-start p-5 pb-0">
+                            <div class="col-8 offset-2 text-start p-5 pt-3 pb-0">
                                 <h3>
                                     <b class="head">Get Started!</b>
                                 </h3>
                                 <h5 class="sub-header m-0">
                                     Start by uploading your images.
-                                </h5>                                 
+                                </h5>
                             </div>
-
+                            <div class="col-4 offset-4 mt-0 pt-2" id="progress-container" style="height:40px;">
+                                <div id="progress">
+                                    <div id="progress-bar1"></div>
+                                    <ul id="progress-num">
+                                      <li class="step active">1</li>
+                                      <li class="step">2</li>
+                                      <li class="step">3</li>
+                                      <li class="step">4</li>
+                                      <li class="step">5</li>
+                                      <li class="step">6</li>
+                                    </ul>
+                                </div>
+                            </div>
                             <div class="col-7 m-auto mt-0 pt-0">
                                 <div class="row">
                                     <div class="col-6 d-grid mx-auto">
@@ -94,7 +106,7 @@
                                 </div>
                                 
                             </div>
-                            <div class="col-7 header mt-0 pt-0 mb-0 move" id="main" style="height: 250px; margin: auto;">
+                            <div class="col-7 header mt-0 pt-0 mb-0 move" id="main" style="height: 400px; margin: auto;">
                                 <div class="row image-container text-center p-3 toggle-button" id="image-container" style="display:flex;"> 
                                     <!-- Image Uploads Container -->
                                 </div>
@@ -190,8 +202,8 @@
                                     <div class="col-4">
                                         <div class="row">
                                             <div class="col-12">
-                                                <button class="btn btn-md active">Classes</button>
-                                                <button class="btn btn-md">List</button>
+                                                <button class="btn btn-md active" style="width: 100px;">Classes</button>
+                                                <button class="btn btn-md" style="width: 100px;">List</button>
                                             </div>
                                         </div>
                                         <div class="row" id="classList">
@@ -208,25 +220,13 @@
                                     <!-- Image Uploads Container -->
                                 </div>
                             </div>
-                            <div class="col-7 m-auto mt-0 pt-0">
+                            <div class="col-4 offset-4 mt-0 pt-0">
                                 <div class="d-grid mx-auto text p-0 m-0">
                                     <button type="button" id="progress-next" class="btn btn-lg toggle-button"><img src="img/proceed icon.svg" class="me-2">Proceed</button>
                                     <button type="button" id="export-button" onclick="openExportModal()" data-bs-toggle="modal" data-bs-target="#export-modal" class="btn btn-lg toggle-button" style="display: none;"><img src="img/download icon.svg" alt="download" class="me-2">Download Dataset</button>
                                 </div>
                             </div>
-                            <div class="col-4 offset-4 mt-0 pt-2">
-                                <div id="progress">
-                                    <div id="progress-bar1"></div>
-                                    <ul id="progress-num">
-                                      <li class="step active">1</li>
-                                      <li class="step">2</li>
-                                      <li class="step">3</li>
-                                      <li class="step">4</li>
-                                      <li class="step">5</li>
-                                      <li class="step">6</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

@@ -65,7 +65,7 @@
                 <div class="col-10 text-center d-block">
                     <div class="col-12 d-flex contents" id="pageOne">
                         <div class="row" style="width:100%; margin: 0px; padding: 0px;">
-                            <div class="col-8 offset-2 text-start p-5 pb-0">
+                            <div class="col-8 offset-2 text-start p-5 pt-3 pb-0">
                                 <h3>
                                     <b class="head">Get Started!</b>
                                 </h3>
@@ -73,83 +73,107 @@
                                     Start by selecting the hypothesis to test.
                                 </h5>
                             </div>
-                            <div class="col-7 m-auto mt-0 pt-0" id="buttons-base" style="display: none;">
+                            <div class="col-6 offset-3 mt-0 pt-2" id="progress-container" style="height:40px;">
+                                <div id="progress">
+                                    <div id="progress-bar1"></div>
+                                    <ul id="progress-num">
+                                      <li class="step active">1</li>
+                                      <!-- k-img -->
+                                      <li class="step">2</li>
+                                      <!-- k-tr -->
+                                      <li class="step">3</li>
+                                      <!-- k-pr -->
+                                      <li class="step">4</li>
+                                      <!-- nk-img -->
+                                      <li class="step">5</li>
+                                      <!-- nk-tr -->
+                                      <li class="step">6</li>
+                                      <!-- nk-pr -->
+                                      <li class="step">7</li>
+                                      <!-- annotate -->
+                                      <li class="step">8</li>
+                                      <!-- data  -->
+                                      <li class="step">9</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-6 offset-3 mt-0 pt-0" id="buttons-base" style="display: none;">
                                 <!-- Koi inputs -->
                                 <div class="d-grid mx-auto">
                                         <input type="file" id="koiImages" name="koiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                        <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('koiImages').click();" id="koi-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-2">Upload Koi Images</button>
+                                        <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('koiImages').click();" id="koi-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-2">Upload Koi Images</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <input type="file" id="koiGroundTruthJson" name="koiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'koi')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('koiGroundTruthJson').click();" id="koi-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-2">Upload Koi Truth JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('koiGroundTruthJson').click();" id="koi-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-2">Upload Koi Truth JSON</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <input type="file" id="koiPredictionsJson" name="koiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'koi')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('koiPredictionsJson').click();" id="koi-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Koi Predictions JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('koiPredictionsJson').click();" id="koi-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Koi Predictions JSON</button>
                                 </div>
                                 <!-- Non-koi Inputs -->
                                 <div class="d-grid mx-auto">
                                     <input type="file" id="nonKoiImages" name="nonKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('nonKoiImages').click();" id="non-koi-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-2">Upload Non-Koi Images</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('nonKoiImages').click();" id="non-koi-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-2">Upload Non-Koi Images</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <input type="file" id="nonKoiGroundTruthJson" name="nonKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'nonKoi')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('nonKoiGroundTruthJson').click();" id="non-koi-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Non-Koi Truth JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('nonKoiGroundTruthJson').click();" id="non-koi-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Non-Koi Truth JSON</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <input type="file" id="nonKoiPredictionsJson" name="nonKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'nonKoi')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('nonKoiPredictionsJson').click();" id="non-koi-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Non-Koi Predictions JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('nonKoiPredictionsJson').click();" id="non-koi-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Non-Koi Predictions JSON</button>
                                 </div>
                                 <!-- Small Koi Inputs -->
                                 <div class="d-grid mx-auto">
                                     <!-- Input File -->
                                     <input type="file" id="smallKoiImages" name="smallKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('smallKoiImages').click();" id="small-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-1">Upload Small Koi Images</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('smallKoiImages').click();" id="small-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-1">Upload Small Koi Images</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <!-- Ground Truth JSON File -->
                                     <input type="file" id="smallKoiGroundTruthJson" name="smallKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'small')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('smallKoiGroundTruthJson').click();" id="small-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Small Koi Truth JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('smallKoiGroundTruthJson').click();" id="small-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Small Koi Truth JSON</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <!-- Predictions JSON File -->
                                     <input type="file" id="smallKoiPredictionsJson" name="smallKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'small')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('smallKoiPredictionsJson').click();" id="small-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Small Koi Predictions JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('smallKoiPredictionsJson').click();" id="small-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Small Koi Predictions JSON</button>
                                 </div>
                                 <!-- Medium Koi Inputs -->
                                 <div class="d-grid mx-auto">
                                     <!-- Input File -->
                                     <input type="file" id="mediumKoiImages" name="mediumKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('mediumKoiImages').click();" id="medium-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-1">Upload Medium Koi Images</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('mediumKoiImages').click();" id="medium-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-1">Upload Medium Koi Images</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <!-- Ground Truth JSON File -->
                                     <input type="file" id="mediumKoiGroundTruthJson" name="mediumKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'medium')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('mediumKoiGroundTruthJson').click();" id="medium-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Medium Koi Truth JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('mediumKoiGroundTruthJson').click();" id="medium-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Medium Koi Truth JSON</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <!-- Predictions JSON File -->
                                     <input type="file" id="mediumKoiPredictionsJson" name="mediumKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'medium')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('mediumKoiPredictionsJson').click();" id="medium-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Medium Koi Predictions JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('mediumKoiPredictionsJson').click();" id="medium-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Medium Koi Predictions JSON</button>
                                 </div>
                                 <!-- Large Koi Inputs -->
                                 <div class="d-grid mx-auto">
                                     <!-- Input File -->
                                     <input type="file" id="largeKoiImages" name="largeKoiImages" accept="image/*" multiple style="display: none;" onchange="displayImage(event);">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('largeKoiImages').click();" id="large-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-1">Upload Large Koi Images</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('largeKoiImages').click();" id="large-img-btn" style="display: none;"><img src="img/img icon.svg" class="me-1">Upload Large Koi Images</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <!-- Ground Truth JSON File -->
                                     <input type="file" id="largeKoiGroundTruthJson" name="largeKoiGroundTruthJson" accept="application/json" style="display: none;" onchange="parseGroundTruth(event, 'large')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('largeKoiGroundTruthJson').click();" id="large-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Large Koi Truth JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('largeKoiGroundTruthJson').click();" id="large-gt-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Large Koi Truth JSON</button>
                                 </div>
                                 <div class="d-grid mx-auto">
                                     <!-- Predictions JSON File -->
                                     <input type="file" id="largeKoiPredictionsJson" name="largeKoiPredictionsJson" accept="application/json" style="display: none;" onchange="parsePredictions(event, 'large')">
-                                    <button type="button" class="btn btn-success btn-lg border border-3 border-dark" onclick="document.getElementById('largeKoiPredictionsJson').click();" id="large-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Large Koi Predictions JSON</button>
+                                    <button type="button" class="btn btn-success btn-lg  " onclick="document.getElementById('largeKoiPredictionsJson').click();" id="large-pred-btn" style="display: none;"><img src="img/json file.svg" class="me-1">Upload Large Koi Predictions JSON</button>
                                 </div>
                             </div>
-                            <div class="col-7 header mt-0 pt-0 mb-0 move" id="main" style="height: 250px; margin: auto;">
+                            <div class="col-7 header mt-0 pt-0 mb-0 move" id="main" style="height: 400px; margin: auto;">
                                 <div class="container" id="hypothesis-select" style="display: block;">
                                     <div class="row">
                                         <div class="col-6">
@@ -262,9 +286,6 @@
                                         <li class="nav-item" role="presentation">
                                         <button class="nav-link links" id="non-koi-tab" data-bs-toggle="tab" data-bs-target="#non-koi" type="button" role="tab" aria-controls="non-koi" aria-selected="false">NON-KOI</button>
                                         </li>
-                                        <li class="nav-item" role="presentation">
-                                        <button class="nav-link links" id="export-tab" data-bs-toggle="tab" data-bs-target="#export" type="button" role="tab" aria-controls="export" aria-selected="false">EXPORT</button>
-                                        </li>
                                     </ul>
                                     <div class="tab-pane fade show active" id="anova" role="tabpanel" aria-labelledby="anova-tab">
                                         <div class="results" id="anova-one">
@@ -354,19 +375,12 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade justify-content-center" id="export" role="tabpanel" aria-labelledby="export-tab">
-                                        <div class="row">
-                                            <div class="col-12 my-auto mx-auto d-grid mt-5 mb-5">
-                                                <button class="cont-inner mt-5 mb-5 btn btn-success btn-lg border border-3 border-dark showTable" id="export-button-one" type="button" onclick="generateExcelForHypothesis()"><b>Export Results Data</b></button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>   
                             </div>
 
                             <!-- Final Page - Hyp 2 -->
                             <div class="col-8 header mt-0 pt-0 mb-0 move" id="data-2" style="margin: auto; display: none;">
-                                <div class="tab-content" id="myTabContent">
+                                <div class="tab-content" id="myTabContent"> 
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item" role="presentation">
                                           <button class="nav-link links active" id="anova-tab" data-bs-toggle="tab" data-bs-target="#anova2" type="button" role="tab" aria-controls="anova" aria-selected="true">ANOVA</button>
@@ -394,9 +408,6 @@
                                           </li>
                                           <li class="nav-item" role="presentation">
                                             <button class="nav-link links" id="large-tab" data-bs-toggle="tab" data-bs-target="#large" type="button" role="tab" aria-controls="large" aria-selected="false">LARGE</button>
-                                          </li>
-                                          <li class="nav-item" role="presentation">
-                                            <button class="nav-link links" id="export-tab" data-bs-toggle="tab" data-bs-target="#export2" type="button" role="tab" aria-controls="export" aria-selected="false">EXPORT</button>
                                           </li>
                                     </ul>
                                     <div class="tab-pane fade show active" id="anova2" role="tabpanel" aria-labelledby="anova-tab">
@@ -504,48 +515,19 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade justify-content-center" id="export2" role="tabpanel" aria-labelledby="export-tab">
-                                        <div class="row">
-                                            <div class="col-12 my-auto mx-auto d-grid mt-5 mb-5">
-                                                <button class="cont-inner mt-5 mb-5 btn btn-success btn-lg border border-3 border-dark showTable" id="export-button-two" type="button" onclick="generateExcelForHypothesis()"><b>Export Results Data</b></button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
-                            <div class="col-7 m-auto mt-0 pt-0">
+                            <div class="col-4 offset-4 mt-0 pt-0">
                                 <div class="d-grid mx-auto text p-0 m-0">
                                     <button type="button" id="progress-next" class="btn btn-lg toggle-button"><img src="img/proceed icon.svg" class="me-2">Proceed</button>
-                                 </div>
-                            </div>
-                            <div class="col-8 offset-2 mt-0 pt-2">
-                                <div id="progress">
-                                    <div id="progress-bar1"></div>
-                                    <ul id="progress-num">
-                                      <li class="step active">1</li>
-                                      <!-- k-img -->
-                                      <li class="step">2</li>
-                                      <!-- k-tr -->
-                                      <li class="step">3</li>
-                                      <!-- k-pr -->
-                                      <li class="step">4</li>
-                                      <!-- nk-img -->
-                                      <li class="step">5</li>
-                                      <!-- nk-tr -->
-                                      <li class="step">6</li>
-                                      <!-- nk-pr -->
-                                      <li class="step">7</li>
-                                      <!-- annotate -->
-                                      <li class="step">8</li>
-                                      <!-- data  -->
-                                      <li class="step">9</li>
-                                    </ul>
+                                    <button class="btn btn-success showTable p-3 m-3" id="export-button-two" type="button" onclick="generateExcelForHypothesis()" style="display:none;"><img src="img/download icon.svg" alt="download" class="me-2">Export Results Data</button>
+                                    <button class="btn btn-success showTable p-3 m-3" id="export-button-one" type="button" onclick="generateExcelForHypothesis()" style="display:none;"><img src="img/download icon.svg" alt="download" class="me-2">Export Results Data</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-             </div>
+            </div>
         </div>
         <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal" >Open modal for @mdo</button> -->
         <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

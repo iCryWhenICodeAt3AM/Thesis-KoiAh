@@ -170,8 +170,8 @@ async function showImageAnnotation(filename) {
         const ctx = canvas.getContext('2d');
 
         // Calculate scaling factors to maintain aspect ratio and enforce maximum dimensions
-        const maxWidth = 400;
-        const maxHeight = 400;
+        const maxWidth = 450;
+        const maxHeight = 450;
         let canvasWidth = img.width;
         let canvasHeight = img.height;
 
@@ -257,8 +257,8 @@ async function showImageAnnotation(filename) {
             canvas.style.maxWidth = '400px';
             canvas.style.maxHeight = '400px';
         } else {
-            canvas.style.maxWidth = '350px';
-            canvas.style.maxHeight = '350px';
+            canvas.style.maxWidth = '500px';
+            canvas.style.maxHeight = '500px';
         }
         
     };
