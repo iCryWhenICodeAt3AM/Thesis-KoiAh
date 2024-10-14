@@ -11,8 +11,8 @@
 }
 
 .car-image {
-    max-width: 500px;
-    max-height: 500px;
+    width: 250px;
+    height: 250px;
 }
 
 #introduction {
