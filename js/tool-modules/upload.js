@@ -17,7 +17,7 @@ function sanitizeFileName(name) {
         sanitized = "_" + sanitized;
     }
     return sanitized;
-}
+}   
 
 // Function to display images and store them in the global variable
 function displayImage() {
