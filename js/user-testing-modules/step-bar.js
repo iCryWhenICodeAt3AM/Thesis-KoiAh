@@ -9,11 +9,18 @@ progressNext.addEventListener("click", () => {
     if (active > steps.length) {
       active = steps.length;
     }
+    if(window.location.pathname.includes("tool.html")){
+        if(existingFiles.size == 0 ){
+            active--;
+            alert("Please upload images to continue.");
+        }
+    }
     updateProgress();
     if (window.location.pathname.includes("user%20testing.html") && active === 2) {
         startCounting();
     }
     pageLoad();
+    
   });
 
 
@@ -48,6 +55,7 @@ function pageLoad() {
             });
             document.querySelector(".head").innerHTML = "Get Started!";
             document.querySelector(".sub-header").innerHTML = "Start by uploading your koi images.";
+            document.getElementById("image-container").style.display = "flex";
         } else if (active === 2) {
             document.querySelectorAll(".toggle-button").forEach(button => {
                 button.style.display = "none";
@@ -58,7 +66,7 @@ function pageLoad() {
             document.querySelector(".head").innerHTML = "Processing your images...";
             document.querySelector(".sub-header").innerHTML = "Hold on, we’re working on it!";
             document.getElementById("input-container").style.display = "none";
-
+            document.getElementById("image-container").style.display = "none";
         } else if (active === 3) {
             document.querySelectorAll(".toggle-button").forEach(button => {
                 button.style.display = "none";
@@ -105,6 +113,8 @@ function pageLoad() {
             document.getElementById("pond-recommendation").style.display = "block";
             document.getElementById("pond-input").style.display = "none";
             document.getElementById("progress-container").style.display = "none";
+            document.getElementById("main").style.height = "450px";
+
         }
     } else if (window.location.pathname.includes("experiment.html")) {
         if (active === 1) {
@@ -282,6 +292,8 @@ function pageLoad() {
         if (active === 1) {
             document.querySelector(".head").innerHTML = "Get Started!";
             document.querySelector(".sub-header").innerHTML = "Start by uploading your images.";
+            document.getElementById("image-container").style.display = "flex";
+
         } else if (active === 2) {
             document.querySelector(".head").innerHTML = "Optional JSON Annotation";
             document.querySelector(".sub-header").innerHTML = "Upload your JSON from Roboflow.";
